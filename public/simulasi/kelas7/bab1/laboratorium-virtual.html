@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tur Laboratorium Virtual | IPA Kelas 7</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root {
+    --bg:#0b1220; --card:rgba(255,255,255,.05); --border:rgba(255,255,255,.12);
+    --cyan:#22d3ee; --violet:#a78bfa; --green:#4ade80; --red:#f87171; --amber:#fbbf24;
+  }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:radial-gradient(1200px 700px at 70% -10%, rgba(34,211,238,.14), transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, rgba(167,139,250,.12), transparent 60%), var(--bg);
+    color:#fff; min-height:100vh; user-select:none; -webkit-user-select:none;
+  }
+  .wrap { max-width:1200px; margin:0 auto; padding:20px 24px 40px; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .brand { font-size:clamp(14px,1.6vw,18px); color:rgba(255,255,255,.55); letter-spacing:.14em; text-transform:uppercase; }
+  .btn {
+    display:inline-flex; align-items:center; justify-content:center; gap:10px;
+    border:1px solid var(--border); background:var(--card); color:#fff;
+    border-radius:16px; padding:14px 26px; font-size:clamp(16px,1.8vw,20px); font-weight:600; cursor:pointer;
+    transition:transform .15s, background .2s;
+  }
+  .btn:active { transform:scale(.96); }
+  .btn.primary { background:linear-gradient(135deg, rgba(34,211,238,.25), rgba(167,139,250,.2)); border-color:rgba(34,211,238,.5); }
+  .btn.small { padding:10px 18px; font-size:15px; border-radius:12px; }
+  h1 { font-size:clamp(26px,4vw,46px); text-align:center; margin-top:14px; }
+  h1 .hl { background:linear-gradient(90deg,var(--cyan),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { text-align:center; color:rgba(255,255,255,.6); font-size:clamp(15px,1.8vw,19px); margin-top:8px; }
+  .tabs { display:flex; gap:12px; justify-content:center; margin-top:22px; flex-wrap:wrap; }
+  .tab {
+    border:1px solid var(--border); background:var(--card); color:rgba(255,255,255,.7);
+    border-radius:999px; padding:12px 30px; font-size:clamp(15px,1.9vw,20px); font-weight:700; cursor:pointer; transition:.2s;
+  }
+  .tab.active { background:rgba(34,211,238,.16); border-color:var(--cyan); color:#fff; box-shadow:0 0 24px rgba(34,211,238,.2); }
+
+  .challengeBar {
+    max-width:900px; margin:22px auto 0; background:linear-gradient(160deg, rgba(251,191,36,.14), rgba(255,255,255,.04));
+    border:1px solid rgba(251,191,36,.4); border-radius:20px; padding:18px 26px; text-align:center; display:none;
+  }
+  .challengeBar.show { display:block; animation:fadeIn .3s; }
+  .challengeBar .task { font-size:clamp(18px,2.6vw,28px); font-weight:800; line-height:1.4; }
+  .challengeBar .meta { margin-top:6px; color:rgba(255,255,255,.6); font-size:clamp(13px,1.6vw,16px); }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;} }
+
+  .shelfTitle { max-width:1060px; margin:26px auto 0; color:rgba(255,255,255,.45); font-size:13px; letter-spacing:.18em; text-transform:uppercase; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:14px; max-width:1060px; margin:10px auto 0; }
+  .tool {
+    background:var(--card); border:1px solid var(--border); border-radius:20px; padding:16px 10px 14px;
+    text-align:center; cursor:pointer; transition:transform .18s, border-color .2s, box-shadow .2s; position:relative;
+  }
+  .tool:hover { transform:translateY(-4px); border-color:rgba(34,211,238,.4); }
+  .tool:active { transform:scale(.95); }
+  .tool svg { width:clamp(56px,7vw,84px); height:clamp(56px,7vw,84px); }
+  .tool .tn { font-size:clamp(13px,1.5vw,16px); font-weight:700; margin-top:8px; }
+  .tool.correct { border-color:var(--green); background:rgba(74,222,128,.14); box-shadow:0 0 26px rgba(74,222,128,.3); }
+  .tool.wrong { border-color:var(--red); background:rgba(248,113,113,.14); animation:shake .4s; }
+  .tool.visited::after { content:'✓'; position:absolute; top:8px; right:10px; color:var(--green); font-weight:800; }
+  @keyframes shake { 0%,100%{transform:none} 25%{transform:translateX(-7px)} 75%{transform:translateX(7px)} }
+
+  /* modal info alat */
+  .overlay { position:fixed; inset:0; background:rgba(4,8,16,.75); backdrop-filter:blur(6px); display:none; align-items:center; justify-content:center; z-index:50; padding:20px; }
+  .overlay.show { display:flex; animation:fadeIn .25s; }
+  .modal {
+    background:linear-gradient(170deg, #131c30, #0d1424); border:1px solid var(--border); border-radius:26px;
+    max-width:640px; width:100%; padding:clamp(24px,4vw,40px); text-align:center; box-shadow:0 30px 80px rgba(0,0,0,.5);
+  }
+  .modal svg { width:clamp(90px,12vw,140px); height:clamp(90px,12vw,140px); }
+  .modal h2 { font-size:clamp(22px,3vw,32px); margin-top:10px; }
+  .modal .fungsi { margin-top:12px; font-size:clamp(15px,2vw,20px); line-height:1.6; color:rgba(255,255,255,.8); }
+  .modal .tips { margin-top:14px; font-size:clamp(13px,1.7vw,17px); color:var(--amber); line-height:1.5; }
+  .fb { max-width:900px; margin:16px auto 0; border-radius:16px; padding:14px 22px; font-size:clamp(15px,1.9vw,19px); display:none; border:1px solid; text-align:center; line-height:1.5; }
+  .fb.show { display:block; animation:fadeIn .3s; }
+  .fb.good { background:rgba(74,222,128,.1); border-color:rgba(74,222,128,.4); }
+  .fb.bad { background:rgba(248,113,113,.1); border-color:rgba(248,113,113,.4); }
+  .progress { max-width:900px; margin:18px auto 0; text-align:center; color:rgba(255,255,255,.55); font-size:15px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand">IPA Kelas 7 · Bab 1</span>
+    <button class="btn small" onclick="kembali()">← Kembali</button>
+  </header>
+
+  <h1>Tur <span class="hl">Laboratorium Virtual</span></h1>
+  <p class="sub" id="subtitle">Sentuh alat untuk mengenal nama dan fungsinya.</p>
+
+  <div class="tabs">
+    <button class="tab active" id="tabExplore" onclick="setMode('explore')">🔍 Jelajahi Alat</button>
+    <button class="tab" id="tabQuiz" onclick="setMode('quiz')">🎯 Tantangan: Ambilkan Alatnya!</button>
+  </div>
+
+  <div class="challengeBar" id="challengeBar">
+    <div class="task" id="challengeText"></div>
+    <div class="meta" id="challengeMeta"></div>
+  </div>
+  <div class="fb" id="fb"></div>
+
+  <div class="shelfTitle">Rak Alat Laboratorium</div>
+  <div class="grid" id="grid"></div>
+  <div class="progress" id="progress"></div>
+</div>
+
+<!-- modal -->
+<div class="overlay" id="overlay" onclick="closeModal(event)">
+  <div class="modal">
+    <div id="mIcon"></div>
+    <h2 id="mName"></h2>
+    <p class="fungsi" id="mFungsi"></p>
+    <p class="tips" id="mTips"></p>
+    <div style="margin-top:22px"><button class="btn primary" onclick="closeModal()">Mengerti 👍</button></div>
+  </div>
+</div>
+
+<script>
+// ---- ikon SVG tiap alat (garis sederhana, warna via stroke) ----
+const S = 'fill="none" stroke="#7dd3fc" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"';
+const ICONS = {
+  beaker: `<svg viewBox="0 0 64 64" ${S}><path d="M18 8h28M22 8v18L12 50a5 5 0 0 0 5 7h30a5 5 0 0 0 5-7L42 26V8"/><path d="M18 40h28" stroke="#22d3ee"/><path d="M22 47h20" stroke="#22d3ee" opacity=".5"/></svg>`,
+  tabung: `<svg viewBox="0 0 64 64" ${S}><path d="M26 6h12M28 6v38a6 6 0 0 0 8 0V6" transform="rotate(8 32 32)"/><path d="M28 30h8" stroke="#22d3ee" transform="rotate(8 32 32)"/></svg>`,
+  gelasukur: `<svg viewBox="0 0 64 64" ${S}><path d="M26 6h12M27 6v46a5 5 0 0 0 10 0V6"/><path d="M37 16h-5M37 24h-5M37 32h-5M37 40h-5" stroke="#22d3ee"/><path d="M27 36h10" stroke="#22d3ee" opacity=".6"/></svg>`,
+  erlenmeyer: `<svg viewBox="0 0 64 64" ${S}><path d="M26 6h12M28 6v14L14 50a5 5 0 0 0 5 8h26a5 5 0 0 0 5-8L36 20V6"/><path d="M20 44h24" stroke="#22d3ee"/></svg>`,
+  corong: `<svg viewBox="0 0 64 64" ${S}><path d="M10 10h44L36 34v20l-8 4V34L10 10Z"/></svg>`,
+  pipet: `<svg viewBox="0 0 64 64" ${S}><ellipse cx="32" cy="12" rx="9" ry="8"/><path d="M28 19l-2 30a6 6 0 0 0 12 0l-2-30"/><path d="M30 52h4" stroke="#22d3ee"/></svg>`,
+  spatula: `<svg viewBox="0 0 64 64" ${S}><path d="M14 50 44 20"/><path d="M44 20c4-4 10-6 12-4s0 8-4 12c-3 3-8 3-10 1s-1-6 2-9Z"/></svg>`,
+  kakitiga: `<svg viewBox="0 0 64 64" ${S}><circle cx="32" cy="16" r="13"/><path d="M22 25 14 56M42 25l8 31M32 29v27"/><path d="M23 12h18M23 20h18" stroke="#22d3ee" opacity=".7"/></svg>`,
+  spiritus: `<svg viewBox="0 0 64 64" ${S}><path d="M20 34c0-8 24-8 24 0v14a6 6 0 0 1-6 6H26a6 6 0 0 1-6-6V34Z"/><path d="M29 28v-6h6v6"/><path d="M32 22c0-5 3-6 3-10 0 0 5 4 3 10" stroke="#fbbf24"/></svg>`,
+  termometer: `<svg viewBox="0 0 64 64" ${S}><path d="M27 8a5 5 0 0 1 10 0v32a10 10 0 1 1-10 0V8Z"/><circle cx="32" cy="48" r="5" fill="#f87171" stroke="none"/><path d="M32 44V20" stroke="#f87171"/></svg>`,
+  mikroskop: `<svg viewBox="0 0 64 64" ${S}><path d="M28 8l10 4-12 26-8-3 10-27Z"/><path d="M24 40c-5 3-8 8-8 12h32c0-8-6-14-13-16"/><path d="M12 56h40"/><circle cx="36" cy="14" r="2" stroke="#22d3ee"/></svg>`,
+  neraca: `<svg viewBox="0 0 64 64" ${S}><path d="M32 10v8M12 18h40"/><path d="M12 18l-6 16h12l-6-16ZM52 18l-6 16h12l-6-16Z"/><path d="M6 34a6 6 0 0 0 12 0M46 34a6 6 0 0 0 12 0"/><path d="M26 52h12M32 18v34"/></svg>`,
+};
+
+const TOOLS = [
+  { id:'beaker', name:'Gelas Kimia (Beaker)', f:'Wadah untuk menampung, mencampur, dan memanaskan larutan dalam jumlah banyak.', tips:'Skala pada gelas kimia hanya perkiraan — jangan dipakai untuk mengukur volume dengan teliti.', quiz:'Ambilkan alat untuk menampung dan mencampur larutan dalam jumlah banyak!' },
+  { id:'tabung', name:'Tabung Reaksi', f:'Tempat mereaksikan dua zat atau lebih dalam jumlah kecil.', tips:'Saat memanaskan, arahkan mulut tabung menjauh dari wajah dan teman!', quiz:'Ambilkan alat untuk mereaksikan zat dalam jumlah kecil!' },
+  { id:'gelasukur', name:'Gelas Ukur', f:'Mengukur volume cairan dengan cukup teliti.', tips:'Baca skala tepat di dasar lengkungan permukaan cairan (meniskus), sejajar dengan mata.', quiz:'Ambilkan alat untuk mengukur 50 mL air dengan teliti!' },
+  { id:'erlenmeyer', name:'Labu Erlenmeyer', f:'Menampung dan mencampur larutan; bentuk kerucutnya mencegah cairan tumpah saat digoyang.', tips:'Cocok untuk titrasi karena mudah digoyang tanpa tumpah.', quiz:'Ambilkan wadah yang bisa digoyang-goyang tanpa cairannya tumpah!' },
+  { id:'corong', name:'Corong', f:'Membantu memindahkan cairan ke wadah bermulut kecil dan tempat meletakkan kertas saring.', tips:'Pasangkan kertas saring pada corong untuk memisahkan campuran (filtrasi).', quiz:'Ambilkan alat untuk menuang cairan ke botol bermulut kecil tanpa tumpah!' },
+  { id:'pipet', name:'Pipet Tetes', f:'Mengambil dan meneteskan cairan dalam jumlah sangat sedikit (tetes demi tetes).', tips:'Jangan sampai cairan masuk ke karet penghisapnya.', quiz:'Ambilkan alat untuk menambahkan cairan setetes demi setetes!' },
+  { id:'spatula', name:'Spatula', f:'Mengambil bahan kimia berbentuk padatan atau serbuk.', tips:'Jangan pernah mengambil bahan kimia langsung dengan tangan!', quiz:'Ambilkan alat untuk mengambil serbuk zat kimia dengan aman!' },
+  { id:'kakitiga', name:'Kaki Tiga & Kasa', f:'Penyangga wadah saat dipanaskan di atas pembakar spiritus; kasa meratakan panas.', tips:'Letakkan kasa asbes di atas kaki tiga sebelum meletakkan gelas kimia.', quiz:'Ambilkan penyangga untuk memanaskan gelas kimia di atas api!' },
+  { id:'spiritus', name:'Pembakar Spiritus', f:'Sumber api untuk memanaskan bahan.', tips:'Matikan api dengan menutupnya — jangan pernah ditiup!', quiz:'Ambilkan alat sumber api untuk memanaskan larutan!' },
+  { id:'termometer', name:'Termometer', f:'Mengukur suhu zat.', tips:'Jangan gunakan termometer untuk mengaduk larutan — mudah pecah!', quiz:'Ambilkan alat untuk mengukur suhu air yang dipanaskan!' },
+  { id:'mikroskop', name:'Mikroskop', f:'Mengamati benda-benda yang sangat kecil (mikroskopis) seperti sel dan mikroorganisme.', tips:'Bawa mikroskop dengan dua tangan: satu memegang lengan, satu menyangga kakinya.', quiz:'Ambilkan alat untuk mengamati sel bawang merah yang sangat kecil!' },
+  { id:'neraca', name:'Neraca / Timbangan', f:'Mengukur massa suatu benda atau bahan.', tips:'Pastikan neraca menunjuk angka nol sebelum menimbang.', quiz:'Ambilkan alat untuk mengukur massa 5 gram garam!' },
+];
+
+let mode = 'explore', visited = new Set(), quizOrder = [], quizIdx = 0, score = 0, locked = false;
+
+let actx = null;
+function tone(f,d,t='sine',v=.18,w=0){ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); const o=actx.createOscillator(),g=actx.createGain(); o.type=t;o.frequency.value=f; g.gain.setValueAtTime(v,actx.currentTime+w); g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+w+d); o.connect(g);g.connect(actx.destination); o.start(actx.currentTime+w);o.stop(actx.currentTime+w+d);}catch(e){} }
+const sndGood=()=>{tone(660,.12);tone(880,.18,'sine',.18,.1)}, sndBad=()=>tone(220,.25,'sawtooth',.12);
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+function renderGrid() {
+  const g = document.getElementById('grid');
+  g.innerHTML = '';
+  TOOLS.forEach(t => {
+    const d = document.createElement('button');
+    d.className = 'tool' + (mode==='explore' && visited.has(t.id) ? ' visited' : '');
+    d.dataset.id = t.id;
+    d.innerHTML = ICONS[t.id] + `<div class="tn"></div>`;
+    d.querySelector('.tn').textContent = t.name;
+    d.onclick = () => mode==='explore' ? openModal(t) : answerQuiz(t, d);
+    g.appendChild(d);
+  });
+  updateProgress();
+}
+
+function updateProgress() {
+  const p = document.getElementById('progress');
+  if (mode==='explore') {
+    p.textContent = `Sudah dikenali: ${visited.size} dari ${TOOLS.length} alat` + (visited.size===TOOLS.length ? ' — hebat, semua alat sudah kamu kenal! Coba mode Tantangan! 🎉' : '');
+  } else {
+    p.textContent = '';
+  }
+}
+
+function setMode(m) {
+  mode = m; locked = false;
+  document.getElementById('tabExplore').classList.toggle('active', m==='explore');
+  document.getElementById('tabQuiz').classList.toggle('active', m==='quiz');
+  document.getElementById('fb').className = 'fb';
+  if (m==='quiz') {
+    quizOrder = shuffle([...TOOLS.keys()]); quizIdx = 0; score = 0;
+    document.getElementById('subtitle').textContent = 'Baca perintahnya, lalu sentuh alat yang tepat di rak!';
+    document.getElementById('challengeBar').classList.add('show');
+    nextChallenge();
+  } else {
+    document.getElementById('subtitle').textContent = 'Sentuh alat untuk mengenal nama dan fungsinya.';
+    document.getElementById('challengeBar').classList.remove('show');
+  }
+  renderGrid();
+}
+
+function nextChallenge() {
+  if (quizIdx >= quizOrder.length) {
+    document.getElementById('challengeText').textContent = `🏆 Selesai! Skor akhir: ${score} dari ${quizOrder.length*10}`;
+    document.getElementById('challengeMeta').innerHTML = 'Sentuh tombol <b>Tantangan</b> di atas untuk mengulang dengan urutan baru.';
+    return;
+  }
+  const t = TOOLS[quizOrder[quizIdx]];
+  document.getElementById('challengeText').textContent = '🧑‍🔬 ' + t.quiz;
+  document.getElementById('challengeMeta').textContent = `Tantangan ${quizIdx+1} dari ${quizOrder.length} · Skor: ${score}`;
+}
+
+function answerQuiz(t, el) {
+  if (locked || quizIdx >= quizOrder.length) return;
+  const target = TOOLS[quizOrder[quizIdx]];
+  const fb = document.getElementById('fb');
+  if (t.id === target.id) {
+    locked = true;
+    el.classList.add('correct');
+    score += 10; sndGood();
+    fb.className = 'fb show good';
+    fb.innerHTML = `✅ <b>Tepat!</b> ${target.name}: ${target.f}`;
+    setTimeout(() => { el.classList.remove('correct'); quizIdx++; locked=false; fb.className='fb'; nextChallenge(); }, 2200);
+  } else {
+    el.classList.add('wrong'); sndBad();
+    fb.className = 'fb show bad';
+    fb.innerHTML = `❌ Itu <b>${t.name}</b> — ${t.f} Coba cari alat lain!`;
+    setTimeout(() => el.classList.remove('wrong'), 500);
+  }
+}
+
+function openModal(t) {
+  visited.add(t.id);
+  document.getElementById('mIcon').innerHTML = ICONS[t.id];
+  document.getElementById('mName').textContent = t.name;
+  document.getElementById('mFungsi').textContent = t.f;
+  document.getElementById('mTips').textContent = '💡 ' + t.tips;
+  document.getElementById('overlay').classList.add('show');
+  tone(520,.08,'sine',.1);
+}
+function closeModal(e) {
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('overlay').classList.remove('show');
+  renderGrid();
+}
+
+renderGrid();
+</script>
+<script>function kembali(){if(history.length>1){history.back();return;}window.close();if(location.protocol!=="file:"){setTimeout(function(){location.href="/simulasi-ipa";},200);}}</script></body>
+</html>

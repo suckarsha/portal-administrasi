@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab Gerak Lurus — GLB &amp; GLBB | IPA Kelas 7</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root {
+    --bg:#0b1220; --card:rgba(255,255,255,.05); --border:rgba(255,255,255,.12);
+    --cyan:#22d3ee; --violet:#a78bfa; --green:#4ade80; --red:#f87171; --amber:#fbbf24;
+  }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:radial-gradient(1200px 700px at 70% -10%, rgba(34,211,238,.14), transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, rgba(167,139,250,.12), transparent 60%), var(--bg);
+    color:#fff; min-height:100vh; user-select:none; -webkit-user-select:none;
+  }
+  .wrap { max-width:1100px; margin:0 auto; padding:20px 24px 50px; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .brand { font-size:clamp(14px,1.6vw,18px); color:rgba(255,255,255,.55); letter-spacing:.14em; text-transform:uppercase; }
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; border:1px solid var(--border); background:var(--card); color:#fff; border-radius:16px; padding:14px 26px; font-size:clamp(15px,1.8vw,20px); font-weight:700; cursor:pointer; transition:transform .15s; }
+  .btn:active { transform:scale(.96); }
+  .btn.primary { background:linear-gradient(135deg, rgba(34,211,238,.25), rgba(167,139,250,.2)); border-color:rgba(34,211,238,.5); }
+  .btn.small { padding:10px 18px; font-size:15px; border-radius:12px; }
+  h1 { font-size:clamp(24px,3.6vw,42px); text-align:center; margin-top:12px; }
+  h1 .hl { background:linear-gradient(90deg,var(--cyan),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { text-align:center; color:rgba(255,255,255,.6); font-size:clamp(14px,1.8vw,19px); margin-top:6px; }
+  .tabs { display:flex; gap:10px; justify-content:center; margin-top:18px; flex-wrap:wrap; }
+  .tab { border:1px solid var(--border); background:var(--card); color:rgba(255,255,255,.7); border-radius:999px; padding:12px 24px; font-size:clamp(14px,1.8vw,18px); font-weight:700; cursor:pointer; transition:.2s; }
+  .tab.active { background:rgba(34,211,238,.16); border-color:var(--cyan); color:#fff; box-shadow:0 0 20px rgba(34,211,238,.2); }
+  .screen { display:none; } .screen.active { display:block; animation:fadeIn .35s; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:none;} }
+  @keyframes shake { 0%,100%{transform:none} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+  .panel { background:var(--card); border:1px solid var(--border); border-radius:22px; max-width:960px; margin:18px auto 0; padding:clamp(18px,3vw,30px); }
+  .modeRow { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+  .modeBtn { border:1px solid var(--border); background:var(--card); color:#fff; border-radius:14px; padding:13px 20px; font-size:clamp(13px,1.7vw,17px); font-weight:800; cursor:pointer; transition:.2s; }
+  .modeBtn.sel { border-color:var(--cyan); background:rgba(34,211,238,.16); box-shadow:0 0 16px rgba(34,211,238,.3); }
+  .road { position:relative; height:110px; background:#1c2942; border-radius:14px; margin-top:16px; overflow:hidden; }
+  .road .lane { position:absolute; left:0; right:0; top:52px; border-top:4px dashed #3d5378; }
+  .car { position:absolute; top:18px; font-size:44px; transition:none; }
+  .tape { position:relative; height:44px; background:rgba(255,255,255,.04); border:1px solid var(--border); border-radius:10px; margin-top:12px; overflow:hidden; }
+  .tape .lbl { position:absolute; left:10px; top:4px; font-size:11px; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.4); }
+  .dot { position:absolute; top:24px; width:10px; height:10px; border-radius:50%; background:var(--amber); transform:translate(-50%,-50%); box-shadow:0 0 8px rgba(251,191,36,.6); }
+  .graphBox { margin-top:14px; background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:14px; padding:8px; }
+  .graphBox svg { display:block; width:100%; height:auto; }
+  .ctrlRow { display:flex; gap:12px; justify-content:center; margin-top:14px; flex-wrap:wrap; }
+  .readout { display:flex; gap:12px; justify-content:center; margin-top:12px; flex-wrap:wrap; }
+  .ro { background:rgba(255,255,255,.04); border:1px solid var(--border); border-radius:12px; padding:8px 18px; text-align:center; min-width:110px; }
+  .ro .v { font-family:Menlo,monospace; font-size:clamp(17px,2.2vw,24px); font-weight:700; color:var(--cyan); }
+  .ro .k { font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.45); }
+  .fb { border-radius:16px; padding:14px 20px; margin-top:14px; font-size:clamp(14px,1.8vw,18px); line-height:1.6; display:none; border:1px solid; text-align:center; }
+  .fb.show { display:block; animation:fadeIn .3s; }
+  .fb.good { background:rgba(74,222,128,.1); border-color:rgba(74,222,128,.4); }
+  .fb.bad { background:rgba(248,113,113,.1); border-color:rgba(248,113,113,.4); }
+  .fb.info { background:rgba(34,211,238,.08); border-color:rgba(34,211,238,.35); }
+
+  .qtext { text-align:center; font-size:clamp(16px,2.3vw,24px); font-weight:800; line-height:1.55; }
+  .qcap { text-align:center; font-size:clamp(36px,5.5vw,58px); }
+  .opts { display:grid; grid-template-columns:1fr 1fr; gap:13px; margin-top:18px; }
+  @media(max-width:640px){ .opts{ grid-template-columns:1fr; } }
+  .opt { border:1px solid var(--border); background:var(--card); color:#fff; border-radius:15px; padding:16px 12px; font-size:clamp(14px,2vw,19px); font-weight:700; cursor:pointer; transition:transform .15s; line-height:1.45; }
+  .opt:active { transform:scale(.96); }
+  .opt.correct { border-color:var(--green); background:rgba(74,222,128,.16); }
+  .opt.wrong { border-color:var(--red); background:rgba(248,113,113,.16); animation:shake .4s; }
+  .meta { text-align:center; margin-top:10px; color:rgba(255,255,255,.55); font-size:15px; }
+  .nextRow { text-align:center; margin-top:16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand">IPA Kelas 7 · Bab 4</span>
+    <button class="btn small" onclick="kembali()">← Kembali</button>
+  </header>
+
+  <h1>Lab <span class="hl">Gerak Lurus</span> 🚗</h1>
+  <p class="sub">GLB atau GLBB? Jalankan mobilnya, amati jejak pita ketik dan grafiknya!</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setTab(0,this)">🛣️ Simulasi</button>
+    <button class="tab" onclick="setTab(1,this)">🎯 Kuis</button>
+  </div>
+
+  <!-- TAB 0 -->
+  <section class="screen active" id="tab0">
+    <div class="panel">
+      <div class="modeRow">
+        <button class="modeBtn sel" onclick="setMode('glb',this)">🟦 GLB — kecepatan tetap</button>
+        <button class="modeBtn" onclick="setMode('cepat',this)">🟩 GLBB dipercepat</button>
+        <button class="modeBtn" onclick="setMode('lambat',this)">🟥 GLBB diperlambat</button>
+      </div>
+      <div class="road"><div class="lane"></div><div class="car" id="car">🚗</div></div>
+      <div class="tape" id="tape"><span class="lbl">Pita ketik — titik dijatuhkan tiap 0,5 s</span></div>
+      <div class="graphBox"><svg id="graph" viewBox="0 0 700 210"></svg></div>
+      <div class="readout">
+        <div class="ro"><div class="v" id="roT">0,0 s</div><div class="k">Waktu</div></div>
+        <div class="ro"><div class="v" id="roV">0 m/s</div><div class="k">Kecepatan</div></div>
+        <div class="ro"><div class="v" id="roS">0 m</div><div class="k">Jarak</div></div>
+      </div>
+      <div class="ctrlRow">
+        <button class="btn primary" id="btnGo" onclick="runSim()">▶️ Jalankan</button>
+        <button class="btn" onclick="resetSim()">↺ Ulang</button>
+      </div>
+      <div class="fb info show" id="simFb">Pilih jenis gerak lalu sentuh <b>Jalankan</b>. Perhatikan jarak antartitik pada pita ketik!</div>
+    </div>
+  </section>
+
+  <!-- TAB 1 -->
+  <section class="screen" id="tab1">
+    <div class="panel">
+      <div class="qcap" id="qE"></div>
+      <div class="qtext" id="qQ"></div>
+      <div class="opts" id="qOpts"></div>
+      <div class="fb" id="qFb"></div>
+      <div class="meta" id="qMeta"></div>
+      <div class="nextRow"><button class="btn primary" id="qNext" style="display:none" onclick="nextQ()">Lanjut ➜</button></div>
+    </div>
+  </section>
+</div>
+
+<script>
+let actx=null;
+function tone(f,d,t='sine',v=.18,w=0){ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); const o=actx.createOscillator(),g=actx.createGain(); o.type=t;o.frequency.value=f; g.gain.setValueAtTime(v,actx.currentTime+w); g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+w+d); o.connect(g);g.connect(actx.destination); o.start(actx.currentTime+w);o.stop(actx.currentTime+w+d);}catch(e){} }
+const sndGood=()=>{tone(660,.12);tone(880,.18,'sine',.18,.1)}, sndBad=()=>tone(220,.22,'sawtooth',.1);
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+function setTab(n, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('tab'+n).classList.add('active');
+}
+
+/* ---------- simulasi ---------- */
+// satuan sim: layar 100% ≈ 100 m; kecepatan dalam m/s (persen per detik)
+const MODES = {
+  glb:    { v0:14, a:0,   nama:'GLB',               ket:'Jarak antartitik <b>SAMA</b> — kecepatan tetap, percepatan nol. Grafik v-t mendatar.' },
+  cepat:  { v0:4,  a:5,   nama:'GLBB dipercepat',   ket:'Jarak antartitik <b>makin RENGGANG</b> — kecepatan bertambah teratur (a positif). Grafik v-t naik.' },
+  lambat: { v0:26, a:-5,  nama:'GLBB diperlambat',  ket:'Jarak antartitik <b>makin RAPAT</b> — kecepatan berkurang teratur (a negatif). Grafik v-t turun.' },
+};
+let mode='glb', anim=null, running=false;
+
+function setMode(m, el) {
+  mode = m;
+  document.querySelectorAll('.modeBtn').forEach(b=>b.classList.remove('sel'));
+  el.classList.add('sel');
+  resetSim();
+  tone(520,.07,'sine',.1);
+}
+
+function drawGraphBase() {
+  const svg = document.getElementById('graph');
+  let g = '';
+  g += `<line x1="50" y1="180" x2="680" y2="180" stroke="#7dd3fc" stroke-width="2"/>`;
+  g += `<line x1="50" y1="180" x2="50" y2="15" stroke="#7dd3fc" stroke-width="2"/>`;
+  g += `<text x="370" y="205" text-anchor="middle" font-size="14" fill="#7dd3fc" font-weight="700">waktu (s)</text>`;
+  g += `<text x="18" y="100" text-anchor="middle" font-size="14" fill="#7dd3fc" font-weight="700" transform="rotate(-90 18 100)">v (m/s)</text>`;
+  for (let t=1;t<=7;t++) g += `<text x="${50+t*88}" y="196" text-anchor="middle" font-size="11" fill="rgba(255,255,255,.5)">${t}</text>`;
+  [10,20,30].forEach(v => { const y = 180-v*5.2; g += `<line x1="50" y1="${y}" x2="680" y2="${y}" stroke="rgba(255,255,255,.07)"/><text x="42" y="${y+4}" text-anchor="end" font-size="11" fill="rgba(255,255,255,.5)">${v}</text>`; });
+  g += `<polyline id="vline" points="" fill="none" stroke="#fbbf24" stroke-width="3.5" stroke-linecap="round"/>`;
+  svg.innerHTML = g;
+}
+function resetSim() {
+  cancelAnimationFrame(anim); running = false;
+  document.getElementById('btnGo').disabled = false;
+  document.getElementById('car').style.left = '0px';
+  document.querySelectorAll('.dot').forEach(d=>d.remove());
+  drawGraphBase();
+  ['roT','roV','roS'].forEach((id,i)=>document.getElementById(id).textContent = ['0,0 s','0 m/s','0 m'][i]);
+  const fb = document.getElementById('simFb');
+  fb.className='fb info show';
+  fb.innerHTML = `Mode: <b>${MODES[mode].nama}</b>. Sentuh <b>Jalankan</b>!`;
+}
+function runSim() {
+  if (running) return;
+  running = true;
+  document.getElementById('btnGo').disabled = true;
+  document.querySelectorAll('.dot').forEach(d=>d.remove());
+  drawGraphBase();
+  const M = MODES[mode];
+  const road = document.querySelector('.road');
+  const tape = document.getElementById('tape');
+  const car = document.getElementById('car');
+  const W = road.clientWidth - 60;
+  const t0 = performance.now();
+  let lastDot = -1;
+  const pts = [];
+  function frame() {
+    const t = (performance.now()-t0)/1000 * 1.4;      // dipercepat 1.4x biar tak kelamaan
+    let v = M.v0 + M.a*t;
+    let s;
+    if (M.a<0 && v<=0) { // berhenti
+      const tStop = -M.v0/M.a;
+      s = M.v0*tStop + .5*M.a*tStop*tStop;
+      v = 0;
+      finish(t, v, s, true);
+      return;
+    }
+    s = M.v0*t + .5*M.a*t*t;
+    const x = s/100 * W;
+    car.style.left = Math.min(W, x) + 'px';
+    // titik pita tiap .5 s
+    if (Math.floor(t/.5) > lastDot && s<=100) {
+      lastDot = Math.floor(t/.5);
+      const d = document.createElement('div');
+      d.className='dot';
+      d.style.left = (s/100*100) + '%';
+      tape.appendChild(d);
+      tone(600,.03,'square',.05);
+    }
+    // grafik
+    pts.push(`${50+t*88},${180-Math.min(31,v)*5.2}`);
+    document.getElementById('vline').setAttribute('points', pts.join(' '));
+    document.getElementById('roT').textContent = t.toFixed(1).replace('.',',')+' s';
+    document.getElementById('roV').textContent = Math.round(v)+' m/s';
+    document.getElementById('roS').textContent = Math.round(s)+' m';
+    if (s >= 100 || t > 7) { finish(t, v, s, false); return; }
+    anim = requestAnimationFrame(frame);
+  }
+  function finish(t, v, s, stopped) {
+    running = false;
+    document.getElementById('btnGo').disabled = false;
+    const fb = document.getElementById('simFb');
+    fb.className='fb show good';
+    fb.innerHTML = `🏁 <b>${MODES[mode].nama}:</b> ${MODES[mode].ket}` + (stopped?' Mobil akhirnya <b>berhenti</b> (v = 0).':'');
+    tone(700,.15,'sine',.14);
+  }
+  anim = requestAnimationFrame(frame);
+}
+drawGraphBase();
+resetSim();
+
+/* ---------- kuis ---------- */
+const QUIZ = shuffle([
+  { e:'🛣️', q:'Mobil melaju di jalan tol lurus dengan speedometer menunjuk angka tetap 80 km/jam. Jenis geraknya…',
+    o:['GLB','GLBB dipercepat','GLBB diperlambat','Gerak semu'], a:0, x:'Lintasan lurus + kecepatan TETAP = Gerak Lurus Beraturan (GLB).' },
+  { e:'🍎', q:'Buah mangga jatuh bebas dari pohonnya. Jenis geraknya…',
+    o:['GLBB dipercepat','GLB','GLBB diperlambat','Gerak melingkar'], a:0, x:'Kecepatannya terus BERTAMBAH karena gravitasi — GLBB dipercepat.' },
+  { e:'⚽', q:'Bola ditendang menggelinding di rumput hingga akhirnya berhenti. Jenis geraknya…',
+    o:['GLBB diperlambat','GLB','GLBB dipercepat','Gerak relatif'], a:0, x:'Gesekan rumput membuat kecepatannya terus BERKURANG — GLBB diperlambat.' },
+  { e:'🚆', q:'Kereta mendekati stasiun dan mulai mengerem secara teratur. Grafik v-t geraknya berbentuk…',
+    o:['Garis lurus menurun','Garis mendatar','Garis lurus menaik','Naik-turun tak beraturan'], a:0, x:'Kecepatan berkurang teratur → garis v-t menurun (GLBB diperlambat).' },
+  { e:'📊', q:'Pada pita ketik, jarak antartitik yang SELALU SAMA menunjukkan…',
+    o:['Kecepatan benda tetap (GLB)','Benda dipercepat','Benda diperlambat','Benda diam'], a:0, x:'Setiap selang waktu sama benda menempuh jarak sama → kecepatan tetap.' },
+  { e:'📈', q:'Besaran yang TETAP pada GLBB adalah…',
+    o:['Percepatan','Kecepatan','Jarak tempuh tiap sekon','Posisi'], a:0, x:'Pada GLBB kecepatan berubah TERATUR — artinya percepatannya yang konstan.' },
+  { e:'🚴', q:'Pesepeda mulai mengayuh dari keadaan diam hingga makin cepat secara teratur. Pita ketiknya akan menunjukkan titik-titik yang…',
+    o:['Makin renggang','Makin rapat','Berjarak sama','Bertumpuk semua'], a:0, x:'Kecepatan bertambah → jarak tempuh tiap 0,5 s bertambah → titik makin renggang.' },
+  { e:'🛑', q:'Mobil bergerak 20 m/s lalu direm hingga berhenti dalam 4 s. Percepatannya…',
+    o:['−5 m/s² (perlambatan)','+5 m/s²','−80 m/s²','0 m/s²'], a:0, x:'a = Δv/t = (0−20)/4 = −5 m/s². Tanda negatif berarti diperlambat.' },
+]);
+let qi=0, score=0, lock=false;
+function renderQ() {
+  lock=false;
+  const q = QUIZ[qi];
+  document.getElementById('qE').textContent = q.e;
+  document.getElementById('qQ').textContent = q.q;
+  document.getElementById('qFb').className='fb';
+  document.getElementById('qNext').style.display='none';
+  document.getElementById('qMeta').textContent = `Soal ${qi+1} dari ${QUIZ.length} · Skor: ${score}`;
+  const box = document.getElementById('qOpts');
+  box.innerHTML='';
+  shuffle(q.o.map((t,i)=>({t,i}))).forEach(({t,i}) => {
+    const b = document.createElement('button');
+    b.className='opt'; b.textContent=t;
+    b.onclick = () => {
+      if (lock) return; lock=true;
+      const fb = document.getElementById('qFb');
+      [...box.children].forEach(c=>c.disabled=true);
+      if (i===q.a) { b.classList.add('correct'); score+=10; sndGood(); fb.className='fb show good'; fb.innerHTML='✅ <b>Benar!</b> '+q.x; }
+      else { b.classList.add('wrong'); sndBad(); [...box.children].find(c=>c.textContent===q.o[q.a]).classList.add('correct'); fb.className='fb show bad'; fb.innerHTML='❌ Jawabannya: <b>'+q.o[q.a]+'</b>. '+q.x; }
+      document.getElementById('qMeta').textContent = `Soal ${qi+1} dari ${QUIZ.length} · Skor: ${score}`;
+      document.getElementById('qNext').style.display='inline-flex';
+      document.getElementById('qNext').textContent = qi+1<QUIZ.length?'Lanjut ➜':'Ulangi 🔁';
+    };
+    box.appendChild(b);
+  });
+}
+function nextQ() { qi++; if (qi>=QUIZ.length){ qi=0; score=0; shuffle(QUIZ); tone(523,.15); tone(659,.15,'sine',.18,.15); } renderQ(); }
+renderQ();
+</script>
+<script>function kembali(){if(history.length>1){history.back();return;}window.close();if(location.protocol!=="file:"){setTimeout(function(){location.href="/simulasi-ipa";},200);}}</script></body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lab Pemuaian &amp; Bimetal | IPA Kelas 7</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root {
+    --bg:#0b1220; --card:rgba(255,255,255,.05); --border:rgba(255,255,255,.12);
+    --cyan:#22d3ee; --violet:#a78bfa; --green:#4ade80; --red:#f87171; --amber:#fbbf24;
+  }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:radial-gradient(1200px 700px at 70% -10%, rgba(34,211,238,.14), transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, rgba(167,139,250,.12), transparent 60%), var(--bg);
+    color:#fff; min-height:100vh; user-select:none; -webkit-user-select:none;
+  }
+  .wrap { max-width:1100px; margin:0 auto; padding:20px 24px 50px; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .brand { font-size:clamp(14px,1.6vw,18px); color:rgba(255,255,255,.55); letter-spacing:.14em; text-transform:uppercase; }
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; border:1px solid var(--border); background:var(--card); color:#fff; border-radius:16px; padding:14px 26px; font-size:clamp(15px,1.8vw,20px); font-weight:700; cursor:pointer; transition:transform .15s; }
+  .btn:active { transform:scale(.96); }
+  .btn.primary { background:linear-gradient(135deg, rgba(34,211,238,.25), rgba(167,139,250,.2)); border-color:rgba(34,211,238,.5); }
+  .btn.small { padding:10px 18px; font-size:15px; border-radius:12px; }
+  h1 { font-size:clamp(24px,3.6vw,42px); text-align:center; margin-top:12px; }
+  h1 .hl { background:linear-gradient(90deg,var(--cyan),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { text-align:center; color:rgba(255,255,255,.6); font-size:clamp(14px,1.8vw,19px); margin-top:6px; }
+  .tabs { display:flex; gap:10px; justify-content:center; margin-top:18px; flex-wrap:wrap; }
+  .tab { border:1px solid var(--border); background:var(--card); color:rgba(255,255,255,.7); border-radius:999px; padding:12px 24px; font-size:clamp(14px,1.8vw,18px); font-weight:700; cursor:pointer; transition:.2s; }
+  .tab.active { background:rgba(34,211,238,.16); border-color:var(--cyan); color:#fff; box-shadow:0 0 20px rgba(34,211,238,.2); }
+  .screen { display:none; } .screen.active { display:block; animation:fadeIn .35s; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:none;} }
+  @keyframes shake { 0%,100%{transform:none} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+  .panel { background:var(--card); border:1px solid var(--border); border-radius:22px; max-width:940px; margin:18px auto 0; padding:clamp(18px,3vw,30px); }
+  .panel p { color:rgba(255,255,255,.75); line-height:1.65; font-size:clamp(14px,1.8vw,18px); }
+  .rods { margin-top:16px; }
+  .rodRow { display:flex; align-items:center; gap:12px; margin-top:14px; }
+  .rodRow .rn { width:110px; font-weight:800; font-size:clamp(13px,1.6vw,16px); text-align:right; }
+  .rodTrack { flex:1; position:relative; height:34px; background:rgba(255,255,255,.04); border-radius:10px; overflow:hidden; }
+  .rod { position:absolute; left:0; top:5px; bottom:5px; border-radius:8px; transition:width .3s; }
+  .rodRow .rv { width:96px; font-family:Menlo,monospace; font-size:clamp(12px,1.5vw,15px); color:var(--cyan); }
+  .sliderRow { margin-top:20px; }
+  .sliderRow .lb { display:flex; justify-content:space-between; font-size:14px; color:rgba(255,255,255,.6); margin-bottom:8px; }
+  input[type=range] { width:100%; accent-color:var(--amber); height:36px; }
+  .note { margin-top:14px; background:rgba(34,211,238,.07); border:1px solid rgba(34,211,238,.3); border-radius:14px; padding:12px 16px; font-size:clamp(13px,1.6vw,16px); line-height:1.6; color:rgba(255,255,255,.85); }
+  .note b { color:var(--cyan); }
+
+  .quizCard { border-top:1px solid var(--border); padding-top:18px; margin-top:22px; }
+  .qtext { text-align:center; font-size:clamp(16px,2.3vw,24px); font-weight:800; line-height:1.5; }
+  .opts { display:grid; grid-template-columns:1fr 1fr; gap:13px; margin-top:18px; }
+  @media(max-width:560px){ .opts{ grid-template-columns:1fr; } }
+  .opt { border:1px solid var(--border); background:var(--card); color:#fff; border-radius:15px; padding:16px 12px; font-size:clamp(14px,2vw,20px); font-weight:700; cursor:pointer; transition:transform .15s; line-height:1.4; }
+  .opt:active { transform:scale(.96); }
+  .opt.correct { border-color:var(--green); background:rgba(74,222,128,.16); }
+  .opt.wrong { border-color:var(--red); background:rgba(248,113,113,.16); animation:shake .4s; }
+  .fb { border-radius:16px; padding:14px 20px; margin-top:16px; font-size:clamp(14px,1.8vw,18px); line-height:1.6; display:none; border:1px solid; text-align:center; }
+  .fb.show { display:block; animation:fadeIn .3s; }
+  .fb.good { background:rgba(74,222,128,.1); border-color:rgba(74,222,128,.4); }
+  .fb.bad { background:rgba(248,113,113,.1); border-color:rgba(248,113,113,.4); }
+  .fb.info { background:rgba(34,211,238,.08); border-color:rgba(34,211,238,.35); }
+  .nextRow { text-align:center; margin-top:16px; }
+  .meta { text-align:center; margin-top:10px; color:rgba(255,255,255,.55); font-size:15px; }
+
+  .biWrap { text-align:center; margin-top:14px; }
+  .biWrap svg { max-width:100%; height:auto; }
+  .biBtns { display:flex; gap:12px; justify-content:center; margin-top:14px; flex-wrap:wrap; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand">IPA Kelas 7 · Bab 3</span>
+    <button class="btn small" onclick="kembali()">← Kembali</button>
+  </header>
+
+  <h1>Lab <span class="hl">Pemuaian &amp; Bimetal</span> 📏🔥</h1>
+  <p class="sub">Benda memuai saat dipanaskan — sedikit sekali, tapi akibatnya bisa besar!</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setTab(0,this)">📏 Muai Panjang</button>
+    <button class="tab" onclick="setTab(1,this)">🥨 Bimetal</button>
+    <button class="tab" onclick="setTab(2,this)">🏗️ Penerapan</button>
+  </div>
+
+  <!-- TAB 0: muai panjang -->
+  <section class="screen active" id="tab0">
+    <div class="panel">
+      <p style="text-align:center">Tiga batang logam sepanjang <b>1 meter</b> dipanaskan bersama-sama. Geser slider dan bandingkan!<br><span style="color:rgba(255,255,255,.5); font-size:.85em">(pertambahan panjang dilebih-lebihkan 400× agar terlihat)</span></p>
+      <div class="rods" id="rods"></div>
+      <div class="sliderRow">
+        <div class="lb"><span>🔥 Kenaikan suhu (ΔT)</span><span id="dtval">0 °C</span></div>
+        <input type="range" id="dtslider" min="0" max="100" value="0" oninput="setDT(+this.value)">
+      </div>
+      <div class="note">
+        📐 <b>ΔL = α · L₀ · ΔT</b> — pertambahan panjang (ΔL) bergantung pada <b>koefisien muai (α)</b> tiap logam,
+        <b>panjang awal (L₀)</b>, dan <b>kenaikan suhu (ΔT)</b>. Aluminium punya α terbesar, jadi paling cepat memuai!
+      </div>
+      <div class="quizCard">
+        <div class="qtext" id="mQ"></div>
+        <div class="opts" id="mOpts"></div>
+        <div class="fb" id="mFb"></div>
+        <div class="nextRow"><button class="btn primary" id="mNext" style="display:none" onclick="newMuai()">Soal Baru 🎲</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 1: bimetal -->
+  <section class="screen" id="tab1">
+    <div class="panel">
+      <p style="text-align:center"><b>Bimetal</b> = dua logam berbeda yang dikeling jadi satu. Coba panaskan atau dinginkan!</p>
+      <div class="biWrap">
+        <svg viewBox="0 0 640 260" id="biSvg">
+          <rect x="30" y="112" width="60" height="36" rx="6" fill="#334155"/>
+          <text x="60" y="170" text-anchor="middle" font-size="13" fill="#94a3b8">penjepit</text>
+          <g id="biStrip">
+            <path id="stripKuningan" d="" fill="#eab308"/>
+            <path id="stripBesi" d="" fill="#94a3b8"/>
+          </g>
+          <text x="480" y="52" font-size="15" fill="#eab308" font-weight="700">— Kuningan (α besar)</text>
+          <text x="480" y="76" font-size="15" fill="#94a3b8" font-weight="700">— Besi (α kecil)</text>
+          <g id="biFlame" style="display:none">
+            <path d="M300 235 c-9 -16 6 -20 3 -34 c13 10 15 24 8 34 Z" fill="#f97316"/>
+            <path d="M301 233 c-4 -9 3 -12 2 -19 c7 6 8 14 4 19 Z" fill="#fbbf24"/>
+          </g>
+          <g id="biIce" style="display:none">
+            <text x="300" y="240" font-size="30">🧊</text>
+          </g>
+        </svg>
+      </div>
+      <div class="biBtns">
+        <button class="btn primary" onclick="setBi(1)">🔥 Panaskan</button>
+        <button class="btn" onclick="setBi(0)">↺ Normal</button>
+        <button class="btn primary" style="background:linear-gradient(135deg, rgba(125,211,252,.25), rgba(167,139,250,.2))" onclick="setBi(-1)">🧊 Dinginkan</button>
+      </div>
+      <div class="fb info show" id="biFb">Saat ini bimetal <b>lurus</b> (suhu normal). Sentuh 🔥 atau 🧊!</div>
+      <div class="quizCard">
+        <div class="qtext" id="bQ"></div>
+        <div class="opts" id="bOpts"></div>
+        <div class="fb" id="bFb"></div>
+        <div class="meta" id="bMeta"></div>
+        <div class="nextRow"><button class="btn primary" id="bNext" style="display:none" onclick="nextBi()">Lanjut ➜</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 2: penerapan -->
+  <section class="screen" id="tab2">
+    <div class="panel">
+      <div class="qtext" id="aQ"></div>
+      <div class="opts" id="aOpts"></div>
+      <div class="fb" id="aFb"></div>
+      <div class="meta" id="aMeta"></div>
+      <div class="nextRow"><button class="btn primary" id="aNext" style="display:none" onclick="nextAp()">Lanjut ➜</button></div>
+    </div>
+  </section>
+</div>
+
+<script>
+let actx=null;
+function tone(f,d,t='sine',v=.18,w=0){ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); const o=actx.createOscillator(),g=actx.createGain(); o.type=t;o.frequency.value=f; g.gain.setValueAtTime(v,actx.currentTime+w); g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+w+d); o.connect(g);g.connect(actx.destination); o.start(actx.currentTime+w);o.stop(actx.currentTime+w+d);}catch(e){} }
+const sndGood=()=>{tone(660,.12);tone(880,.18,'sine',.18,.1)}, sndBad=()=>tone(220,.22,'sawtooth',.1);
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pickN=(arr,n)=>{ const c=[...arr]; const out=[]; while(out.length<n&&c.length){ out.push(c.splice(Math.floor(Math.random()*c.length),1)[0]); } return out; };
+const fmt = x => (Math.round(x*100)/100).toString().replace('.',',');
+
+function setTab(n, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('tab'+n).classList.add('active');
+}
+
+/* ---------- TAB 0: muai panjang ---------- */
+const METALS = [
+  { n:'Aluminium', a:24, col:'#e2e8f0' },   // α ×10⁻⁶ /°C
+  { n:'Kuningan',  a:19, col:'#eab308' },
+  { n:'Besi',      a:12, col:'#94a3b8' },
+];
+const rodsBox = document.getElementById('rods');
+METALS.forEach((m,i) => {
+  const d = document.createElement('div');
+  d.className='rodRow';
+  d.innerHTML = `<div class="rn" style="color:${m.col}">${m.n}<br><span style="color:rgba(255,255,255,.45); font-size:.8em">α=${m.a}×10⁻⁶</span></div>
+    <div class="rodTrack"><div class="rod" id="rod${i}" style="background:linear-gradient(90deg,${m.col}cc,${m.col});"></div></div>
+    <div class="rv" id="rodv${i}"></div>`;
+  rodsBox.appendChild(d);
+});
+function setDT(dt) {
+  document.getElementById('dtval').textContent = dt + ' °C';
+  METALS.forEach((m,i) => {
+    const dLmm = m.a * 1e-6 * 1000 * dt;           // mm, L0 = 1 m = 1000 mm
+    const basePct = 62;                              // panjang awal terlihat
+    const extra = dLmm * 400 / 10;                   // dilebihkan 400x, /10 utk persen track
+    document.getElementById('rod'+i).style.width = `calc(${basePct}% + ${extra}px)`;
+    document.getElementById('rodv'+i).textContent = '+' + fmt(dLmm) + ' mm';
+  });
+}
+setDT(0);
+
+let mAns=null, mLock=false;
+function newMuai() {
+  mLock = false;
+  const jenis = rnd(0,1);
+  const box = document.getElementById('mOpts');
+  document.getElementById('mFb').className='fb';
+  document.getElementById('mNext').style.display='none';
+  box.innerHTML='';
+  if (jenis===0) {
+    document.getElementById('mQ').innerHTML = 'Ketiga batang di atas dipanaskan dengan kenaikan suhu yang sama. Batang mana yang bertambah panjang <b>paling banyak</b>?';
+    shuffle([...METALS]).forEach(m => {
+      const b = document.createElement('button');
+      b.className='opt'; b.textContent = m.n + ` (α = ${m.a}×10⁻⁶ /°C)`;
+      b.onclick = () => {
+        if (mLock) return; mLock=true;
+        const fb = document.getElementById('mFb');
+        [...box.children].forEach(c=>c.disabled=true);
+        if (m.n==='Aluminium') { b.classList.add('correct'); sndGood(); fb.className='fb show good'; fb.innerHTML='✅ <b>Benar!</b> Makin besar koefisien muai (α), makin besar pertambahan panjangnya. Aluminium punya α terbesar.'; }
+        else { b.classList.add('wrong'); sndBad(); [...box.children].find(c=>c.textContent.startsWith('Aluminium')).classList.add('correct'); fb.className='fb show bad'; fb.innerHTML='❌ Perhatikan α-nya: <b>Aluminium</b> terbesar (24×10⁻⁶), jadi muainya paling banyak.'; }
+        document.getElementById('mNext').style.display='inline-flex';
+      };
+      box.appendChild(b);
+    });
+  } else {
+    // hitung ΔL = α L0 ΔT dengan angka enak
+    const m = METALS[rnd(0,2)];
+    const L0 = [1,2,4][rnd(0,2)];                 // meter
+    const dT = [25,50,100][rnd(0,2)];
+    const dLmm = m.a * 1e-6 * (L0*1000) * dT;     // mm
+    mAns = Math.round(dLmm*100)/100;
+    document.getElementById('mQ').innerHTML =
+      `Batang ${m.n} (α = ${m.a}×10⁻⁶ /°C) panjang awalnya <b>${L0} m</b>, dipanaskan hingga suhunya naik <b>${dT}°C</b>.<br>Pertambahan panjangnya = … ?`;
+    const wrongs = [...new Set([mAns*2, mAns/2, mAns*10, mAns+1])].map(v=>Math.round(v*100)/100).filter(v=>v!==mAns&&v>0);
+    shuffle([mAns, ...pickN(wrongs,3)]).forEach(v => {
+      const b = document.createElement('button');
+      b.className='opt'; b.textContent = fmt(v)+' mm';
+      b.onclick = () => {
+        if (mLock) return; mLock=true;
+        const fb = document.getElementById('mFb');
+        [...box.children].forEach(c=>c.disabled=true);
+        if (v===mAns) { b.classList.add('correct'); sndGood(); fb.className='fb show good'; fb.innerHTML=`✅ <b>Benar!</b> ΔL = ${m.a}×10⁻⁶ × ${L0*1000} mm × ${dT} = <b>${fmt(mAns)} mm</b>. Kecil sekali, ya — tapi pada jembatan ratusan meter, ini jadi penting!`; }
+        else { b.classList.add('wrong'); sndBad(); [...box.children].find(c=>c.textContent===fmt(mAns)+' mm').classList.add('correct'); fb.className='fb show bad'; fb.innerHTML=`❌ ΔL = α·L₀·ΔT = ${m.a}×10⁻⁶ × ${L0*1000} mm × ${dT} = <b>${fmt(mAns)} mm</b>.`; }
+        document.getElementById('mNext').style.display='inline-flex';
+      };
+      box.appendChild(b);
+    });
+  }
+}
+newMuai();
+
+/* ---------- TAB 1: bimetal ---------- */
+function stripPath(bend, flip) {
+  // strip dari x=90 ke x=560, tebal 14 tiap logam; bend: 0 lurus, + melengkung ke bawah... pakai quadratic
+  const y0 = flip ? 116 : 130;
+  const k = bend * 90; // kelengkungan
+  return `M90 ${y0} Q330 ${y0+k} 560 ${y0+k*1.6} l0 14 Q330 ${y0+k+14} 90 ${y0+14} Z`;
+}
+function setBi(mode) {
+  // panas: kuningan (α besar, di ATAS) memuai lebih → melengkung ke BAWAH (ke arah besi)...
+  // kuningan di atas: saat panas kuningan lebih panjang → strip melengkung ke arah logam pendek = besi (bawah)?
+  // konvensi: melengkung ke arah logam dengan α KECIL saat dipanaskan.
+  const bend = mode===1 ? 0.9 : mode===-1 ? -0.9 : 0;
+  document.getElementById('stripKuningan').setAttribute('d', stripPath(bend, true));
+  document.getElementById('stripBesi').setAttribute('d', stripPath(bend, false));
+  document.getElementById('biFlame').style.display = mode===1?'block':'none';
+  document.getElementById('biIce').style.display = mode===-1?'block':'none';
+  const fb = document.getElementById('biFb');
+  if (mode===1) { fb.innerHTML='🔥 Dipanaskan: kuningan (atas) memuai LEBIH PANJANG daripada besi → bimetal melengkung <b>ke bawah, ke arah besi</b> (logam dengan α kecil).'; tone(500,.1,'sine',.12); }
+  else if (mode===-1) { fb.innerHTML='🧊 Didinginkan: kuningan menyusut LEBIH BANYAK → bimetal melengkung <b>ke atas, ke arah kuningan</b> (logam dengan α besar).'; tone(400,.1,'sine',.12); }
+  else fb.innerHTML='Bimetal kembali <b>lurus</b> pada suhu normal.';
+}
+setBi(0);
+
+const BQ = shuffle([
+  { q:'Saat DIPANASKAN, bimetal melengkung ke arah logam yang…', o:['Koefisien muainya lebih kecil','Koefisien muainya lebih besar','Lebih tebal','Lebih berat'], a:0, x:'Logam ber-α besar memuai lebih panjang, jadi ia "mendorong" lengkungan ke arah logam ber-α kecil.' },
+  { q:'Saat DIDINGINKAN, bimetal melengkung ke arah logam yang…', o:['Koefisien muainya lebih besar','Koefisien muainya lebih kecil','Lebih tipis','Lebih dingin'], a:0, x:'Saat dingin, logam ber-α besar menyusut lebih banyak sehingga lengkungan mengarah kepadanya.' },
+  { q:'Pada setrika otomatis, bimetal berfungsi untuk…', o:['Memutus arus listrik saat terlalu panas','Menambah panas setrika','Menghaluskan pakaian','Menghemat listrik saat dingin'], a:0, x:'Saat panas berlebih, bimetal melengkung dan memutus rangkaian — setrika mati sendiri. Itulah saklar suhu (termostat).' },
+  { q:'Alarm kebakaran bimetal berbunyi karena saat panas, bimetal…', o:['Melengkung dan menyentuh kontak listrik','Meleleh','Bergetar keras','Menyusut lalu putus'], a:0, x:'Lengkungan bimetal menutup rangkaian bel listrik sehingga alarm berbunyi.' },
+]);
+let bi=0, bScore=0, bLock=false;
+function renderBi() {
+  bLock=false;
+  const q = BQ[bi];
+  document.getElementById('bQ').textContent = q.q;
+  document.getElementById('bFb').className='fb';
+  document.getElementById('bNext').style.display='none';
+  document.getElementById('bMeta').textContent = `Soal ${bi+1} dari ${BQ.length} · Skor: ${bScore}`;
+  const box = document.getElementById('bOpts');
+  box.innerHTML='';
+  shuffle(q.o.map((t,i)=>({t,i}))).forEach(({t,i}) => {
+    const b = document.createElement('button');
+    b.className='opt'; b.textContent=t;
+    b.onclick = () => {
+      if (bLock) return; bLock=true;
+      const fb = document.getElementById('bFb');
+      [...box.children].forEach(c=>c.disabled=true);
+      if (i===q.a) { b.classList.add('correct'); bScore+=10; sndGood(); fb.className='fb show good'; fb.innerHTML='✅ <b>Benar!</b> '+q.x; }
+      else { b.classList.add('wrong'); sndBad(); [...box.children].find(c=>c.textContent===q.o[q.a]).classList.add('correct'); fb.className='fb show bad'; fb.innerHTML='❌ Jawabannya: <b>'+q.o[q.a]+'</b>. '+q.x; }
+      document.getElementById('bMeta').textContent = `Soal ${bi+1} dari ${BQ.length} · Skor: ${bScore}`;
+      document.getElementById('bNext').style.display='inline-flex';
+      document.getElementById('bNext').textContent = bi+1<BQ.length?'Lanjut ➜':'Ulangi 🔁';
+    };
+    box.appendChild(b);
+  });
+}
+function nextBi() { bi++; if (bi>=BQ.length){bi=0;bScore=0;shuffle(BQ);} renderBi(); }
+renderBi();
+
+/* ---------- TAB 2: penerapan ---------- */
+const AQ = shuffle([
+  { e:'🛤️', q:'Sambungan rel kereta api selalu diberi celah. Tujuannya…', o:['Memberi ruang saat rel memuai di siang hari','Menghemat besi','Agar kereta melambat','Mengurangi suara bising'], a:0, x:'Tanpa celah, rel yang memuai akan melengkung dan membahayakan kereta.' },
+  { e:'🔌', q:'Kabel listrik di jalan dipasang agak KENDOR. Alasannya…', o:['Agar tidak putus saat menyusut di malam yang dingin','Agar mudah dipanjat','Menghemat kabel','Agar angin lewat'], a:0, x:'Malam hari kabel menyusut (memendek). Kalau dipasang tegang, kabel bisa putus.' },
+  { e:'🥛', q:'Gelas kaca tebal bisa PECAH saat langsung dituangi air mendidih karena…', o:['Bagian dalam memuai lebih dulu daripada bagian luar','Airnya terlalu berat','Kaca takut panas','Gelasnya kotor'], a:0, x:'Pemuaian yang tidak merata menimbulkan tegangan pada kaca hingga retak/pecah.' },
+  { e:'🫙', q:'Tutup botol logam yang macet bisa dibuka dengan menyiramnya air panas karena…', o:['Logam memuai lebih besar daripada kaca','Air panas melicinkan tutup','Kaca ikut mengecil','Udara dalam botol keluar'], a:0, x:'Tutup logam memuai lebih cepat/besar daripada leher kaca, jadi longgar dan mudah diputar.' },
+  { e:'🌉', q:'Ujung jembatan besi diberi celah dan rol (sambungan gerak) supaya…', o:['Jembatan bebas memuai-menyusut tanpa merusak strukturnya','Jembatan bisa dilipat','Mobil tidak selip','Air hujan mengalir'], a:0, x:'Jembatan ratusan meter bisa bertambah panjang puluhan cm saat panas!' },
+  { e:'🎈', q:'Balon yang dijemur di terik matahari bisa meletus karena…', o:['Gas di dalamnya memuai','Karetnya meleleh','Angin kencang','Balon takut sinar'], a:0, x:'Gas paling mudah memuai. Volume gas membesar hingga karet balon tak kuat menahan.' },
+  { e:'🌡️', q:'Cairan raksa/alkohol dipakai dalam termometer karena…', o:['Pemuaiannya teratur saat suhu naik','Warnanya bagus','Harganya murah','Mudah dibersihkan'], a:0, x:'Prinsip kerja termometer cairan justru MEMANFAATKAN pemuaian: suhu naik → cairan memuai → naik di pipa skala.' },
+  { e:'🍞', q:'Keping bimetal dalam pemanggang roti (toaster) berguna untuk…', o:['Memutus pemanas saat suhu tercapai agar roti tidak gosong','Membalik roti','Mengiris roti','Menambah aroma'], a:0, x:'Bimetal adalah saklar suhu otomatis — penerapan pemuaian dua logam.' },
+]);
+let ai=0, aScore=0, aLock=false;
+function renderAp() {
+  aLock=false;
+  const q = AQ[ai];
+  document.getElementById('aQ').innerHTML = `<span style="font-size:1.6em">${q.e}</span><br>${q.q}`;
+  document.getElementById('aFb').className='fb';
+  document.getElementById('aNext').style.display='none';
+  document.getElementById('aMeta').textContent = `Soal ${ai+1} dari ${AQ.length} · Skor: ${aScore}`;
+  const box = document.getElementById('aOpts');
+  box.innerHTML='';
+  shuffle(q.o.map((t,i)=>({t,i}))).forEach(({t,i}) => {
+    const b = document.createElement('button');
+    b.className='opt'; b.textContent=t;
+    b.onclick = () => {
+      if (aLock) return; aLock=true;
+      const fb = document.getElementById('aFb');
+      [...box.children].forEach(c=>c.disabled=true);
+      if (i===q.a) { b.classList.add('correct'); aScore+=10; sndGood(); fb.className='fb show good'; fb.innerHTML='✅ <b>Benar!</b> '+q.x; }
+      else { b.classList.add('wrong'); sndBad(); [...box.children].find(c=>c.textContent===q.o[q.a]).classList.add('correct'); fb.className='fb show bad'; fb.innerHTML='❌ Jawabannya: <b>'+q.o[q.a]+'</b>. '+q.x; }
+      document.getElementById('aMeta').textContent = `Soal ${ai+1} dari ${AQ.length} · Skor: ${aScore}`;
+      document.getElementById('aNext').style.display='inline-flex';
+      document.getElementById('aNext').textContent = ai+1<AQ.length?'Lanjut ➜':'Ulangi 🔁';
+    };
+    box.appendChild(b);
+  });
+}
+function nextAp() { ai++; if (ai>=AQ.length){ai=0;aScore=0;shuffle(AQ);} renderAp(); }
+renderAp();
+</script>
+<script>function kembali(){if(history.length>1){history.back();return;}window.close();if(location.protocol!=="file:"){setTimeout(function(){location.href="/simulasi-ipa";},200);}}</script></body>
+</html>

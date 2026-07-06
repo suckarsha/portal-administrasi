@@ -131,11 +131,14 @@ export default function AdminCard({ item, index }: { item: AdminItem; index: num
     );
   }
 
+  // Link internal (diawali "/") dibuka di tab yang sama; link eksternal di tab baru.
+  const isInternal = item.href.startsWith('/');
+
   return (
     <motion.a
       ref={ref as React.Ref<HTMLAnchorElement>}
       href={item.href}
-      target={item.href !== '#' ? '_blank' : undefined}
+      target={item.href !== '#' && !isInternal ? '_blank' : undefined}
       rel="noopener noreferrer"
       {...motionProps}
     >

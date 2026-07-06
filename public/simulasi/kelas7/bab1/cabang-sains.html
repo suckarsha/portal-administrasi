@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Siapakah Aku? — Cabang Ilmu Sains | IPA Kelas 7</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root {
+    --bg:#0b1220; --card:rgba(255,255,255,.05); --border:rgba(255,255,255,.12);
+    --cyan:#22d3ee; --violet:#a78bfa; --green:#4ade80; --red:#f87171; --amber:#fbbf24;
+  }
+  html,body { height:100%; }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:radial-gradient(1200px 700px at 70% -10%, rgba(34,211,238,.14), transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, rgba(167,139,250,.12), transparent 60%), var(--bg);
+    color:#fff; min-height:100vh; user-select:none; -webkit-user-select:none;
+  }
+  .wrap { max-width:1200px; margin:0 auto; padding:20px 24px 40px; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px; }
+  .brand { font-size:clamp(14px,1.6vw,18px); color:rgba(255,255,255,.55); letter-spacing:.14em; text-transform:uppercase; }
+  .btn {
+    display:inline-flex; align-items:center; justify-content:center; gap:10px;
+    border:1px solid var(--border); background:var(--card); color:#fff;
+    border-radius:16px; padding:14px 26px; font-size:clamp(16px,1.8vw,20px); font-weight:600;
+    cursor:pointer; transition:transform .15s, background .2s, border-color .2s;
+  }
+  .btn:active { transform:scale(.96); }
+  .btn.primary { background:linear-gradient(135deg, rgba(34,211,238,.25), rgba(167,139,250,.2)); border-color:rgba(34,211,238,.5); }
+  .btn.small { padding:10px 18px; font-size:15px; border-radius:12px; }
+  h1 { font-size:clamp(28px,4.5vw,52px); text-align:center; margin-top:14px; }
+  h1 .hl { background:linear-gradient(90deg,var(--cyan),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { text-align:center; color:rgba(255,255,255,.6); font-size:clamp(15px,1.8vw,20px); margin-top:10px; }
+  .screen { display:none; }
+  .screen.active { display:block; animation:fadeIn .4s ease; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:none;} }
+
+  /* ------- start screen ------- */
+  .setup { max-width:720px; margin:36px auto 0; text-align:center; }
+  .setup .label { font-size:clamp(16px,2vw,22px); color:rgba(255,255,255,.7); margin-bottom:16px; }
+  .teamPick { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .teamPick button {
+    width:clamp(88px,12vw,130px); height:clamp(88px,12vw,130px); border-radius:22px;
+    border:1px solid var(--border); background:var(--card); color:#fff; cursor:pointer;
+    font-weight:700; transition:.2s;
+  }
+  .teamPick button .n { font-size:clamp(30px,4vw,44px); display:block; }
+  .teamPick button .t { font-size:clamp(12px,1.4vw,15px); color:rgba(255,255,255,.55); }
+  .teamPick button.sel { border-color:var(--cyan); background:rgba(34,211,238,.15); box-shadow:0 0 24px rgba(34,211,238,.25); }
+  .howto {
+    margin:30px auto 0; max-width:760px; text-align:left; background:var(--card);
+    border:1px solid var(--border); border-radius:20px; padding:22px 26px; font-size:clamp(14px,1.7vw,18px);
+    color:rgba(255,255,255,.75); line-height:1.65;
+  }
+  .howto b { color:var(--cyan); }
+
+  /* ------- game screen ------- */
+  .hud { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:6px; }
+  .hudBox { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:10px 20px; text-align:center; min-width:120px; }
+  .hudBox .v { font-size:clamp(20px,2.6vw,30px); font-weight:800; }
+  .hudBox .k { font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.5); }
+  .hudBox.turn { border-color:var(--amber); }
+  .hudBox.turn .v { color:var(--amber); }
+  .qcard {
+    max-width:860px; margin:26px auto 0; background:linear-gradient(160deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+    border:1px solid var(--border); border-radius:26px; padding:clamp(24px,4vw,44px); text-align:center;
+    box-shadow:0 20px 60px rgba(0,0,0,.35);
+  }
+  .qcard .emoji { font-size:clamp(48px,7vw,84px); }
+  .qcard .qtext { font-size:clamp(20px,3vw,34px); font-weight:700; margin-top:14px; line-height:1.4; }
+  .qcard .hint { margin-top:10px; color:rgba(255,255,255,.5); font-size:clamp(14px,1.6vw,17px); }
+  .branches { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; max-width:1000px; margin:26px auto 0; }
+  @media (max-width:640px){ .branches{ grid-template-columns:repeat(2,1fr);} }
+  .branch {
+    border-radius:20px; border:1px solid var(--border); background:var(--card); color:#fff;
+    padding:clamp(16px,2.4vw,26px) 12px; cursor:pointer; text-align:center; transition:transform .15s, box-shadow .2s;
+  }
+  .branch:active { transform:scale(.95); }
+  .branch .bi { font-size:clamp(30px,4vw,46px); }
+  .branch .bn { font-size:clamp(17px,2.2vw,24px); font-weight:800; margin-top:6px; }
+  .branch .bd { font-size:clamp(12px,1.4vw,15px); color:rgba(255,255,255,.55); margin-top:4px; }
+  .branch.correct { border-color:var(--green); background:rgba(74,222,128,.16); box-shadow:0 0 30px rgba(74,222,128,.3); }
+  .branch.wrong { border-color:var(--red); background:rgba(248,113,113,.16); animation:shake .4s; }
+  .branch:disabled { cursor:default; opacity:.85; }
+  @keyframes shake { 0%,100%{transform:none} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+  .feedback {
+    max-width:860px; margin:20px auto 0; border-radius:18px; padding:18px 24px; font-size:clamp(15px,1.9vw,20px);
+    line-height:1.55; display:none; border:1px solid;
+  }
+  .feedback.show { display:block; animation:fadeIn .3s; }
+  .feedback.good { background:rgba(74,222,128,.1); border-color:rgba(74,222,128,.4); }
+  .feedback.bad { background:rgba(248,113,113,.1); border-color:rgba(248,113,113,.4); }
+  .nextRow { text-align:center; margin-top:20px; }
+
+  /* ------- score screen ------- */
+  .finalBoard { max-width:700px; margin:30px auto 0; display:flex; flex-direction:column; gap:14px; }
+  .frow {
+    display:flex; align-items:center; gap:18px; background:var(--card); border:1px solid var(--border);
+    border-radius:18px; padding:18px 26px; font-size:clamp(18px,2.4vw,26px); font-weight:700;
+  }
+  .frow.winner { border-color:var(--amber); background:rgba(251,191,36,.12); box-shadow:0 0 34px rgba(251,191,36,.2); }
+  .frow .medal { font-size:clamp(26px,3.4vw,38px); }
+  .frow .pts { margin-left:auto; color:var(--cyan); }
+  .bigEmoji { text-align:center; font-size:clamp(60px,9vw,110px); margin-top:26px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand">IPA Kelas 7 · Bab 1</span>
+    <button class="btn small" onclick="kembali()">← Kembali</button>
+  </header>
+
+  <!-- START -->
+  <section id="scrStart" class="screen active">
+    <h1>Siapakah Aku? <span class="hl">Cabang Ilmu Sains</span></h1>
+    <p class="sub">Tebak fenomena alam ini dipelajari oleh cabang ilmu sains yang mana!</p>
+    <div class="setup">
+      <p class="label">Main berapa kelompok?</p>
+      <div class="teamPick" id="teamPick"></div>
+      <div class="howto">
+        <b>Cara bermain:</b> Sebuah fenomena atau objek akan muncul di layar. Kelompok yang mendapat giliran
+        maju ke papan dan menyentuh cabang ilmu sains yang mempelajarinya. Jawaban benar bernilai <b>10 poin</b>.
+        Setiap jawaban akan diberi penjelasan singkat — jadi tetap perhatikan walau bukan giliran kelompokmu!
+      </div>
+      <div style="margin-top:28px">
+        <button class="btn primary" style="font-size:clamp(18px,2.4vw,26px); padding:18px 46px" onclick="startGame()">🚀 Mulai Bermain</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- GAME -->
+  <section id="scrGame" class="screen">
+    <div class="hud" id="hud"></div>
+    <div class="qcard">
+      <div class="emoji" id="qEmoji">🔬</div>
+      <div class="qtext" id="qText"></div>
+      <div class="hint" id="qNum"></div>
+    </div>
+    <div class="branches" id="branches"></div>
+    <div class="feedback" id="feedback"></div>
+    <div class="nextRow"><button class="btn primary" id="btnNext" style="display:none" onclick="nextQuestion()">Lanjut ➜</button></div>
+  </section>
+
+  <!-- FINISH -->
+  <section id="scrEnd" class="screen">
+    <div class="bigEmoji">🏆</div>
+    <h1>Permainan <span class="hl">Selesai!</span></h1>
+    <div class="finalBoard" id="finalBoard"></div>
+    <div style="text-align:center; margin-top:30px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap">
+      <button class="btn primary" onclick="location.reload()">🔁 Main Lagi</button>
+      <button class="btn" onclick="kembali()">← Kembali ke Menu</button>
+    </div>
+  </section>
+</div>
+
+<script>
+const BRANCHES = [
+  { id:'bio',  name:'Biologi',   icon:'🌱', desc:'makhluk hidup' },
+  { id:'fis',  name:'Fisika',    icon:'🧲', desc:'gerak, energi, gaya' },
+  { id:'kim',  name:'Kimia',     icon:'⚗️', desc:'zat & perubahannya' },
+  { id:'geo',  name:'Geologi',   icon:'🌋', desc:'bumi & batuan' },
+  { id:'ast',  name:'Astronomi', icon:'🪐', desc:'benda langit' },
+  { id:'eko',  name:'Ekologi',   icon:'🌿', desc:'makhluk hidup & lingkungannya' },
+];
+
+const QUESTIONS = [
+  { e:'🦠', q:'Bakteri apa yang menyebabkan sakit perut?', a:'bio', x:'Bakteri adalah makhluk hidup, jadi dipelajari dalam Biologi (khususnya mikrobiologi).' },
+  { e:'🍃', q:'Bagaimana daun membuat makanannya sendiri melalui fotosintesis?', a:'bio', x:'Fotosintesis adalah proses kehidupan tumbuhan — bidang kajian Biologi (botani).' },
+  { e:'🦋', q:'Bagaimana ulat berubah menjadi kupu-kupu?', a:'bio', x:'Metamorfosis adalah perkembangan makhluk hidup, dipelajari dalam Biologi (zoologi & entomologi).' },
+  { e:'🫀', q:'Bagaimana jantung memompa darah ke seluruh tubuh?', a:'bio', x:'Organ tubuh manusia dipelajari dalam Biologi (anatomi dan fisiologi).' },
+  { e:'🌈', q:'Bagaimana pelangi terbentuk setelah hujan?', a:'fis', x:'Pelangi terjadi karena pembiasan cahaya — cahaya adalah kajian Fisika (optika).' },
+  { e:'🧲', q:'Mengapa magnet dapat menarik paku besi?', a:'fis', x:'Kemagnetan adalah gejala fisika, dipelajari dalam Fisika.' },
+  { e:'🍎', q:'Mengapa buah yang lepas dari tangkainya selalu jatuh ke bawah?', a:'fis', x:'Gravitasi dan gerak benda adalah kajian Fisika (mekanika).' },
+  { e:'⚡', q:'Mengapa rambut berdiri saat didekatkan pada penggaris yang digosok?', a:'fis', x:'Listrik statis adalah gejala kelistrikan, bidang kajian Fisika.' },
+  { e:'🧪', q:'Apa yang terjadi saat cuka dicampur dengan soda kue hingga berbusa?', a:'kim', x:'Itu reaksi kimia yang menghasilkan gas — dipelajari dalam Kimia.' },
+  { e:'🚲', q:'Mengapa pagar besi lama-lama berkarat?', a:'kim', x:'Perkaratan adalah reaksi kimia antara besi, oksigen, dan air — kajian Kimia.' },
+  { e:'🎆', q:'Mengapa kembang api bisa menghasilkan warna-warni yang berbeda?', a:'kim', x:'Warna kembang api berasal dari pembakaran senyawa logam yang berbeda — kajian Kimia.' },
+  { e:'🧼', q:'Bagaimana sabun dibuat dari minyak dan bahan lainnya?', a:'kim', x:'Pembuatan sabun (saponifikasi) adalah reaksi kimia — dipelajari dalam Kimia.' },
+  { e:'🌋', q:'Mengapa gunung berapi bisa meletus?', a:'geo', x:'Aktivitas magma dan struktur bumi dipelajari dalam Geologi (vulkanologi).' },
+  { e:'🪨', q:'Bagaimana batuan sedimen terbentuk berlapis-lapis?', a:'geo', x:'Batuan dan proses pembentukannya adalah kajian Geologi.' },
+  { e:'🌍', q:'Mengapa terjadi gempa bumi di daerah tertentu?', a:'geo', x:'Pergerakan lempeng bumi dipelajari dalam Geologi (seismologi).' },
+  { e:'🦖', q:'Fosil dinosaurus ditemukan di dalam lapisan batuan. Ilmu apa yang mempelajarinya?', a:'geo', x:'Fosil dalam lapisan batuan dipelajari paleontologi, bagian dari ilmu kebumian (Geologi).' },
+  { e:'🌕', q:'Mengapa bentuk bulan tampak berubah-ubah setiap malam?', a:'ast', x:'Fase bulan adalah fenomena benda langit — kajian Astronomi.' },
+  { e:'🔭', q:'Ada apa saja di planet Mars?', a:'ast', x:'Planet adalah benda langit, dipelajari dalam Astronomi.' },
+  { e:'☄️', q:'Dari mana asal komet yang melintas dekat bumi?', a:'ast', x:'Komet adalah benda langit — bidang kajian Astronomi.' },
+  { e:'🌑', q:'Bagaimana gerhana matahari total bisa terjadi?', a:'ast', x:'Kedudukan matahari-bulan-bumi dipelajari dalam Astronomi.' },
+  { e:'🌾', q:'Bagaimana rantai makanan di sawah bekerja: padi → tikus → ular?', a:'eko', x:'Hubungan makan-dimakan antar makhluk hidup di lingkungannya adalah kajian Ekologi.' },
+  { e:'🐟', q:'Mengapa ikan di sungai mati ketika sungai tercemar limbah?', a:'eko', x:'Pengaruh lingkungan terhadap makhluk hidup dipelajari dalam Ekologi.' },
+  { e:'🐝', q:'Apa hubungan saling menguntungkan antara lebah dan bunga?', a:'eko', x:'Interaksi antar makhluk hidup (simbiosis) di alam adalah kajian Ekologi.' },
+  { e:'🪸', q:'Mengapa banyak ikan memilih hidup di sekitar terumbu karang?', a:'eko', x:'Hubungan makhluk hidup dengan habitatnya dipelajari dalam Ekologi.' },
+];
+
+let teamCount = 1, teams = [], turn = 0, qIndex = 0, order = [], answered = false;
+
+// ---- audio sederhana untuk umpan balik ----
+let actx = null;
+function tone(freq, dur, type='sine', vol=.18, when=0) {
+  try {
+    actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = actx.createOscillator(), g = actx.createGain();
+    o.type = type; o.frequency.value = freq;
+    g.gain.setValueAtTime(vol, actx.currentTime + when);
+    g.gain.exponentialRampToValueAtTime(.001, actx.currentTime + when + dur);
+    o.connect(g); g.connect(actx.destination);
+    o.start(actx.currentTime + when); o.stop(actx.currentTime + when + dur);
+  } catch(e) {}
+}
+const sndGood = () => { tone(660,.12); tone(880,.18,'sine',.18,.1); };
+const sndBad  = () => { tone(220,.25,'sawtooth',.12); };
+
+// ---- pilihan kelompok ----
+const pick = document.getElementById('teamPick');
+[1,2,3,4].forEach(n => {
+  const b = document.createElement('button');
+  b.innerHTML = `<span class="n">${n}</span><span class="t">${n===1?'kelompok':'kelompok'}</span>`;
+  if (n===1) b.classList.add('sel');
+  b.onclick = () => { teamCount = n; [...pick.children].forEach(c=>c.classList.remove('sel')); b.classList.add('sel'); };
+  pick.appendChild(b);
+});
+
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+function startGame() {
+  teams = Array.from({length:teamCount}, (_,i)=>({ name: teamCount===1?'Skor':'Kelompok '+(i+1), score:0 }));
+  order = shuffle([...QUESTIONS.keys()]);
+  // jumlah soal habis dibagi jumlah kelompok agar adil
+  const per = Math.floor(order.length / teamCount) * teamCount;
+  order = order.slice(0, teamCount===1 ? Math.min(15, order.length) : per);
+  turn = 0; qIndex = 0;
+  show('scrGame'); renderBranches(); renderHUD(); renderQuestion();
+}
+
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); }
+
+function renderHUD() {
+  const hud = document.getElementById('hud');
+  hud.innerHTML = teams.map((t,i)=>`
+    <div class="hudBox ${i===turn && teamCount>1?'turn':''}">
+      <div class="v">${t.score}</div><div class="k">${t.name}${i===turn && teamCount>1?' · giliran':''}</div>
+    </div>`).join('');
+}
+
+function renderBranches() {
+  const el = document.getElementById('branches');
+  el.innerHTML = '';
+  BRANCHES.forEach(b => {
+    const btn = document.createElement('button');
+    btn.className = 'branch'; btn.dataset.id = b.id;
+    btn.innerHTML = `<div class="bi">${b.icon}</div><div class="bn">${b.name}</div><div class="bd">ilmu tentang ${b.desc}</div>`;
+    btn.onclick = () => answer(b.id, btn);
+    el.appendChild(btn);
+  });
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = QUESTIONS[order[qIndex]];
+  document.getElementById('qEmoji').textContent = q.e;
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('qNum').textContent = `Soal ${qIndex+1} dari ${order.length}` + (teamCount>1 ? ` — giliran ${teams[turn].name}` : '');
+  document.getElementById('feedback').className = 'feedback';
+  document.getElementById('btnNext').style.display = 'none';
+  document.querySelectorAll('.branch').forEach(b => { b.classList.remove('correct','wrong'); b.disabled = false; });
+}
+
+function answer(id, btn) {
+  if (answered) return;
+  answered = true;
+  const q = QUESTIONS[order[qIndex]];
+  const fb = document.getElementById('feedback');
+  document.querySelectorAll('.branch').forEach(b => b.disabled = true);
+  const correctBtn = document.querySelector(`.branch[data-id="${q.a}"]`);
+  const bName = BRANCHES.find(b=>b.id===q.a).name;
+  if (id === q.a) {
+    btn.classList.add('correct');
+    teams[turn].score += 10;
+    fb.className = 'feedback show good';
+    fb.innerHTML = `✅ <b>Benar! +10 poin.</b> ${q.x}`;
+    sndGood();
+  } else {
+    btn.classList.add('wrong');
+    correctBtn.classList.add('correct');
+    fb.className = 'feedback show bad';
+    fb.innerHTML = `❌ <b>Belum tepat.</b> Jawabannya <b>${bName}</b>. ${q.x}`;
+    sndBad();
+  }
+  renderHUD();
+  document.getElementById('btnNext').style.display = 'inline-flex';
+  document.getElementById('btnNext').textContent = qIndex+1 < order.length ? 'Lanjut ➜' : 'Lihat Hasil 🏁';
+}
+
+function nextQuestion() {
+  qIndex++;
+  if (qIndex >= order.length) return finish();
+  turn = (turn + 1) % teamCount;
+  renderHUD(); renderQuestion();
+}
+
+function finish() {
+  show('scrEnd');
+  const sorted = [...teams].sort((a,b)=>b.score-a.score);
+  const medals = ['🥇','🥈','🥉','🏅'];
+  document.getElementById('finalBoard').innerHTML = sorted.map((t,i)=>`
+    <div class="frow ${i===0?'winner':''}">
+      <span class="medal">${teamCount===1?'⭐':medals[i]}</span>
+      <span>${t.name}</span><span class="pts">${t.score} poin</span>
+    </div>`).join('');
+  tone(523,.15); tone(659,.15,'sine',.18,.15); tone(784,.3,'sine',.18,.3);
+}
+</script>
+<script>function kembali(){if(history.length>1){history.back();return;}window.close();if(location.protocol!=="file:"){setTimeout(function(){location.href="/simulasi-ipa";},200);}}</script></body>
+</html>

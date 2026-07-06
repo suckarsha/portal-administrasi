@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Peta Perubahan Wujud | IPA Kelas 7</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root {
+    --bg:#0b1220; --card:rgba(255,255,255,.05); --border:rgba(255,255,255,.12);
+    --cyan:#22d3ee; --violet:#a78bfa; --green:#4ade80; --red:#f87171; --amber:#fbbf24;
+  }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:radial-gradient(1200px 700px at 70% -10%, rgba(34,211,238,.14), transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, rgba(167,139,250,.12), transparent 60%), var(--bg);
+    color:#fff; min-height:100vh; user-select:none; -webkit-user-select:none;
+  }
+  .wrap { max-width:1100px; margin:0 auto; padding:20px 24px 50px; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .brand { font-size:clamp(14px,1.6vw,18px); color:rgba(255,255,255,.55); letter-spacing:.14em; text-transform:uppercase; }
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; border:1px solid var(--border); background:var(--card); color:#fff; border-radius:16px; padding:14px 26px; font-size:clamp(15px,1.8vw,20px); font-weight:700; cursor:pointer; transition:transform .15s; }
+  .btn:active { transform:scale(.96); }
+  .btn.primary { background:linear-gradient(135deg, rgba(34,211,238,.25), rgba(167,139,250,.2)); border-color:rgba(34,211,238,.5); }
+  .btn.small { padding:10px 18px; font-size:15px; border-radius:12px; }
+  h1 { font-size:clamp(24px,3.6vw,42px); text-align:center; margin-top:12px; }
+  h1 .hl { background:linear-gradient(90deg,var(--cyan),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { text-align:center; color:rgba(255,255,255,.6); font-size:clamp(14px,1.8vw,19px); margin-top:6px; line-height:1.5; }
+  .screen { display:none; } .screen.active { display:block; animation:fadeIn .35s; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:none;} }
+  @keyframes shake { 0%,100%{transform:none} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  @keyframes pulseGlow { 0%,100%{filter:drop-shadow(0 0 4px rgba(251,191,36,.6));} 50%{filter:drop-shadow(0 0 16px rgba(251,191,36,.9));} }
+
+  .mapBox { background:var(--card); border:1px solid var(--border); border-radius:22px; max-width:900px; margin:18px auto 0; padding:14px; }
+  .mapBox svg { width:100%; height:auto; display:block; }
+  svg .arrowBtn { cursor:pointer; }
+  svg .arrowBtn .core { transition:.2s; }
+  svg .arrowBtn.pending .core { animation:pulseGlow 1.4s infinite; }
+  svg .arrowBtn.done .core { opacity:.95; }
+  svg text { font-family:inherit; }
+
+  .quizPanel { background:var(--card); border:1px solid var(--border); border-radius:22px; max-width:900px; margin:16px auto 0; padding:clamp(16px,2.6vw,26px); }
+  .qtext { text-align:center; font-size:clamp(16px,2.3vw,24px); font-weight:800; line-height:1.5; }
+  .opts { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:18px; }
+  @media(max-width:680px){ .opts{ grid-template-columns:1fr 1fr; } }
+  .opt { border:1px solid var(--border); background:var(--card); color:#fff; border-radius:14px; padding:15px 10px; font-size:clamp(14px,1.9vw,19px); font-weight:700; cursor:pointer; transition:transform .15s; }
+  .opt:active { transform:scale(.96); }
+  .opt.correct { border-color:var(--green); background:rgba(74,222,128,.16); }
+  .opt.wrong { border-color:var(--red); background:rgba(248,113,113,.16); animation:shake .4s; }
+  .opts2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-top:18px; max-width:560px; margin-left:auto; margin-right:auto; }
+  .fb { border-radius:16px; padding:14px 20px; margin-top:16px; font-size:clamp(14px,1.8vw,18px); line-height:1.55; display:none; border:1px solid; text-align:center; }
+  .fb.show { display:block; animation:fadeIn .3s; }
+  .fb.good { background:rgba(74,222,128,.1); border-color:rgba(74,222,128,.4); }
+  .fb.bad { background:rgba(248,113,113,.1); border-color:rgba(248,113,113,.4); }
+  .fb.info { background:rgba(34,211,238,.08); border-color:rgba(34,211,238,.35); }
+  .meta { text-align:center; margin-top:10px; color:rgba(255,255,255,.55); font-size:15px; }
+  .bigEmoji { text-align:center; font-size:clamp(56px,8vw,100px); margin-top:22px; }
+  .nextRow { text-align:center; margin-top:16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand">IPA Kelas 7 · Bab 2</span>
+    <button class="btn small" onclick="kembali()">← Kembali</button>
+  </header>
+
+  <!-- BABAK 1: PETA -->
+  <section class="screen active" id="scr1">
+    <h1>Peta <span class="hl">Perubahan Wujud</span> 🔄</h1>
+    <p class="sub">Sentuh <b>panah yang berkedip</b>, lalu jawab: apa nama perubahannya dan apakah kalor diserap atau dilepas?</p>
+
+    <div class="mapBox">
+      <svg viewBox="0 0 900 480" xmlns="http://www.w3.org/2000/svg" id="map"></svg>
+    </div>
+
+    <div class="quizPanel" id="quizPanel" style="display:none">
+      <div class="qtext" id="qtext"></div>
+      <div class="opts" id="opts"></div>
+      <div class="opts2" id="opts2" style="display:none"></div>
+      <div class="fb" id="fb"></div>
+    </div>
+    <div class="fb info show" style="max-width:900px; margin:16px auto 0" id="introFb">
+      👆 Mulai dari panah mana pun! Selesaikan keenam panah untuk membuka babak berikutnya.
+    </div>
+  </section>
+
+  <!-- BABAK 2: CONTOH SEHARI-HARI -->
+  <section class="screen" id="scr2">
+    <h1>Babak 2: <span class="hl">Peristiwa Sehari-hari</span> 🏠</h1>
+    <p class="sub">Peristiwa berikut termasuk perubahan wujud apa?</p>
+    <div class="quizPanel">
+      <div class="qtext" id="q2text"></div>
+      <div class="opts" id="q2opts"></div>
+      <div class="fb" id="q2fb"></div>
+      <div class="meta" id="q2meta"></div>
+      <div class="nextRow"><button class="btn primary" id="q2next" style="display:none" onclick="nextEx()">Lanjut ➜</button></div>
+    </div>
+  </section>
+
+  <!-- SELESAI -->
+  <section class="screen" id="scr3">
+    <div class="bigEmoji">🌡️</div>
+    <h1>Master <span class="hl">Perubahan Wujud!</span></h1>
+    <p class="sub" id="endText"></p>
+    <div style="text-align:center; margin-top:26px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap">
+      <button class="btn primary" onclick="location.reload()">🔁 Ulangi</button>
+      <button class="btn" onclick="kembali()">← Kembali ke Menu</button>
+    </div>
+  </section>
+</div>
+
+<script>
+let actx=null;
+function tone(f,d,t='sine',v=.18,w=0){ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); const o=actx.createOscillator(),g=actx.createGain(); o.type=t;o.frequency.value=f; g.gain.setValueAtTime(v,actx.currentTime+w); g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+w+d); o.connect(g);g.connect(actx.destination); o.start(actx.currentTime+w);o.stop(actx.currentTime+w+d);}catch(e){} }
+const sndGood=()=>{tone(660,.12);tone(880,.18,'sine',.18,.1)}, sndBad=()=>tone(220,.22,'sawtooth',.1);
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+/* posisi node: PADAT kiri-bawah, CAIR kanan-bawah, GAS atas-tengah */
+const NODES = {
+  padat: { x:170, y:370, label:'PADAT', emo:'🧊', col:'#7dd3fc' },
+  cair:  { x:730, y:370, label:'CAIR',  emo:'💧', col:'#38bdf8' },
+  gas:   { x:450, y:105, label:'GAS',   emo:'☁️', col:'#c4b5fd' },
+};
+const CHANGES = [
+  { id:'mencair',    from:'padat', to:'cair', name:'Mencair',    kalor:'serap',  x:'Es dipanaskan menjadi air: partikel menyerap kalor, getarannya melemahkan ikatan.', off: 26 },
+  { id:'membeku',    from:'cair', to:'padat', name:'Membeku',    kalor:'lepas',  x:'Air melepaskan kalor di freezer hingga partikelnya terikat rapat menjadi es.', off: 26 },
+  { id:'menguap',    from:'cair', to:'gas',   name:'Menguap',    kalor:'serap',  x:'Air menyerap kalor hingga partikelnya lepas bebas ke udara sebagai uap.', off: 26 },
+  { id:'mengembun',  from:'gas',  to:'cair',  name:'Mengembun',  kalor:'lepas',  x:'Uap air melepaskan kalor saat menyentuh permukaan dingin dan menjadi titik-titik air.', off: 26 },
+  { id:'menyublim',  from:'padat',to:'gas',   name:'Menyublim',  kalor:'serap',  x:'Kapur barus padat menyerap kalor dan langsung menjadi gas tanpa mencair dulu.', off: 26 },
+  { id:'mengkristal',from:'gas',  to:'padat', name:'Mengkristal',kalor:'lepas',  x:'Gas melepaskan kalor dan langsung menjadi padat, contohnya pembentukan salju.', off: 26 },
+];
+let doneCount = 0, active = null, phase = 1; // phase 1 = nama, 2 = kalor
+
+function arrowPath(c) {
+  const A = NODES[c.from], B = NODES[c.to];
+  const dx = B.x-A.x, dy = B.y-A.y, len = Math.hypot(dx,dy);
+  const ux = dx/len, uy = dy/len;           // arah
+  const px = -uy, py = ux;                  // tegak lurus
+  // titik awal/akhir dijauhkan dari node, digeser ke sisi off
+  const m = 78;
+  const sx = A.x + ux*m + px*c.off, sy = A.y + uy*m + py*c.off;
+  const ex = B.x - ux*m + px*c.off, ey = B.y - uy*m + py*c.off;
+  return { sx, sy, ex, ey };
+}
+
+function renderMap() {
+  const svg = document.getElementById('map');
+  let g = '';
+  // panah
+  CHANGES.forEach(c => {
+    const {sx,sy,ex,ey} = arrowPath(c);
+    const midx=(sx+ex)/2, midy=(sy+ey)/2;
+    g += `<g class="arrowBtn pending" id="ar-${c.id}" data-id="${c.id}">
+      <line class="hit" x1="${sx}" y1="${sy}" x2="${ex}" y2="${ey}" stroke="rgba(0,0,0,0)" stroke-width="44"/>
+      <line class="core" x1="${sx}" y1="${sy}" x2="${ex}" y2="${ey}" stroke="#fbbf24" stroke-width="7" stroke-linecap="round" marker-end="url(#arh-${c.id})"/>
+      <defs><marker id="arh-${c.id}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+        <path d="M0 0 L10 5 L0 10 Z" fill="#fbbf24"/></marker></defs>
+      <g class="lblGroup" id="lbl-${c.id}" style="display:none">
+        <rect x="${midx-84}" y="${midy-20}" width="168" height="40" rx="12" fill="#0f2e1e" stroke="#4ade80" stroke-width="2"/>
+        <text x="${midx}" y="${midy+6}" text-anchor="middle" font-size="19" font-weight="800" fill="#4ade80" id="lblT-${c.id}"></text>
+      </g>
+    </g>`;
+  });
+  // node di atas panah
+  Object.values(NODES).forEach(n => {
+    g += `<g>
+      <circle cx="${n.x}" cy="${n.y}" r="66" fill="#131c30" stroke="${n.col}" stroke-width="3.5"/>
+      <text x="${n.x}" y="${n.y-8}" text-anchor="middle" font-size="40">${n.emo}</text>
+      <text x="${n.x}" y="${n.y+36}" text-anchor="middle" font-size="21" font-weight="800" fill="${n.col}">${n.label}</text>
+    </g>`;
+  });
+  svg.innerHTML = g;
+  CHANGES.forEach(c => {
+    document.getElementById('ar-'+c.id).addEventListener('click', ()=>pickArrow(c));
+  });
+}
+
+function pickArrow(c) {
+  if (document.getElementById('ar-'+c.id).classList.contains('done')) return;
+  active = c; phase = 1;
+  document.getElementById('introFb').style.display='none';
+  const qp = document.getElementById('quizPanel');
+  qp.style.display='block';
+  document.getElementById('fb').className='fb';
+  document.getElementById('qtext').innerHTML =
+    `Perubahan dari <b>${NODES[c.from].label} ${NODES[c.from].emo}</b> menjadi <b>${NODES[c.to].label} ${NODES[c.to].emo}</b> disebut…`;
+  const box = document.getElementById('opts');
+  document.getElementById('opts2').style.display='none';
+  box.style.display='grid';
+  box.innerHTML='';
+  shuffle([...CHANGES]).forEach(o => {
+    const b = document.createElement('button');
+    b.className='opt'; b.textContent = o.name;
+    b.onclick = () => answerName(o, b);
+    box.appendChild(b);
+  });
+  qp.scrollIntoView({behavior:'smooth', block:'nearest'});
+  tone(520,.07,'sine',.1);
+}
+
+function answerName(o, btn) {
+  const fb = document.getElementById('fb');
+  if (phase !== 1) return;
+  if (o.id === active.id) {
+    btn.classList.add('correct'); sndGood();
+    phase = 2;
+    fb.className='fb show good';
+    fb.innerHTML = `✅ Benar, <b>${active.name}</b>! Sekarang: apakah perubahan ini <b>menyerap</b> atau <b>melepaskan</b> kalor?`;
+    const box2 = document.getElementById('opts2');
+    document.getElementById('opts').style.display='none';
+    box2.style.display='grid';
+    box2.innerHTML='';
+    [['serap','🔥 Menyerap kalor'],['lepas','❄️ Melepaskan kalor']].forEach(([k,t]) => {
+      const b = document.createElement('button');
+      b.className='opt'; b.textContent=t;
+      b.onclick = () => answerKalor(k, b);
+      box2.appendChild(b);
+    });
+  } else {
+    btn.classList.add('wrong'); sndBad();
+    fb.className='fb show bad';
+    fb.innerHTML = `❌ Bukan ${o.name}. Perhatikan arah panahnya, lalu coba lagi!`;
+    setTimeout(()=>btn.classList.remove('wrong'),600);
+  }
+}
+
+function answerKalor(k, btn) {
+  const fb = document.getElementById('fb');
+  if (k === active.kalor) {
+    btn.classList.add('correct'); sndGood();
+    fb.className='fb show good';
+    fb.innerHTML = `✅ <b>Tepat!</b> ${active.x}`;
+    const ar = document.getElementById('ar-'+active.id);
+    ar.classList.remove('pending'); ar.classList.add('done');
+    ar.querySelector('.core').setAttribute('stroke', '#4ade80');
+    ar.querySelector(`#arh-${active.id} path`).setAttribute('fill', '#4ade80');
+    document.getElementById('lblT-'+active.id).textContent = active.name + (active.kalor==='serap'?' 🔥':' ❄️');
+    document.getElementById('lbl-'+active.id).style.display='block';
+    doneCount++;
+    if (doneCount >= CHANGES.length) {
+      setTimeout(() => {
+        document.getElementById('qtext').innerHTML = '🎉 <b>Peta lengkap!</b> Perubahan yang MENYERAP kalor (🔥): mencair, menguap, menyublim. Yang MELEPAS kalor (❄️): membeku, mengembun, mengkristal.';
+        document.getElementById('opts2').style.display='none';
+        fb.className='fb';
+        const nr = document.createElement('div');
+        nr.className='nextRow';
+        nr.innerHTML = '<button class="btn primary" onclick="mulaiBabak2()">Babak 2: Peristiwa Sehari-hari ➜</button>';
+        document.getElementById('quizPanel').appendChild(nr);
+      }, 1600);
+    } else {
+      setTimeout(() => {
+        document.getElementById('quizPanel').style.display='none';
+        document.getElementById('introFb').style.display='block';
+        document.getElementById('introFb').innerHTML = `👍 ${doneCount} dari 6 panah selesai. Sentuh panah berkedip berikutnya!`;
+      }, 2200);
+    }
+  } else {
+    btn.classList.add('wrong'); sndBad();
+    fb.className='fb show bad';
+    fb.innerHTML = k==='serap'
+      ? '❌ Coba pikirkan: perubahan ini terjadi saat zat <b>didinginkan</b> — kalor justru keluar dari zat.'
+      : '❌ Coba pikirkan: perubahan ini butuh <b>pemanasan</b> — zat menerima kalor dari luar.';
+    setTimeout(()=>btn.classList.remove('wrong'),600);
+  }
+}
+
+/* ---------- babak 2 ---------- */
+const EXAMPLES = shuffle([
+  { e:'Mentega meleleh di penggorengan panas', a:'Mencair' },
+  { e:'Air di kutub berubah menjadi es', a:'Membeku' },
+  { e:'Baju basah menjadi kering saat dijemur', a:'Menguap' },
+  { e:'Titik-titik air di rumput pada pagi hari (embun)', a:'Mengembun' },
+  { e:'Kapur barus di lemari lama-lama habis', a:'Menyublim' },
+  { e:'Butiran salju terbentuk dari uap air di awan yang sangat dingin', a:'Mengkristal' },
+  { e:'Lilin yang menyala meleleh di bagian atasnya', a:'Mencair' },
+  { e:'Bagian luar gelas es teh menjadi basah', a:'Mengembun' },
+  { e:'Cokelat cair di kulkas menjadi keras', a:'Membeku' },
+  { e:'Bensin yang tumpah cepat hilang dan tercium baunya', a:'Menguap' },
+]);
+let exi = 0, exScore = 0, exLock = false;
+
+function mulaiBabak2() {
+  document.getElementById('scr1').classList.remove('active');
+  document.getElementById('scr2').classList.add('active');
+  window.scrollTo(0,0);
+  renderEx();
+}
+function renderEx() {
+  exLock = false;
+  const it = EXAMPLES[exi];
+  document.getElementById('q2text').textContent = '"' + it.e + '"';
+  document.getElementById('q2fb').className='fb';
+  document.getElementById('q2next').style.display='none';
+  document.getElementById('q2meta').textContent = `Soal ${exi+1} dari ${EXAMPLES.length} · Skor: ${exScore}`;
+  const box = document.getElementById('q2opts');
+  box.innerHTML='';
+  ['Mencair','Membeku','Menguap','Mengembun','Menyublim','Mengkristal'].forEach(n => {
+    const b = document.createElement('button');
+    b.className='opt'; b.textContent=n;
+    b.onclick = () => {
+      if (exLock) return; exLock = true;
+      const fb = document.getElementById('q2fb');
+      [...box.children].forEach(c=>c.disabled=true);
+      const c = CHANGES.find(x=>x.name===it.a);
+      if (n === it.a) { b.classList.add('correct'); exScore+=10; sndGood(); fb.className='fb show good'; fb.innerHTML=`✅ <b>Benar!</b> ${NODES[c.from].label} → ${NODES[c.to].label}, kalor ${c.kalor==='serap'?'diserap 🔥':'dilepas ❄️'}.`; }
+      else {
+        b.classList.add('wrong'); sndBad();
+        [...box.children].find(x=>x.textContent===it.a).classList.add('correct');
+        fb.className='fb show bad'; fb.innerHTML=`❌ Yang tepat: <b>${it.a}</b> (${NODES[c.from].label} → ${NODES[c.to].label}).`;
+      }
+      document.getElementById('q2meta').textContent = `Soal ${exi+1} dari ${EXAMPLES.length} · Skor: ${exScore}`;
+      document.getElementById('q2next').style.display='inline-flex';
+      document.getElementById('q2next').textContent = exi+1<EXAMPLES.length ? 'Lanjut ➜' : 'Lihat Hasil 🏁';
+    };
+    box.appendChild(b);
+  });
+}
+function nextEx() {
+  exi++;
+  if (exi >= EXAMPLES.length) {
+    document.getElementById('scr2').classList.remove('active');
+    document.getElementById('scr3').classList.add('active');
+    document.getElementById('endText').innerHTML = `Kamu menuntaskan peta perubahan wujud dan menjawab peristiwa sehari-hari dengan skor <b>${exScore} dari ${EXAMPLES.length*10}</b>.`;
+    tone(523,.15); tone(659,.15,'sine',.18,.15); tone(784,.3,'sine',.18,.3);
+    window.scrollTo(0,0);
+    return;
+  }
+  renderEx();
+}
+
+renderMap();
+</script>
+<script>function kembali(){if(history.length>1){history.back();return;}window.close();if(location.protocol!=="file:"){setTimeout(function(){location.href="/simulasi-ipa";},200);}}</script></body>
+</html>

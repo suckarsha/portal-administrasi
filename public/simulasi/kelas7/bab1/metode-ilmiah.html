@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rancang Percobaanmu — Metode Ilmiah | IPA Kelas 7</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root {
+    --bg:#0b1220; --card:rgba(255,255,255,.05); --border:rgba(255,255,255,.12);
+    --cyan:#22d3ee; --violet:#a78bfa; --green:#4ade80; --red:#f87171; --amber:#fbbf24;
+  }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:radial-gradient(1200px 700px at 70% -10%, rgba(34,211,238,.14), transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, rgba(167,139,250,.12), transparent 60%), var(--bg);
+    color:#fff; min-height:100vh; user-select:none; -webkit-user-select:none;
+  }
+  .wrap { max-width:1100px; margin:0 auto; padding:20px 24px 50px; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .brand { font-size:clamp(14px,1.6vw,18px); color:rgba(255,255,255,.55); letter-spacing:.14em; text-transform:uppercase; }
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; border:1px solid var(--border); background:var(--card); color:#fff; border-radius:16px; padding:14px 28px; font-size:clamp(16px,1.9vw,21px); font-weight:700; cursor:pointer; transition:transform .15s; }
+  .btn:active { transform:scale(.96); }
+  .btn.primary { background:linear-gradient(135deg, rgba(34,211,238,.25), rgba(167,139,250,.2)); border-color:rgba(34,211,238,.5); }
+  .btn.small { padding:10px 18px; font-size:15px; border-radius:12px; }
+  .btn:disabled { opacity:.4; cursor:default; }
+  h1 { font-size:clamp(24px,3.6vw,42px); text-align:center; margin-top:12px; }
+  h1 .hl { background:linear-gradient(90deg,var(--cyan),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { text-align:center; color:rgba(255,255,255,.6); font-size:clamp(14px,1.8vw,19px); margin-top:8px; line-height:1.5; }
+
+  /* stepper */
+  .stepper { display:flex; justify-content:center; gap:6px; margin-top:20px; flex-wrap:wrap; }
+  .stepDot { display:flex; align-items:center; gap:6px; }
+  .stepDot .c { width:34px; height:34px; border-radius:50%; border:2px solid var(--border); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; color:rgba(255,255,255,.5); background:var(--card); }
+  .stepDot .t { font-size:12px; color:rgba(255,255,255,.45); display:none; }
+  @media(min-width:820px){ .stepDot .t{ display:block; } }
+  .stepDot.on .c { border-color:var(--cyan); color:#fff; background:rgba(34,211,238,.2); box-shadow:0 0 16px rgba(34,211,238,.3); }
+  .stepDot.done .c { border-color:var(--green); color:var(--green); }
+  .stepDot .bar { width:26px; height:2px; background:var(--border); }
+
+  .screen { display:none; } .screen.active { display:block; animation:fadeIn .35s; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:none;} }
+  @keyframes shake { 0%,100%{transform:none} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+  .panel { background:var(--card); border:1px solid var(--border); border-radius:22px; padding:clamp(20px,3vw,32px); max-width:900px; margin:22px auto 0; }
+  .panel h2 { font-size:clamp(19px,2.6vw,27px); }
+  .panel p { color:rgba(255,255,255,.7); line-height:1.6; margin-top:10px; font-size:clamp(14px,1.8vw,18px); }
+  .story { display:flex; gap:18px; align-items:center; }
+  .story .em { font-size:clamp(50px,7vw,90px); }
+
+  .optList { display:flex; flex-direction:column; gap:12px; margin-top:18px; }
+  .opt { text-align:left; border:1px solid var(--border); background:var(--card); color:#fff; border-radius:16px; padding:16px 20px; font-size:clamp(15px,2vw,20px); font-weight:600; cursor:pointer; line-height:1.45; transition:.15s; }
+  .opt:active { transform:scale(.98); }
+  .opt.correct { border-color:var(--green); background:rgba(74,222,128,.14); }
+  .opt.wrong { border-color:var(--red); background:rgba(248,113,113,.14); animation:shake .4s; }
+  .fb { border-radius:16px; padding:14px 20px; margin-top:16px; font-size:clamp(14px,1.8vw,18px); line-height:1.55; display:none; border:1px solid; }
+  .fb.show { display:block; animation:fadeIn .3s; }
+  .fb.good { background:rgba(74,222,128,.1); border-color:rgba(74,222,128,.4); }
+  .fb.bad { background:rgba(248,113,113,.1); border-color:rgba(248,113,113,.4); }
+  .fb.info { background:rgba(34,211,238,.08); border-color:rgba(34,211,238,.35); }
+  .navRow { text-align:center; margin-top:22px; }
+
+  /* variabel */
+  .chipPool { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:18px; min-height:56px; }
+  .chip { border:1px solid rgba(251,191,36,.5); background:rgba(251,191,36,.12); color:#fff; border-radius:999px; padding:12px 22px; font-size:clamp(14px,1.9vw,19px); font-weight:700; cursor:pointer; transition:.15s; }
+  .chip.sel { background:var(--amber); color:#0b1220; box-shadow:0 0 22px rgba(251,191,36,.5); transform:scale(1.06); }
+  .chip.ok { border-color:var(--green); background:rgba(74,222,128,.15); }
+  .chip.no { border-color:var(--red); background:rgba(248,113,113,.15); }
+  .zones { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:20px; }
+  @media(max-width:760px){ .zones{ grid-template-columns:1fr; } }
+  .zone { border:2px dashed var(--border); border-radius:18px; padding:14px; min-height:150px; cursor:pointer; transition:.2s; }
+  .zone.hot { border-color:var(--amber); background:rgba(251,191,36,.06); }
+  .zone h4 { text-align:center; font-size:clamp(15px,1.8vw,18px); }
+  .zone .zd { text-align:center; font-size:12.5px; color:rgba(255,255,255,.5); margin-top:4px; line-height:1.4; }
+  .zone .zchips { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; justify-content:center; }
+
+  /* setup gelas */
+  .cups { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:20px; }
+  @media(max-width:720px){ .cups{ grid-template-columns:1fr; } }
+  .cupCard { border:1px solid var(--border); background:rgba(255,255,255,.03); border-radius:20px; padding:18px; }
+  .cupCard h3 { text-align:center; font-size:clamp(17px,2.2vw,22px); }
+  .ctl { margin-top:14px; }
+  .ctl .lb { font-size:14px; color:rgba(255,255,255,.6); margin-bottom:8px; }
+  .segs { display:flex; gap:8px; flex-wrap:wrap; }
+  .seg { flex:1; min-width:64px; border:1px solid var(--border); background:var(--card); color:#fff; border-radius:12px; padding:12px 8px; font-size:clamp(14px,1.7vw,17px); font-weight:700; cursor:pointer; transition:.15s; }
+  .seg.sel { border-color:var(--cyan); background:rgba(34,211,238,.18); box-shadow:0 0 14px rgba(34,211,238,.25); }
+
+  /* run animation */
+  .runArea { display:grid; grid-template-columns:1fr 1fr; gap:18px; margin-top:22px; }
+  @media(max-width:720px){ .runArea{ grid-template-columns:1fr; } }
+  .glassBox { text-align:center; }
+  .glass { position:relative; width:min(200px,60vw); height:230px; margin:0 auto; border:4px solid rgba(255,255,255,.35); border-top:none; border-radius:0 0 26px 26px; overflow:hidden; }
+  .water { position:absolute; left:0; right:0; bottom:0; height:78%; transition:background 1s; }
+  .sugar { position:absolute; width:7px; height:7px; background:#fff; border-radius:2px; opacity:.95; }
+  .steam { position:absolute; top:-26px; font-size:22px; opacity:0; }
+  .glassBox .temp { font-size:clamp(18px,2.4vw,24px); font-weight:800; margin-top:12px; }
+  .glassBox .tm { font-size:clamp(26px,3.4vw,38px); font-weight:800; color:var(--cyan); }
+  .glassBox .st { color:rgba(255,255,255,.55); font-size:14px; margin-top:2px; min-height:1.4em; }
+  .resTable { width:100%; max-width:640px; margin:22px auto 0; border-collapse:collapse; font-size:clamp(14px,1.9vw,19px); display:none; }
+  .resTable.show { display:table; animation:fadeIn .4s; }
+  .resTable th, .resTable td { border:1px solid var(--border); padding:12px 16px; text-align:center; }
+  .resTable th { background:rgba(34,211,238,.1); }
+
+  .recap { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:20px; }
+  @media(max-width:720px){ .recap{ grid-template-columns:1fr; } }
+  .recapItem { background:var(--card); border:1px solid var(--border); border-radius:16px; padding:16px; text-align:center; }
+  .recapItem .n { width:34px; height:34px; margin:0 auto; border-radius:50%; background:rgba(34,211,238,.18); border:1px solid rgba(34,211,238,.5); display:flex; align-items:center; justify-content:center; font-weight:800; }
+  .recapItem .tt { font-weight:800; margin-top:10px; font-size:15.5px; }
+  .recapItem .dd { color:rgba(255,255,255,.55); font-size:13.5px; margin-top:6px; line-height:1.45; }
+  .bigEmoji { text-align:center; font-size:clamp(56px,8vw,100px); margin-top:20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand">IPA Kelas 7 · Bab 1</span>
+    <button class="btn small" onclick="kembali()">← Kembali</button>
+  </header>
+
+  <h1>Rancang <span class="hl">Percobaanmu!</span> 🧪</h1>
+  <p class="sub">Jadilah ilmuwan: rancang percobaan yang adil untuk menjawab sebuah pertanyaan.</p>
+
+  <div class="stepper" id="stepper"></div>
+
+  <!-- STEP 0: cerita -->
+  <section class="screen active" id="st0">
+    <div class="panel">
+      <div class="story">
+        <div class="em">🍵</div>
+        <div>
+          <h2>Pengamatan Andi</h2>
+          <p>Andi membuat teh manis. Saat memakai <b>air panas</b>, gulanya cepat hilang. Saat memakai
+          <b>air dingin</b>, gulanya lama sekali larut. Andi pun bertanya-tanya…</p>
+          <p style="margin-top:12px; font-size:clamp(16px,2.2vw,22px); color:#fff"><b>“Apakah suhu air memengaruhi kecepatan gula larut?”</b></p>
+        </div>
+      </div>
+      <div class="fb info show" style="margin-top:18px">
+        🔬 Pengamatan yang menimbulkan pertanyaan adalah <b>langkah pertama metode ilmiah</b>. Sekarang bantu Andi menjawabnya dengan percobaan!
+      </div>
+      <div class="navRow"><button class="btn primary" onclick="goStep(1)">Mulai Merancang ➜</button></div>
+    </div>
+  </section>
+
+  <!-- STEP 1: hipotesis -->
+  <section class="screen" id="st1">
+    <div class="panel">
+      <h2>Langkah 1 · Buat Hipotesis</h2>
+      <p>Hipotesis adalah <b>dugaan sementara</b> terhadap pertanyaan, yang bisa diuji dengan percobaan. Mana yang merupakan hipotesis yang baik?</p>
+      <div class="optList" id="hipOpts"></div>
+      <div class="fb" id="hipFb"></div>
+      <div class="navRow"><button class="btn primary" id="hipNext" style="display:none" onclick="goStep(2)">Lanjut ➜</button></div>
+    </div>
+  </section>
+
+  <!-- STEP 2: variabel -->
+  <section class="screen" id="st2">
+    <div class="panel">
+      <h2>Langkah 2 · Tentukan Variabel</h2>
+      <p>Sentuh sebuah <b>kartu kuning</b>, lalu sentuh <b>kotak</b> tempat yang tepat. Dalam percobaan ini:</p>
+      <div class="chipPool" id="chipPool"></div>
+      <div class="zones">
+        <div class="zone" data-z="bebas" onclick="dropTo('bebas')">
+          <h4>🔀 Variabel Bebas</h4>
+          <div class="zd">yang sengaja <b>diubah-ubah</b></div>
+          <div class="zchips" id="z-bebas"></div>
+        </div>
+        <div class="zone" data-z="terikat" onclick="dropTo('terikat')">
+          <h4>📏 Variabel Terikat</h4>
+          <div class="zd">yang <b>diamati / diukur</b> hasilnya</div>
+          <div class="zchips" id="z-terikat"></div>
+        </div>
+        <div class="zone" data-z="kontrol" onclick="dropTo('kontrol')">
+          <h4>🔒 Variabel Kontrol</h4>
+          <div class="zd">yang <b>dijaga sama</b> supaya percobaan adil</div>
+          <div class="zchips" id="z-kontrol"></div>
+        </div>
+      </div>
+      <div class="fb" id="varFb"></div>
+      <div class="navRow">
+        <button class="btn" onclick="resetVars()">↺ Ulangi</button>
+        <button class="btn primary" id="varCheck" onclick="checkVars()" disabled>Periksa Jawaban</button>
+        <button class="btn primary" id="varNext" style="display:none" onclick="goStep(3)">Lanjut ➜</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- STEP 3: setup -->
+  <section class="screen" id="st3">
+    <div class="panel">
+      <h2>Langkah 3 · Siapkan Percobaan</h2>
+      <p>Atur kedua gelas. Ingat: ubah <b>hanya suhu air</b>, dan jaga variabel lain <b>tetap sama</b> agar percobaannya adil!</p>
+      <div class="cups" id="cups"></div>
+      <div class="fb" id="setFb"></div>
+      <div class="navRow"><button class="btn primary" onclick="checkSetup()">🔥 Jalankan Percobaan</button></div>
+    </div>
+  </section>
+
+  <!-- STEP 4: run -->
+  <section class="screen" id="st4">
+    <div class="panel">
+      <h2>Langkah 4 · Amati &amp; Catat</h2>
+      <p>Satu sendok gula dimasukkan ke tiap gelas pada saat yang sama. Amati stopwatch! <i>(1 detik layar = 10 detik sungguhan)</i></p>
+      <div class="runArea" id="runArea"></div>
+      <table class="resTable" id="resTable">
+        <tr><th>Gelas</th><th>Suhu Air</th><th>Waktu Gula Larut</th></tr>
+        <tbody id="resBody"></tbody>
+      </table>
+      <div class="navRow"><button class="btn primary" id="runNext" style="display:none" onclick="goStep(5)">Analisis Data ➜</button></div>
+    </div>
+  </section>
+
+  <!-- STEP 5: kesimpulan -->
+  <section class="screen" id="st5">
+    <div class="panel">
+      <h2>Langkah 5 · Tarik Kesimpulan</h2>
+      <p id="conclIntro">Berdasarkan data percobaanmu, kesimpulan mana yang paling tepat?</p>
+      <div class="optList" id="conOpts"></div>
+      <div class="fb" id="conFb"></div>
+      <div class="navRow"><button class="btn primary" id="conNext" style="display:none" onclick="goStep(6)">Selesai 🏁</button></div>
+    </div>
+  </section>
+
+  <!-- STEP 6: rangkuman -->
+  <section class="screen" id="st6">
+    <div class="bigEmoji">🧑‍🔬</div>
+    <h1>Kamu Berhasil Menjadi <span class="hl">Ilmuwan!</span></h1>
+    <p class="sub">Inilah langkah-langkah metode ilmiah yang baru saja kamu lakukan:</p>
+    <div class="panel">
+      <div class="recap">
+        <div class="recapItem"><div class="n">1</div><div class="tt">Observasi</div><div class="dd">Mengamati gula larut berbeda kecepatan di air panas dan dingin.</div></div>
+        <div class="recapItem"><div class="n">2</div><div class="tt">Rumusan Masalah</div><div class="dd">“Apakah suhu air memengaruhi kecepatan gula larut?”</div></div>
+        <div class="recapItem"><div class="n">3</div><div class="tt">Hipotesis</div><div class="dd">Semakin tinggi suhu air, semakin cepat gula larut.</div></div>
+        <div class="recapItem"><div class="n">4</div><div class="tt">Eksperimen</div><div class="dd">Mengubah hanya suhu (variabel bebas), menjaga variabel kontrol tetap sama.</div></div>
+        <div class="recapItem"><div class="n">5</div><div class="tt">Analisis Data</div><div class="dd">Membandingkan waktu larut gula pada tiap suhu dalam tabel.</div></div>
+        <div class="recapItem"><div class="n">6</div><div class="tt">Kesimpulan</div><div class="dd">Data mendukung hipotesis: suhu memengaruhi kecepatan melarut.</div></div>
+      </div>
+      <div class="navRow" style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap">
+        <button class="btn primary" onclick="location.reload()">🔁 Rancang Ulang</button>
+        <button class="btn" onclick="kembali()">← Kembali ke Menu</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+let actx=null;
+function tone(f,d,t='sine',v=.18,w=0){ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); const o=actx.createOscillator(),g=actx.createGain(); o.type=t;o.frequency.value=f; g.gain.setValueAtTime(v,actx.currentTime+w); g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+w+d); o.connect(g);g.connect(actx.destination); o.start(actx.currentTime+w);o.stop(actx.currentTime+w+d);}catch(e){} }
+const sndGood=()=>{tone(660,.12);tone(880,.18,'sine',.18,.1)}, sndBad=()=>tone(220,.22,'sawtooth',.1);
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+/* ---------- stepper ---------- */
+const STEPS = ['Cerita','Hipotesis','Variabel','Persiapan','Percobaan','Kesimpulan','Selesai'];
+function renderStepper(cur) {
+  document.getElementById('stepper').innerHTML = STEPS.map((s,i)=>`
+    <div class="stepDot ${i===cur?'on':''} ${i<cur?'done':''}">
+      <div class="c">${i<cur?'✓':i+1}</div><div class="t">${s}</div>${i<STEPS.length-1?'<div class="bar"></div>':''}
+    </div>`).join('');
+}
+function goStep(n) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('st'+n).classList.add('active');
+  renderStepper(n);
+  window.scrollTo({top:0, behavior:'smooth'});
+  if (n===4) startRun();
+}
+renderStepper(0);
+
+/* ---------- step 1: hipotesis ---------- */
+const HIPS = shuffle([
+  { t:'“Semakin tinggi suhu air, semakin cepat gula larut.”', ok:true,  x:'Tepat! Ini dugaan yang jelas dan BISA DIUJI dengan percobaan.' },
+  { t:'“Gula rasanya manis sekali.”', ok:false, x:'Ini fakta tentang rasa, bukan dugaan yang menjawab pertanyaan Andi.' },
+  { t:'“Teh manis adalah minuman kesukaan banyak orang.”', ok:false, x:'Ini pendapat, tidak bisa diuji dengan percobaan gula larut.' },
+  { t:'“Sebaiknya Andi membeli teh kemasan saja.”', ok:false, x:'Ini saran, bukan dugaan ilmiah yang bisa diuji.' },
+]);
+const hipBox = document.getElementById('hipOpts');
+HIPS.forEach(h => {
+  const b = document.createElement('button');
+  b.className='opt'; b.textContent = h.t;
+  b.onclick = () => {
+    const fb = document.getElementById('hipFb');
+    if (h.ok) {
+      b.classList.add('correct'); sndGood();
+      fb.className='fb show good'; fb.innerHTML = '✅ <b>Benar!</b> ' + h.x + ' Hipotesis yang baik menghubungkan variabel yang diubah dengan hasil yang diamati.';
+      document.getElementById('hipNext').style.display='inline-flex';
+      [...hipBox.children].forEach(c=>c.disabled=true);
+    } else {
+      b.classList.add('wrong'); sndBad();
+      fb.className='fb show bad'; fb.innerHTML = '❌ ' + h.x + ' Coba pilih lagi!';
+      setTimeout(()=>b.classList.remove('wrong'), 600);
+    }
+  };
+  hipBox.appendChild(b);
+});
+
+/* ---------- step 2: variabel ---------- */
+const VARS = [
+  { id:'suhu',   t:'🌡️ Suhu air',          ans:'bebas' },
+  { id:'waktu',  t:'⏱️ Waktu gula larut',   ans:'terikat' },
+  { id:'gula',   t:'🥄 Jumlah gula',        ans:'kontrol' },
+  { id:'volume', t:'💧 Volume air',         ans:'kontrol' },
+  { id:'jenis',  t:'🍬 Jenis gula',         ans:'kontrol' },
+  { id:'aduk',   t:'🥢 Pengadukan',         ans:'kontrol' },
+];
+let placement = {}, selChip = null;
+
+function renderVars() {
+  const pool = document.getElementById('chipPool');
+  pool.innerHTML = '';
+  ['bebas','terikat','kontrol'].forEach(z => document.getElementById('z-'+z).innerHTML='');
+  VARS.forEach(v => {
+    const c = document.createElement('button');
+    c.className='chip'; c.textContent = v.t; c.dataset.id = v.id;
+    c.onclick = (e) => { e.stopPropagation(); selectChip(c); };
+    (placement[v.id] ? document.getElementById('z-'+placement[v.id]) : pool).appendChild(c);
+  });
+  document.getElementById('varCheck').disabled = Object.keys(placement).length !== VARS.length;
+}
+function selectChip(c) {
+  document.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));
+  document.querySelectorAll('.zone').forEach(z=>z.classList.remove('hot'));
+  if (selChip === c.dataset.id) { selChip = null; return; }
+  selChip = c.dataset.id;
+  c.classList.add('sel');
+  document.querySelectorAll('.zone').forEach(z=>z.classList.add('hot'));
+  tone(520,.07,'sine',.1);
+}
+function dropTo(zone) {
+  if (!selChip) return;
+  placement[selChip] = zone;
+  selChip = null;
+  document.querySelectorAll('.zone').forEach(z=>z.classList.remove('hot'));
+  tone(640,.08,'sine',.12);
+  renderVars();
+}
+function resetVars() {
+  placement = {}; selChip = null;
+  document.getElementById('varFb').className='fb';
+  document.getElementById('varNext').style.display='none';
+  renderVars();
+}
+function checkVars() {
+  let wrong = 0;
+  document.querySelectorAll('.chip').forEach(c => {
+    const v = VARS.find(x=>x.id===c.dataset.id);
+    c.classList.remove('ok','no');
+    if (placement[v.id] === v.ans) c.classList.add('ok'); else { c.classList.add('no'); wrong++; }
+  });
+  const fb = document.getElementById('varFb');
+  if (wrong === 0) {
+    sndGood();
+    fb.className='fb show good';
+    fb.innerHTML = '✅ <b>Sempurna!</b> Suhu air <b>diubah</b> (bebas), waktu larut <b>diukur</b> (terikat), dan sisanya <b>dijaga sama</b> (kontrol) supaya percobaan adil.';
+    document.getElementById('varNext').style.display='inline-flex';
+    document.getElementById('varCheck').style.display='none';
+  } else {
+    sndBad();
+    fb.className='fb show bad';
+    fb.innerHTML = `❌ Masih ada <b>${wrong} kartu</b> di tempat yang salah (bertanda merah). Ingat: yang sengaja diubah = bebas, yang diukur hasilnya = terikat, yang disamakan = kontrol.`;
+  }
+}
+renderVars();
+
+/* ---------- step 3: setup ---------- */
+const SETUP = [
+  { id:'suhu',  lb:'🌡️ Suhu air',    opts:['25°C','50°C','80°C'] },
+  { id:'gula',  lb:'🥄 Jumlah gula',  opts:['1 sdt','2 sdt','3 sdt'] },
+  { id:'vol',   lb:'💧 Volume air',   opts:['100 mL','200 mL'] },
+  { id:'aduk',  lb:'🥢 Pengadukan',   opts:['Tidak diaduk','Diaduk'] },
+];
+let cupSet = { A:{}, B:{} };
+function renderCups() {
+  const box = document.getElementById('cups');
+  box.innerHTML = '';
+  ['A','B'].forEach(cup => {
+    const d = document.createElement('div');
+    d.className = 'cupCard';
+    d.innerHTML = `<h3>🥛 Gelas ${cup}</h3>`;
+    SETUP.forEach(s => {
+      const ctl = document.createElement('div');
+      ctl.className='ctl';
+      ctl.innerHTML = `<div class="lb">${s.lb}</div>`;
+      const segs = document.createElement('div'); segs.className='segs';
+      s.opts.forEach(o => {
+        const b = document.createElement('button');
+        b.className='seg' + (cupSet[cup][s.id]===o?' sel':'');
+        b.textContent = o;
+        b.onclick = () => { cupSet[cup][s.id]=o; tone(560,.06,'sine',.1); renderCups(); };
+        segs.appendChild(b);
+      });
+      ctl.appendChild(segs);
+      d.appendChild(ctl);
+    });
+    box.appendChild(d);
+  });
+}
+renderCups();
+
+function checkSetup() {
+  const fb = document.getElementById('setFb');
+  const a = cupSet.A, b = cupSet.B;
+  const filled = SETUP.every(s => a[s.id] && b[s.id]);
+  if (!filled) { sndBad(); fb.className='fb show bad'; fb.innerHTML='⚠️ Lengkapi dulu semua pengaturan di kedua gelas.'; return; }
+  if (a.suhu === b.suhu) {
+    sndBad(); fb.className='fb show bad';
+    fb.innerHTML = '❌ <b>Suhu kedua gelas sama!</b> Kalau tidak ada yang diubah, tidak ada yang bisa dibandingkan. Buat suhunya <b>berbeda</b> — itulah variabel bebasmu.';
+    return;
+  }
+  const beda = SETUP.filter(s => s.id!=='suhu' && a[s.id]!==b[s.id]).map(s=>s.lb);
+  if (beda.length) {
+    sndBad(); fb.className='fb show bad';
+    fb.innerHTML = `❌ <b>Percobaan belum adil!</b> ${beda.join(', ')} kedua gelas berbeda. Kalau hasilnya beda, kita tidak tahu penyebabnya suhu atau yang lain. Samakan semua <b>variabel kontrol</b>!`;
+    return;
+  }
+  sndGood();
+  fb.className='fb show good';
+  fb.innerHTML = '✅ <b>Rancangan adil (fair test)!</b> Hanya suhu yang berbeda. Ayo jalankan!';
+  setTimeout(()=>goStep(4), 1200);
+}
+
+/* ---------- step 4: run ---------- */
+let runTimers = [];
+function tempC(cup){ return parseInt(cupSet[cup].suhu); }
+function dissolveTime(t){ return Math.round(2600/ t); } // 25→104s, 50→52s, 80→33s (detik simulasi)
+
+function startRun() {
+  runTimers.forEach(clearInterval); runTimers = [];
+  const area = document.getElementById('runArea');
+  document.getElementById('resTable').classList.remove('show');
+  document.getElementById('resBody').innerHTML = '';
+  document.getElementById('runNext').style.display='none';
+  area.innerHTML = '';
+  const done = [];
+  ['A','B'].forEach(cup => {
+    const t = tempC(cup);
+    const dur = dissolveTime(t);              // detik simulasi
+    const real = dur/10;                      // detik nyata animasi
+    const warm = Math.min(1,(t-20)/60);
+    const hx = v => Math.max(0,Math.min(255,Math.round(v))).toString(16).padStart(2,'0');
+    const col = '#' + hx(40+warm*160) + hx(120-warm*40) + hx(200-warm*120);
+    const gb = document.createElement('div');
+    gb.className='glassBox';
+    gb.innerHTML = `
+      <div class="glass">
+        <div class="water" style="background:linear-gradient(180deg, ${col}cc, ${col})"></div>
+        ${t>=70?'<div class="steam" style="left:30%; animation:none">♨️</div>':''}
+        <div class="sugars"></div>
+      </div>
+      <div class="temp">Gelas ${cup} · ${t}°C</div>
+      <div class="tm" id="tm${cup}">0 s</div>
+      <div class="st" id="st${cup}">gula sedang larut…</div>`;
+    area.appendChild(gb);
+    if (t>=70) { const s = gb.querySelector('.steam'); s.style.opacity=.8; }
+    // butir gula
+    const sg = gb.querySelector('.sugars');
+    const grains = [];
+    for (let i=0;i<26;i++) {
+      const g = document.createElement('div');
+      g.className='sugar';
+      g.style.left = (18+Math.random()*64)+'%';
+      g.style.top = (55+Math.random()*38)+'%';
+      sg.appendChild(g); grains.push(g);
+    }
+    const t0 = performance.now();
+    const iv = setInterval(() => {
+      const el = (performance.now()-t0)/1000;      // detik nyata
+      const sim = Math.min(dur, el*10);
+      document.getElementById('tm'+cup).textContent = Math.round(sim)+' s';
+      const frac = sim/dur;
+      grains.forEach((g,i) => {
+        g.style.opacity = Math.max(0, .95 - frac*1.1 - (i%5)*.02);
+        g.style.transform = `translateY(${Math.sin(el*3+i)*4}px) scale(${Math.max(.2,1-frac)})`;
+      });
+      if (sim >= dur) {
+        clearInterval(iv);
+        document.getElementById('st'+cup).textContent = '✅ larut sempurna!';
+        tone(760,.15,'sine',.15);
+        done.push(cup);
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>Gelas ${cup}</td><td>${t}°C</td><td><b>${dur} detik</b></td>`;
+        document.getElementById('resBody').appendChild(tr);
+        document.getElementById('resTable').classList.add('show');
+        if (done.length===2) {
+          document.getElementById('runNext').style.display='inline-flex';
+          buildConclusion();
+        }
+      }
+    }, 60);
+    runTimers.push(iv);
+  });
+}
+
+/* ---------- step 5: kesimpulan ---------- */
+function buildConclusion() {
+  const tA = tempC('A'), tB = tempC('B');
+  const hot = tA>tB?'A':'B', cold = tA>tB?'B':'A';
+  const opts = shuffle([
+    { t:`Gula di air yang lebih panas (Gelas ${hot}) larut lebih cepat — suhu memengaruhi kecepatan melarut.`, ok:true,
+      x:'Kesimpulan ini sesuai data: waktu larut di gelas yang lebih panas lebih singkat. Hipotesismu didukung oleh data!' },
+    { t:'Gula di kedua gelas larut dalam waktu yang sama — suhu tidak berpengaruh.', ok:false,
+      x:'Lihat lagi tabelmu — waktunya berbeda, kan?' },
+    { t:`Gula di air yang lebih dingin (Gelas ${cold}) larut lebih cepat.`, ok:false,
+      x:'Periksa tabel: justru air yang lebih panas yang melarutkan gula lebih cepat.' },
+    { t:'Jumlah gula memengaruhi kecepatan larut.', ok:false,
+      x:'Jumlah gula adalah variabel kontrol — kita membuatnya sama, jadi tidak bisa disimpulkan dari percobaan ini.' },
+  ]);
+  const box = document.getElementById('conOpts');
+  box.innerHTML = '';
+  opts.forEach(o => {
+    const b = document.createElement('button');
+    b.className='opt'; b.textContent=o.t;
+    b.onclick = () => {
+      const fb = document.getElementById('conFb');
+      if (o.ok) {
+        b.classList.add('correct'); sndGood();
+        fb.className='fb show good'; fb.innerHTML='✅ <b>Kesimpulan tepat!</b> '+o.x;
+        document.getElementById('conNext').style.display='inline-flex';
+        [...box.children].forEach(c=>c.disabled=true);
+      } else {
+        b.classList.add('wrong'); sndBad();
+        fb.className='fb show bad'; fb.innerHTML='❌ '+o.x;
+        setTimeout(()=>b.classList.remove('wrong'),600);
+      }
+    };
+    box.appendChild(b);
+  });
+}
+</script>
+<script>function kembali(){if(history.length>1){history.back();return;}window.close();if(location.protocol!=="file:"){setTimeout(function(){location.href="/simulasi-ipa";},200);}}</script></body>
+</html>

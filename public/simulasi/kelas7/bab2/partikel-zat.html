@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dunia Partikel — Wujud Zat &amp; Difusi | IPA Kelas 7</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root {
+    --bg:#0b1220; --card:rgba(255,255,255,.05); --border:rgba(255,255,255,.12);
+    --cyan:#22d3ee; --violet:#a78bfa; --green:#4ade80; --red:#f87171; --amber:#fbbf24;
+  }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:radial-gradient(1200px 700px at 70% -10%, rgba(34,211,238,.14), transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, rgba(167,139,250,.12), transparent 60%), var(--bg);
+    color:#fff; min-height:100vh; user-select:none; -webkit-user-select:none;
+  }
+  .wrap { max-width:1100px; margin:0 auto; padding:20px 24px 50px; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .brand { font-size:clamp(14px,1.6vw,18px); color:rgba(255,255,255,.55); letter-spacing:.14em; text-transform:uppercase; }
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; border:1px solid var(--border); background:var(--card); color:#fff; border-radius:16px; padding:14px 26px; font-size:clamp(15px,1.8vw,20px); font-weight:700; cursor:pointer; transition:transform .15s; }
+  .btn:active { transform:scale(.96); }
+  .btn.primary { background:linear-gradient(135deg, rgba(34,211,238,.25), rgba(167,139,250,.2)); border-color:rgba(34,211,238,.5); }
+  .btn.small { padding:10px 18px; font-size:15px; border-radius:12px; }
+  h1 { font-size:clamp(24px,3.6vw,42px); text-align:center; margin-top:12px; }
+  h1 .hl { background:linear-gradient(90deg,var(--cyan),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { text-align:center; color:rgba(255,255,255,.6); font-size:clamp(14px,1.8vw,19px); margin-top:6px; }
+  .tabs { display:flex; gap:10px; justify-content:center; margin-top:18px; flex-wrap:wrap; }
+  .tab { border:1px solid var(--border); background:var(--card); color:rgba(255,255,255,.7); border-radius:999px; padding:12px 26px; font-size:clamp(14px,1.8vw,19px); font-weight:700; cursor:pointer; transition:.2s; }
+  .tab.active { background:rgba(34,211,238,.16); border-color:var(--cyan); color:#fff; box-shadow:0 0 20px rgba(34,211,238,.2); }
+  .screen { display:none; } .screen.active { display:block; animation:fadeIn .35s; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:none;} }
+  @keyframes shake { 0%,100%{transform:none} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+  .simGrid { display:grid; grid-template-columns:minmax(0,1fr) 320px; gap:18px; margin-top:18px; }
+  @media(max-width:900px){ .simGrid{ grid-template-columns:1fr; } }
+  .canvasBox { background:var(--card); border:1px solid var(--border); border-radius:22px; padding:14px; text-align:center; }
+  canvas { width:100%; height:auto; border-radius:14px; background:#070d1a; touch-action:none; }
+  .panel { background:var(--card); border:1px solid var(--border); border-radius:22px; padding:18px; }
+  .panel h3 { font-size:15px; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.55); }
+  .stateBtns { display:flex; gap:10px; margin-top:12px; }
+  .stateBtn { flex:1; border:1px solid var(--border); background:var(--card); color:#fff; border-radius:14px; padding:14px 6px; font-size:clamp(14px,1.7vw,17px); font-weight:800; cursor:pointer; transition:.2s; }
+  .stateBtn.sel { border-color:var(--cyan); background:rgba(34,211,238,.18); box-shadow:0 0 16px rgba(34,211,238,.3); }
+  .sliderRow { margin-top:18px; }
+  .sliderRow .lb { display:flex; justify-content:space-between; font-size:14px; color:rgba(255,255,255,.6); margin-bottom:8px; }
+  input[type=range] { width:100%; accent-color:var(--amber); height:34px; }
+  .desc { margin-top:16px; background:rgba(34,211,238,.07); border:1px solid rgba(34,211,238,.3); border-radius:14px; padding:14px; font-size:clamp(13.5px,1.6vw,16px); line-height:1.6; color:rgba(255,255,255,.85); }
+  .desc b { color:var(--cyan); }
+
+  .quizCard { background:var(--card); border:1px solid var(--border); border-radius:24px; max-width:820px; margin:18px auto 0; padding:clamp(18px,3vw,30px); }
+  .qtext { text-align:center; font-size:clamp(17px,2.4vw,25px); font-weight:800; line-height:1.5; }
+  .opts { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:20px; }
+  @media(max-width:560px){ .opts{ grid-template-columns:1fr; } }
+  .opt { border:1px solid var(--border); background:var(--card); color:#fff; border-radius:16px; padding:17px 12px; font-size:clamp(15px,2vw,20px); font-weight:700; cursor:pointer; transition:transform .15s; }
+  .opt:active { transform:scale(.96); }
+  .opt.correct { border-color:var(--green); background:rgba(74,222,128,.16); }
+  .opt.wrong { border-color:var(--red); background:rgba(248,113,113,.16); animation:shake .4s; }
+  .fb { border-radius:16px; padding:14px 20px; margin-top:16px; font-size:clamp(14px,1.8vw,18px); line-height:1.55; display:none; border:1px solid; text-align:center; }
+  .fb.show { display:block; animation:fadeIn .3s; }
+  .fb.good { background:rgba(74,222,128,.1); border-color:rgba(74,222,128,.4); }
+  .fb.bad { background:rgba(248,113,113,.1); border-color:rgba(248,113,113,.4); }
+  .meta { text-align:center; margin-top:12px; color:rgba(255,255,255,.55); font-size:15px; }
+  .nextRow { text-align:center; margin-top:16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand">IPA Kelas 7 · Bab 2</span>
+    <button class="btn small" onclick="kembali()">← Kembali</button>
+  </header>
+
+  <h1>Dunia <span class="hl">Partikel</span> 🔵</h1>
+  <p class="sub">Semua zat tersusun dari partikel-partikel kecil yang selalu bergerak. Ayo intip!</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setTab(0,this)">🧊 Wujud &amp; Partikel</button>
+    <button class="tab" onclick="setTab(1,this)">💨 Difusi</button>
+    <button class="tab" onclick="setTab(2,this)">🎯 Kuis Sifat Zat</button>
+  </div>
+
+  <!-- TAB 0: wujud -->
+  <section class="screen active" id="tab0">
+    <div class="simGrid">
+      <div class="canvasBox"><canvas id="cv" width="640" height="440"></canvas></div>
+      <div class="panel">
+        <h3>Pilih Wujud Zat</h3>
+        <div class="stateBtns">
+          <button class="stateBtn sel" id="sb0" onclick="setState('padat')">🧊<br>Padat</button>
+          <button class="stateBtn" id="sb1" onclick="setState('cair')">💧<br>Cair</button>
+          <button class="stateBtn" id="sb2" onclick="setState('gas')">☁️<br>Gas</button>
+        </div>
+        <div class="sliderRow">
+          <div class="lb"><span>🔥 Suhu (energi partikel)</span><span id="tval">Sedang</span></div>
+          <input type="range" id="tslider" min="0" max="100" value="40" oninput="setTemp(this.value)">
+        </div>
+        <div class="desc" id="stateDesc"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 1: difusi -->
+  <section class="screen" id="tab1">
+    <div class="simGrid">
+      <div class="canvasBox"><canvas id="cvd" width="640" height="440"></canvas></div>
+      <div class="panel">
+        <h3>Percobaan Difusi</h3>
+        <div class="stateBtns">
+          <button class="stateBtn sel" id="db0" onclick="setDiffMode('gas')">☁️<br>Gas</button>
+          <button class="stateBtn" id="db1" onclick="setDiffMode('cair')">💧<br>Cair</button>
+        </div>
+        <div style="margin-top:16px; text-align:center">
+          <button class="btn primary" id="btnSekat" onclick="bukaSekat()">🚪 Buka Sekat!</button>
+          <button class="btn" style="margin-top:10px" onclick="resetDiff()">↺ Ulangi</button>
+        </div>
+        <div class="desc" id="diffDesc">
+          Sebelah kiri: partikel <b>parfum</b> (ungu). Sebelah kanan: partikel <b>udara</b> (biru).
+          Buka sekatnya dan amati apa yang terjadi!
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 2: kuis -->
+  <section class="screen" id="tab2">
+    <div class="quizCard">
+      <div class="qtext" id="qtext"></div>
+      <div class="opts" id="opts"></div>
+      <div class="fb" id="fb"></div>
+      <div class="meta" id="meta"></div>
+      <div class="nextRow"><button class="btn primary" id="btnNext" style="display:none" onclick="nextQ()">Lanjut ➜</button></div>
+    </div>
+  </section>
+</div>
+
+<script>
+let actx=null;
+function tone(f,d,t='sine',v=.18,w=0){ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); const o=actx.createOscillator(),g=actx.createGain(); o.type=t;o.frequency.value=f; g.gain.setValueAtTime(v,actx.currentTime+w); g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+w+d); o.connect(g);g.connect(actx.destination); o.start(actx.currentTime+w);o.stop(actx.currentTime+w+d);}catch(e){} }
+const sndGood=()=>{tone(660,.12);tone(880,.18,'sine',.18,.1)}, sndBad=()=>tone(220,.22,'sawtooth',.1);
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+function setTab(n, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('tab'+n).classList.add('active');
+}
+
+/* ================= TAB 0: PARTIKEL WUJUD ================= */
+const cv = document.getElementById('cv'), cx = cv.getContext('2d');
+let state = 'padat', temp = .4;
+let parts = [];
+
+const DESCS = {
+  padat: 'Partikel <b>zat padat</b> tersusun sangat rapat dan teratur. Partikel hanya <b>bergetar di tempatnya</b> karena gaya tarik antarpartikel sangat kuat. Itulah sebabnya zat padat memiliki <b>bentuk dan volume yang tetap</b>.',
+  cair: 'Partikel <b>zat cair</b> berdekatan tetapi tidak teratur. Partikel dapat <b>bergeser satu sama lain</b>, sehingga bentuknya <b>mengikuti wadah</b> tetapi volumenya <b>tetap</b>.',
+  gas: 'Partikel <b>zat gas</b> berjauhan dan <b>bergerak bebas sangat cepat</b> ke segala arah. Gaya tariknya sangat lemah, sehingga gas <b>memenuhi seluruh ruang</b>: bentuk dan volumenya berubah-ubah.',
+};
+
+function buildParts() {
+  parts = [];
+  const N = 60;
+  if (state === 'padat') {
+    // kisi 10x6 di tengah bawah
+    const cols=10, rows=6, gap=34;
+    const ox = (cv.width - (cols-1)*gap)/2, oy = cv.height - 60 - (rows-1)*gap;
+    for (let r=0;r<rows;r++) for (let c=0;c<cols;c++)
+      parts.push({ hx: ox+c*gap, hy: oy+r*gap, x: ox+c*gap, y: oy+r*gap, vx:0, vy:0 });
+  } else if (state === 'cair') {
+    for (let i=0;i<N;i++)
+      parts.push({ x: 60+Math.random()*(cv.width-120), y: cv.height-40-Math.random()*170, vx:(Math.random()-.5)*1.4, vy:(Math.random()-.5)*1.4 });
+  } else {
+    for (let i=0;i<N;i++)
+      parts.push({ x: 20+Math.random()*(cv.width-40), y: 20+Math.random()*(cv.height-40), vx:(Math.random()-.5)*5, vy:(Math.random()-.5)*5 });
+  }
+}
+
+function setState(s) {
+  state = s;
+  ['padat','cair','gas'].forEach((k,i)=>document.getElementById('sb'+i).classList.toggle('sel', k===s));
+  document.getElementById('stateDesc').innerHTML = DESCS[s];
+  buildParts();
+  tone(520,.07,'sine',.1);
+}
+
+function setTemp(v) {
+  temp = v/100;
+  document.getElementById('tval').textContent = v<25?'Rendah ❄️':v<65?'Sedang':'Tinggi 🔥';
+}
+
+function drawContainer(ctx, w, h) {
+  ctx.strokeStyle = 'rgba(255,255,255,.35)';
+  ctx.lineWidth = 5;
+  ctx.beginPath();
+  ctx.moveTo(12, 8); ctx.lineTo(12, h-10); ctx.lineTo(w-12, h-10); ctx.lineTo(w-12, 8);
+  ctx.stroke();
+}
+
+function tickWujud() {
+  cx.clearRect(0,0,cv.width,cv.height);
+  drawContainer(cx, cv.width, cv.height);
+  const sp = .4 + temp*1.8;
+  // permukaan air untuk mode cair
+  if (state==='cair') {
+    cx.fillStyle = 'rgba(56,189,248,.08)';
+    cx.fillRect(14, cv.height-230, cv.width-28, 220);
+  }
+  parts.forEach(p => {
+    if (state==='padat') {
+      p.x = p.hx + (Math.random()-.5)*6*sp;
+      p.y = p.hy + (Math.random()-.5)*6*sp;
+    } else {
+      p.x += p.vx*sp; p.y += p.vy*sp;
+      p.vx += (Math.random()-.5)*.3; p.vy += (Math.random()-.5)*.3;
+      const cap = state==='gas'?5:1.6;
+      p.vx = Math.max(-cap, Math.min(cap, p.vx));
+      p.vy = Math.max(-cap, Math.min(cap, p.vy));
+      // batas
+      const top = state==='cair' ? cv.height-235 : 16;
+      if (p.x<26){p.x=26;p.vx*=-1;} if (p.x>cv.width-26){p.x=cv.width-26;p.vx*=-1;}
+      if (p.y<top+8){p.y=top+8;p.vy*=-1;} if (p.y>cv.height-24){p.y=cv.height-24;p.vy*=-1;}
+    }
+    const grad = cx.createRadialGradient(p.x-3,p.y-3,2,p.x,p.y,11);
+    grad.addColorStop(0,'#7dd3fc'); grad.addColorStop(1,'#0e7490');
+    cx.fillStyle = grad;
+    cx.beginPath(); cx.arc(p.x,p.y,11,0,7); cx.fill();
+  });
+  requestAnimationFrame(tickWujud);
+}
+
+/* ================= TAB 1: DIFUSI ================= */
+const cvd = document.getElementById('cvd'), cd = cvd.getContext('2d');
+let dparts = [], sekat = true, diffMode = 'gas';
+
+function resetDiff() {
+  sekat = true; dparts = [];
+  document.getElementById('btnSekat').style.display='inline-flex';
+  const N = 46, mid = cvd.width/2;
+  for (let i=0;i<N;i++) {
+    const left = i < N/2;
+    dparts.push({
+      x: left ? 30+Math.random()*(mid-60) : mid+30+Math.random()*(mid-60),
+      y: 30+Math.random()*(cvd.height-60),
+      vx:(Math.random()-.5)*(diffMode==='gas'?4.6:1.3),
+      vy:(Math.random()-.5)*(diffMode==='gas'?4.6:1.3),
+      c: left ? '#c4b5fd' : '#38bdf8', c2: left ? '#6d28d9' : '#0e7490',
+    });
+  }
+  document.getElementById('diffDesc').innerHTML = diffMode==='gas'
+    ? 'Sebelah kiri: partikel <b>parfum</b> (ungu). Sebelah kanan: partikel <b>udara</b> (biru). Buka sekatnya dan amati — inilah alasan bau parfum tercium sampai ke seluruh ruangan!'
+    : 'Sebelah kiri: partikel <b>sirup</b> (ungu). Sebelah kanan: partikel <b>air</b> (biru). Perhatikan: difusi di zat cair <b>lebih lambat</b> daripada di gas karena partikelnya lebih rapat.';
+}
+function setDiffMode(m) {
+  diffMode = m;
+  document.getElementById('db0').classList.toggle('sel', m==='gas');
+  document.getElementById('db1').classList.toggle('sel', m==='cair');
+  resetDiff();
+}
+function bukaSekat() {
+  sekat = false;
+  document.getElementById('btnSekat').style.display='none';
+  tone(500,.12,'sine',.14); tone(700,.14,'sine',.14,.1);
+}
+
+function tickDiff() {
+  cd.clearRect(0,0,cvd.width,cvd.height);
+  drawContainer(cd, cvd.width, cvd.height);
+  const mid = cvd.width/2;
+  if (sekat) {
+    cd.fillStyle = 'rgba(251,191,36,.85)';
+    cd.fillRect(mid-4, 10, 8, cvd.height-22);
+  }
+  dparts.forEach(p => {
+    p.x += p.vx; p.y += p.vy;
+    p.vx += (Math.random()-.5)*.25; p.vy += (Math.random()-.5)*.25;
+    const cap = diffMode==='gas'?4.6:1.3;
+    p.vx = Math.max(-cap,Math.min(cap,p.vx)); p.vy = Math.max(-cap,Math.min(cap,p.vy));
+    if (p.x<26){p.x=26;p.vx*=-1;} if (p.x>cvd.width-26){p.x=cvd.width-26;p.vx*=-1;}
+    if (p.y<18){p.y=18;p.vy*=-1;} if (p.y>cvd.height-24){p.y=cvd.height-24;p.vy*=-1;}
+    if (sekat) { // pantul di sekat
+      if (p.x > mid-14 && p.x < mid && p.vx>0) p.vx*=-1;
+      if (p.x < mid+14 && p.x > mid && p.vx<0) p.vx*=-1;
+    }
+    const grad = cd.createRadialGradient(p.x-3,p.y-3,2,p.x,p.y,10);
+    grad.addColorStop(0,p.c); grad.addColorStop(1,p.c2);
+    cd.fillStyle = grad;
+    cd.beginPath(); cd.arc(p.x,p.y,10,0,7); cd.fill();
+  });
+  requestAnimationFrame(tickDiff);
+}
+
+/* ================= TAB 2: KUIS ================= */
+const QUIZ = shuffle([
+  { q:'Zat yang bentuknya SELALU TETAP walau dipindah-pindah wadah adalah…', o:['Zat padat','Zat cair','Zat gas','Semua zat'], a:0, x:'Partikel zat padat terikat kuat dan hanya bergetar di tempat, sehingga bentuknya tetap.' },
+  { q:'Air sirup dituang dari botol ke gelas. Bentuknya berubah mengikuti gelas, tetapi volumenya tetap 200 mL. Ini sifat…', o:['Zat cair','Zat padat','Zat gas','Campuran'], a:0, x:'Zat cair: bentuk mengikuti wadah, volume tetap.' },
+  { q:'Gas dalam balon memenuhi seluruh ruang balon karena partikelnya…', o:['Bergerak bebas ke segala arah','Diam di tempat','Hanya bergetar','Saling tarik sangat kuat'], a:0, x:'Partikel gas berjauhan, gaya tariknya lemah, dan bergerak bebas sangat cepat.' },
+  { q:'Keadaan partikel zat padat yang benar adalah…', o:['Rapat, teratur, hanya bergetar','Rapat, bisa bergeser','Berjauhan, bergerak bebas','Berjauhan, diam'], a:0, x:'Partikel padat tersusun rapat-teratur dengan gaya tarik kuat — hanya bisa bergetar.' },
+  { q:'Bau gorengan dari dapur bisa tercium sampai ruang tamu. Peristiwa ini disebut…', o:['Difusi','Kondensasi','Filtrasi','Kristalisasi'], a:0, x:'Difusi = bergeraknya partikel dari daerah rapat (banyak) ke daerah renggang (sedikit) hingga merata.' },
+  { q:'Setetes tinta menyebar perlahan di segelas air TANPA diaduk. Difusi ini lebih LAMBAT daripada difusi bau parfum di udara karena…', o:['Partikel zat cair lebih rapat daripada gas','Tinta lebih berat dari parfum','Air lebih dingin','Gelasnya terlalu kecil'], a:0, x:'Makin rapat partikel medium, makin sering tabrakan, makin lambat difusinya.' },
+  { q:'Saat suhu dinaikkan, gerakan partikel zat akan…', o:['Semakin cepat','Semakin lambat','Tetap sama','Berhenti'], a:0, x:'Suhu adalah ukuran energi gerak partikel — makin panas, makin cepat partikel bergerak.' },
+  { q:'Manakah pernyataan yang BENAR tentang zat gas?', o:['Bentuk dan volume berubah mengikuti wadah','Bentuk tetap, volume berubah','Bentuk berubah, volume tetap','Bentuk dan volume tetap'], a:0, x:'Gas memenuhi seluruh ruang: bentuk dan volumenya mengikuti wadahnya.' },
+  { q:'Es batu bentuknya tetap, tetapi air bentuknya mengikuti gelas. Penyebab utamanya adalah perbedaan…', o:['Kekuatan gaya tarik antarpartikel','Warna partikel','Jumlah partikel','Ukuran partikel'], a:0, x:'Pada es (padat) gaya tarik antarpartikel kuat; pada air (cair) lebih lemah sehingga partikel bisa bergeser.' },
+  { q:'Difusi terjadi paling CEPAT pada…', o:['Zat gas','Zat cair','Zat padat','Semua sama cepat'], a:0, x:'Partikel gas paling renggang dan bergerak paling bebas, jadi difusinya paling cepat.' },
+]);
+let qi = 0, score = 0, locked = false;
+
+function renderQ() {
+  locked = false;
+  const q = QUIZ[qi];
+  document.getElementById('qtext').textContent = q.q;
+  document.getElementById('fb').className = 'fb';
+  document.getElementById('btnNext').style.display='none';
+  document.getElementById('meta').textContent = `Soal ${qi+1} dari ${QUIZ.length} · Skor: ${score}`;
+  const box = document.getElementById('opts');
+  box.innerHTML = '';
+  const order = shuffle(q.o.map((t,i)=>({t,i})));
+  order.forEach(({t,i}) => {
+    const b = document.createElement('button');
+    b.className='opt'; b.textContent = t;
+    b.onclick = () => {
+      if (locked) return; locked = true;
+      const fb = document.getElementById('fb');
+      [...box.children].forEach(c=>c.disabled=true);
+      if (i === q.a) { b.classList.add('correct'); score+=10; sndGood(); fb.className='fb show good'; fb.innerHTML='✅ <b>Benar!</b> '+q.x; }
+      else {
+        b.classList.add('wrong'); sndBad();
+        [...box.children].find(c=>c.textContent===q.o[q.a]).classList.add('correct');
+        fb.className='fb show bad'; fb.innerHTML='❌ Jawabannya: <b>'+q.o[q.a]+'</b>. '+q.x;
+      }
+      document.getElementById('meta').textContent = `Soal ${qi+1} dari ${QUIZ.length} · Skor: ${score}`;
+      document.getElementById('btnNext').style.display='inline-flex';
+      document.getElementById('btnNext').textContent = qi+1<QUIZ.length ? 'Lanjut ➜' : 'Selesai 🏁';
+    };
+    box.appendChild(b);
+  });
+}
+function nextQ() {
+  qi++;
+  if (qi >= QUIZ.length) {
+    document.getElementById('qtext').innerHTML = `🏆 Kuis selesai! Skor akhir: <span style="color:var(--cyan)">${score} / ${QUIZ.length*10}</span>`;
+    document.getElementById('opts').innerHTML='';
+    document.getElementById('fb').className='fb';
+    document.getElementById('meta').textContent='';
+    const nb = document.getElementById('btnNext');
+    nb.textContent='🔁 Ulangi Kuis';
+    nb.onclick = () => { qi=0; score=0; shuffle(QUIZ); nb.onclick=nextQ; renderQ(); };
+    tone(523,.15); tone(659,.15,'sine',.18,.15); tone(784,.3,'sine',.18,.3);
+    return;
+  }
+  renderQ();
+}
+
+/* init */
+setState('padat');
+setTemp(40);
+resetDiff();
+tickWujud();
+tickDiff();
+renderQ();
+</script>
+<script>function kembali(){if(history.length>1){history.back();return;}window.close();if(location.protocol!=="file:"){setTimeout(function(){location.href="/simulasi-ipa";},200);}}</script></body>
+</html>

@@ -182,7 +182,7 @@ export const adminItems: AdminItem[] = [
     title: 'Simulasi IPA',
     description: 'Simulasi dan laboratorium virtual interaktif untuk memperkuat konsep IPA.',
     icon: 'flask',
-    href: '#',
+    href: '/simulasi-ipa',
   },
   {
     id: 'jurnal',

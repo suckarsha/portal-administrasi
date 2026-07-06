@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ahli Pengukuran | IPA Kelas 7</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root {
+    --bg:#0b1220; --card:rgba(255,255,255,.05); --border:rgba(255,255,255,.12);
+    --cyan:#22d3ee; --violet:#a78bfa; --green:#4ade80; --red:#f87171; --amber:#fbbf24;
+  }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:radial-gradient(1200px 700px at 70% -10%, rgba(34,211,238,.14), transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, rgba(167,139,250,.12), transparent 60%), var(--bg);
+    color:#fff; min-height:100vh; user-select:none; -webkit-user-select:none;
+  }
+  .wrap { max-width:1100px; margin:0 auto; padding:20px 24px 50px; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .brand { font-size:clamp(14px,1.6vw,18px); color:rgba(255,255,255,.55); letter-spacing:.14em; text-transform:uppercase; }
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; border:1px solid var(--border); background:var(--card); color:#fff; border-radius:16px; padding:14px 28px; font-size:clamp(16px,1.9vw,21px); font-weight:700; cursor:pointer; transition:transform .15s; }
+  .btn:active { transform:scale(.96); }
+  .btn.primary { background:linear-gradient(135deg, rgba(34,211,238,.25), rgba(167,139,250,.2)); border-color:rgba(34,211,238,.5); }
+  .btn.small { padding:10px 18px; font-size:15px; border-radius:12px; }
+  h1 { font-size:clamp(24px,3.6vw,42px); text-align:center; margin-top:12px; }
+  h1 .hl { background:linear-gradient(90deg,var(--cyan),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { text-align:center; color:rgba(255,255,255,.6); font-size:clamp(14px,1.8vw,19px); margin-top:6px; }
+
+  .hud { display:flex; gap:12px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+  .hudBox { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:8px 22px; text-align:center; min-width:110px; }
+  .hudBox .v { font-size:clamp(19px,2.4vw,27px); font-weight:800; color:var(--cyan); }
+  .hudBox .k { font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.5); }
+
+  .tabs { display:flex; gap:10px; justify-content:center; margin-top:18px; flex-wrap:wrap; }
+  .tab { border:1px solid var(--border); background:var(--card); color:rgba(255,255,255,.7); border-radius:999px; padding:11px 20px; font-size:clamp(13px,1.7vw,17px); font-weight:700; cursor:pointer; transition:.2s; }
+  .tab.active { background:rgba(34,211,238,.16); border-color:var(--cyan); color:#fff; box-shadow:0 0 20px rgba(34,211,238,.2); }
+
+  .stage { background:var(--card); border:1px solid var(--border); border-radius:24px; max-width:860px; margin:20px auto 0; padding:clamp(18px,3vw,32px); }
+  .qtext { text-align:center; font-size:clamp(17px,2.4vw,25px); font-weight:800; line-height:1.45; }
+  .visual { margin:18px auto 0; text-align:center; }
+  .visual svg { max-width:100%; height:auto; }
+  .digital { font-family:"SF Mono",Menlo,monospace; background:#04121c; border:2px solid rgba(34,211,238,.4); color:#67e8f9; border-radius:16px; display:inline-block; padding:16px 34px; font-size:clamp(34px,6vw,58px); font-weight:700; letter-spacing:.06em; box-shadow:inset 0 0 30px rgba(34,211,238,.15); }
+  .opts { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:22px; }
+  @media(max-width:560px){ .opts{ grid-template-columns:1fr; } }
+  .opt { border:1px solid var(--border); background:var(--card); color:#fff; border-radius:16px; padding:18px 12px; font-size:clamp(16px,2.2vw,23px); font-weight:800; cursor:pointer; transition:transform .15s; }
+  .opt:active { transform:scale(.96); }
+  .opt.correct { border-color:var(--green); background:rgba(74,222,128,.16); }
+  .opt.wrong { border-color:var(--red); background:rgba(248,113,113,.16); animation:shake .4s; }
+  @keyframes shake { 0%,100%{transform:none} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  .fb { border-radius:16px; padding:14px 20px; margin-top:16px; font-size:clamp(14px,1.8vw,18px); line-height:1.55; display:none; border:1px solid; text-align:center; }
+  .fb.show { display:block; animation:fadeIn .3s; }
+  .fb.good { background:rgba(74,222,128,.1); border-color:rgba(74,222,128,.4); }
+  .fb.bad { background:rgba(248,113,113,.1); border-color:rgba(248,113,113,.4); }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;} }
+  .nextRow { text-align:center; margin-top:18px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand">IPA Kelas 7 · Bab 1</span>
+    <button class="btn small" onclick="kembali()">← Kembali</button>
+  </header>
+
+  <h1>Ahli <span class="hl">Pengukuran</span> 📏</h1>
+  <p class="sub">Soal selalu diacak — berlatihlah sampai jadi ahli! Pilih stasiun latihanmu:</p>
+
+  <div class="hud">
+    <div class="hudBox"><div class="v" id="hScore">0</div><div class="k">Skor</div></div>
+    <div class="hudBox"><div class="v" id="hStreak">0</div><div class="k">Beruntun</div></div>
+    <div class="hudBox"><div class="v" id="hCount">0</div><div class="k">Soal Dijawab</div></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div class="stage">
+    <div class="qtext" id="qtext"></div>
+    <div class="visual" id="visual"></div>
+    <div class="opts" id="opts"></div>
+    <div class="fb" id="fb"></div>
+    <div class="nextRow"><button class="btn primary" id="btnNext" style="display:none" onclick="newQuestion()">Soal Baru 🎲</button></div>
+  </div>
+</div>
+
+<script>
+let actx=null;
+function tone(f,d,t='sine',v=.18,w=0){ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); const o=actx.createOscillator(),g=actx.createGain(); o.type=t;o.frequency.value=f; g.gain.setValueAtTime(v,actx.currentTime+w); g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+w+d); o.connect(g);g.connect(actx.destination); o.start(actx.currentTime+w);o.stop(actx.currentTime+w+d);}catch(e){} }
+const sndGood=()=>{tone(660,.12);tone(880,.18,'sine',.18,.1)}, sndBad=()=>tone(220,.22,'sawtooth',.1);
+const rnd = (a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pickN = (arr,n)=>{ const c=[...arr]; const out=[]; while(out.length<n && c.length){ out.push(c.splice(Math.floor(Math.random()*c.length),1)[0]); } return out; };
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+const fmt = n => String(Math.round(n*10)/10).replace('.',',');
+
+/* ============ generator per stasiun ============ */
+
+function genRuler() {
+  // penggaris 0-15 cm, pensil mulai di titik acak
+  const startMm = rnd(0,30);                       // 0.0 - 3.0 cm
+  const lenMm  = rnd(45,110);                      // 4.5 - 11.0 cm
+  const endMm  = startMm + lenMm;
+  const X = mm => 40 + mm*6;                       // skala: 1 mm = 6 px
+  let ticks = '';
+  for (let mm=0; mm<=150; mm++) {
+    const h = mm%10===0 ? 26 : (mm%5===0 ? 18 : 11);
+    ticks += `<line x1="${X(mm)}" y1="150" x2="${X(mm)}" y2="${150-h}" stroke="#0f172a" stroke-width="${mm%10===0?2:1}"/>`;
+    if (mm%10===0) ticks += `<text x="${X(mm)}" y="${150-32}" text-anchor="middle" font-size="15" font-weight="700" fill="#0f172a">${mm/10}</text>`;
+  }
+  const svg = `
+  <svg viewBox="0 0 980 170" xmlns="http://www.w3.org/2000/svg">
+    <!-- pensil -->
+    <g>
+      <rect x="${X(startMm)+16}" y="52" width="${lenMm*6-16}" height="26" rx="6" fill="#f59e0b"/>
+      <path d="M${X(startMm)+16} 52 L${X(startMm)} 65 L${X(startMm)+16} 78 Z" fill="#fde68a"/>
+      <path d="M${X(startMm)+5} 61 L${X(startMm)} 65 L${X(startMm)+5} 69 Z" fill="#1f2937"/>
+      <rect x="${X(endMm)-14}" y="52" width="14" height="26" rx="4" fill="#f87171"/>
+    </g>
+    <!-- penggaris -->
+    <rect x="20" y="92" width="960" height="58" rx="6" fill="#fbd38d"/>
+    <rect x="20" y="92" width="960" height="58" rx="6" fill="#fef3c7"/>
+    ${ticks}
+    <text x="976" y="144" text-anchor="end" font-size="13" fill="#92400e" font-weight="700">cm</text>
+  </svg>`;
+  const ans = lenMm/10;
+  const distract = [ (endMm)/10, ans+0.5, ans-0.5, ans+1, (startMm)/10 || ans+1.5 ].filter(v=>v>0 && Math.abs(v-ans)>0.01);
+  return {
+    q:'Berapa panjang pensil di atas?', svg,
+    answer: fmt(ans)+' cm',
+    options: shuffle([fmt(ans)+' cm', ...pickN([...new Set(distract.map(v=>fmt(v)+' cm'))],3)]),
+    x:`Pensil mulai di ${fmt(startMm/10)} cm dan berakhir di ${fmt(endMm/10)} cm. Panjang = ${fmt(endMm/10)} − ${fmt(startMm/10)} = <b>${fmt(ans)} cm</b>. Selalu kurangi dengan titik awalnya!`
+  };
+}
+
+function genCylinder() {
+  const vol = rnd(3,19)*5;                        // 15-95 mL kelipatan 5
+  const Y = v => 320 - v*2.8;                     // 0 mL di y=320
+  let ticks = '';
+  for (let v=0; v<=100; v+=5) {
+    const w = v%10===0 ? 34 : 20;
+    ticks += `<line x1="120" y1="${Y(v)}" x2="${120+w}" y2="${Y(v)}" stroke="#0f172a" stroke-width="${v%10===0?2.4:1.4}"/>`;
+    if (v%20===0) ticks += `<text x="${120+42}" y="${Y(v)+6}" font-size="17" font-weight="700" fill="#0f172a">${v}</text>`;
+  }
+  const svg = `
+  <svg viewBox="0 0 320 370" xmlns="http://www.w3.org/2000/svg" style="max-height:340px">
+    <rect x="110" y="20" width="110" height="320" rx="10" fill="#e0f2fe"/>
+    <path d="M110 ${Y(vol)-6} q55 14 110 0 L220 332 q-55 14 -110 0 Z" fill="#38bdf8" opacity=".85"/>
+    <path d="M110 ${Y(vol)-6} q55 14 110 0" fill="none" stroke="#0284c7" stroke-width="3"/>
+    ${ticks}
+    <rect x="110" y="20" width="110" height="320" rx="10" fill="none" stroke="#64748b" stroke-width="3"/>
+    <rect x="95" y="332" width="140" height="14" rx="7" fill="#64748b"/>
+    <text x="165" y="364" text-anchor="middle" font-size="14" fill="#94a3b8" font-weight="700">mL</text>
+    <path d="M60 ${Y(vol)+2} l30 6" stroke="#f87171" stroke-width="3" marker-end="none"/>
+    <text x="18" y="${Y(vol)+8}" font-size="22" fill="#f87171">👁️</text>
+  </svg>`;
+  const d = [vol+5, vol-5, vol+10, vol-10].filter(v=>v>0&&v<=100);
+  return {
+    q:'Berapa volume air dalam gelas ukur ini?', svg,
+    answer: vol+' mL',
+    options: shuffle([vol+' mL', ...pickN(d,3).map(v=>v+' mL')]),
+    x:`Baca skala tepat di dasar lengkungan permukaan air (<b>meniskus cekung</b>), sejajar mata: <b>${vol} mL</b>.`
+  };
+}
+
+function genThermo() {
+  const t = rnd(1,49)*2;                         // 2-98 °C genap
+  const Y = v => 300 - v*2.6;
+  let ticks = '';
+  for (let v=0; v<=100; v+=2) {
+    const w = v%10===0 ? 26 : 12;
+    ticks += `<line x1="150" y1="${Y(v)}" x2="${150+w}" y2="${Y(v)}" stroke="#0f172a" stroke-width="${v%10===0?2.2:1.2}"/>`;
+    if (v%10===0) ticks += `<text x="${150+34}" y="${Y(v)+6}" font-size="15" font-weight="700" fill="#0f172a">${v}</text>`;
+  }
+  const svg = `
+  <svg viewBox="0 0 300 360" xmlns="http://www.w3.org/2000/svg" style="max-height:340px">
+    <rect x="118" y="14" width="32" height="306" rx="16" fill="#f8fafc" stroke="#94a3b8" stroke-width="3"/>
+    <circle cx="134" cy="330" r="24" fill="#ef4444"/>
+    <rect x="128" y="${Y(t)}" width="12" height="${330-Y(t)}" fill="#ef4444"/>
+    ${ticks}
+    <text x="134" y="356" font-size="14" text-anchor="middle" fill="#94a3b8" font-weight="700">°C</text>
+  </svg>`;
+  const d = [t+2, t-2, t+10, t-10, t+4].filter(v=>v>0&&v<=100&&v!==t);
+  return {
+    q:'Berapa suhu yang ditunjukkan termometer ini?', svg,
+    answer: t+' °C',
+    options: shuffle([t+' °C', ...pickN([...new Set(d)],3).map(v=>v+' °C')]),
+    x:`Permukaan cairan merah berhenti di angka <b>${t} °C</b>. Skala kecil bernilai 2 derajat.`
+  };
+}
+
+function genStopwatch() {
+  const m = rnd(1,5), s = rnd(1,59);
+  const total = m*60+s;
+  const disp = String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+  const d = [total+60, total-60, m*100+s, total+10].filter(v=>v>0&&v!==total);
+  return {
+    q:`Stopwatch menunjukkan <span style="color:var(--cyan)">${disp}</span> (menit:detik). Berapa total waktunya dalam detik?`,
+    svg:`<div class="digital">${disp}</div>`,
+    answer: total+' detik',
+    options: shuffle([total+' detik', ...pickN([...new Set(d)],3).map(v=>v+' detik')]),
+    x:`${m} menit = ${m} × 60 = ${m*60} detik, lalu ${m*60} + ${s} = <b>${total} detik</b>.`
+  };
+}
+
+function genConvert() {
+  const soal = [
+    () => { const v=rnd(2,9)+rnd(1,9)/10; return { t:`${fmt(v)} m = … cm`, a:fmt(v*100)+' cm', d:[fmt(v*10)+' cm', fmt(v*1000)+' cm', fmt(v*100+10)+' cm'], x:`1 m = 100 cm, jadi ${fmt(v)} × 100 = <b>${fmt(v*100)} cm</b>.` }; },
+    () => { const v=rnd(15,95)*10; return { t:`${v} cm = … m`, a:fmt(v/100)+' m', d:[fmt(v/10)+' m', fmt(v*10)+' m', fmt(v/1000)+' m'], x:`100 cm = 1 m, jadi ${v} ÷ 100 = <b>${fmt(v/100)} m</b>.` }; },
+    () => { const v=rnd(2,8); return { t:`${v} km = … m`, a:(v*1000)+' m', d:[(v*100)+' m',(v*10)+' m',(v*10000)+' m'], x:`1 km = 1.000 m, jadi ${v} × 1.000 = <b>${v*1000} m</b>.` }; },
+    () => { const v=rnd(2,9)/2; return { t:`${fmt(v)} kg = … g`, a:fmt(v*1000)+' g', d:[fmt(v*100)+' g', fmt(v*10)+' g', fmt(v*10000)+' g'], x:`1 kg = 1.000 g, jadi ${fmt(v)} × 1.000 = <b>${fmt(v*1000)} g</b>.` }; },
+    () => { const v=rnd(2,9)*250; return { t:`${v} mL = … L`, a:fmt(v/1000)+' L', d:[fmt(v/100)+' L', fmt(v/10)+' L', fmt(v*10)+' L'], x:`1.000 mL = 1 L, jadi ${v} ÷ 1.000 = <b>${fmt(v/1000)} L</b>.` }; },
+    () => { const v=rnd(2,6); return { t:`${v} menit = … detik`, a:(v*60)+' detik', d:[(v*100)+' detik',(v*30)+' detik',(v*600)+' detik'], x:`1 menit = 60 detik, jadi ${v} × 60 = <b>${v*60} detik</b>.` }; },
+  ][rnd(0,5)]();
+  return {
+    q:'Konversikan satuan berikut:', svg:`<div class="digital" style="font-size:clamp(26px,4.5vw,44px)">${soal.t}</div>`,
+    answer: soal.a, options: shuffle([soal.a, ...pickN([...new Set(soal.d)],3)]), x: soal.x
+  };
+}
+
+function genBesaran() {
+  const items = [
+    { n:'Panjang (meter)', pokok:true }, { n:'Massa (kilogram)', pokok:true },
+    { n:'Waktu (sekon)', pokok:true }, { n:'Suhu (kelvin)', pokok:true },
+    { n:'Kuat arus listrik (ampere)', pokok:true }, { n:'Intensitas cahaya (kandela)', pokok:true },
+    { n:'Jumlah zat (mol)', pokok:true },
+    { n:'Luas (m²)', pokok:false, dari:'panjang × panjang' }, { n:'Volume (m³)', pokok:false, dari:'panjang × panjang × panjang' },
+    { n:'Kecepatan (m/s)', pokok:false, dari:'panjang ÷ waktu' }, { n:'Massa jenis (kg/m³)', pokok:false, dari:'massa ÷ volume' },
+    { n:'Gaya (newton)', pokok:false, dari:'massa × percepatan' }, { n:'Frekuensi (hertz)', pokok:false, dari:'1 ÷ waktu' },
+  ];
+  const it = items[rnd(0,items.length-1)];
+  return {
+    q:`<span style="color:var(--amber)">${it.n}</span> termasuk besaran apa?`,
+    svg:'<div style="font-size:clamp(50px,8vw,84px)">⚖️</div>',
+    answer: it.pokok?'Besaran Pokok':'Besaran Turunan',
+    options: shuffle(['Besaran Pokok','Besaran Turunan']),
+    x: it.pokok
+      ? `<b>${it.n}</b> adalah salah satu dari 7 besaran pokok — satuannya ditetapkan sendiri, bukan diturunkan dari besaran lain.`
+      : `<b>${it.n}</b> adalah besaran turunan karena diturunkan dari besaran pokok (${it.dari}).`
+  };
+}
+
+/* ============ mesin kuis ============ */
+const STATIONS = [
+  { id:'ruler', name:'📏 Penggaris', gen:genRuler },
+  { id:'cyl', name:'🧪 Gelas Ukur', gen:genCylinder },
+  { id:'thermo', name:'🌡️ Termometer', gen:genThermo },
+  { id:'watch', name:'⏱️ Stopwatch', gen:genStopwatch },
+  { id:'conv', name:'🔁 Konversi Satuan', gen:genConvert },
+  { id:'besaran', name:'⚖️ Besaran', gen:genBesaran },
+];
+let station = STATIONS[0], score=0, streak=0, count=0, locked=false, current=null;
+
+const tabsEl = document.getElementById('tabs');
+STATIONS.forEach(s => {
+  const b = document.createElement('button');
+  b.className = 'tab' + (s.id===station.id?' active':'');
+  b.textContent = s.name;
+  b.onclick = () => { station = s; [...tabsEl.children].forEach(c=>c.classList.remove('active')); b.classList.add('active'); newQuestion(); };
+  tabsEl.appendChild(b);
+});
+
+function newQuestion() {
+  locked = false;
+  current = station.gen();
+  document.getElementById('qtext').innerHTML = current.q;
+  document.getElementById('visual').innerHTML = current.svg;
+  document.getElementById('fb').className = 'fb';
+  document.getElementById('btnNext').style.display = 'none';
+  const box = document.getElementById('opts');
+  box.innerHTML = '';
+  current.options.forEach(o => {
+    const b = document.createElement('button');
+    b.className='opt'; b.textContent = o;
+    b.onclick = () => answer(o, b);
+    box.appendChild(b);
+  });
+}
+
+function answer(o, btn) {
+  if (locked) return;
+  locked = true; count++;
+  const fb = document.getElementById('fb');
+  [...document.getElementById('opts').children].forEach(b=>b.disabled=true);
+  if (o === current.answer) {
+    btn.classList.add('correct'); sndGood();
+    streak++; score += 10 + Math.min(streak-1,5)*2;
+    fb.className='fb show good';
+    fb.innerHTML = `✅ <b>Benar!</b> ${current.x}` + (streak>=3?` 🔥 ${streak} beruntun!`:'');
+  } else {
+    btn.classList.add('wrong'); sndBad();
+    streak = 0;
+    [...document.getElementById('opts').children].find(b=>b.textContent===current.answer)?.classList.add('correct');
+    fb.className='fb show bad';
+    fb.innerHTML = `❌ Jawaban yang benar: <b>${current.answer}</b>. ${current.x}`;
+  }
+  document.getElementById('hScore').textContent = score;
+  document.getElementById('hStreak').textContent = streak;
+  document.getElementById('hCount').textContent = count;
+  document.getElementById('btnNext').style.display = 'inline-flex';
+}
+
+newQuestion();
+</script>
+<script>function kembali(){if(history.length>1){history.back();return;}window.close();if(location.protocol!=="file:"){setTimeout(function(){location.href="/simulasi-ipa";},200);}}</script></body>
+</html>

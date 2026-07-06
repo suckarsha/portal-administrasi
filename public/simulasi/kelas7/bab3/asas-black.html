@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Campur Air — Asas Black | IPA Kelas 7</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root {
+    --bg:#0b1220; --card:rgba(255,255,255,.05); --border:rgba(255,255,255,.12);
+    --cyan:#22d3ee; --violet:#a78bfa; --green:#4ade80; --red:#f87171; --amber:#fbbf24;
+  }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:radial-gradient(1200px 700px at 70% -10%, rgba(34,211,238,.14), transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, rgba(167,139,250,.12), transparent 60%), var(--bg);
+    color:#fff; min-height:100vh; user-select:none; -webkit-user-select:none;
+  }
+  .wrap { max-width:1100px; margin:0 auto; padding:20px 24px 50px; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .brand { font-size:clamp(14px,1.6vw,18px); color:rgba(255,255,255,.55); letter-spacing:.14em; text-transform:uppercase; }
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; border:1px solid var(--border); background:var(--card); color:#fff; border-radius:16px; padding:14px 26px; font-size:clamp(15px,1.8vw,20px); font-weight:700; cursor:pointer; transition:transform .15s; }
+  .btn:active { transform:scale(.96); }
+  .btn.primary { background:linear-gradient(135deg, rgba(34,211,238,.25), rgba(167,139,250,.2)); border-color:rgba(34,211,238,.5); }
+  .btn.small { padding:10px 18px; font-size:15px; border-radius:12px; }
+  .btn:disabled { opacity:.4; cursor:default; }
+  h1 { font-size:clamp(24px,3.6vw,42px); text-align:center; margin-top:12px; }
+  h1 .hl { background:linear-gradient(90deg,var(--cyan),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { text-align:center; color:rgba(255,255,255,.6); font-size:clamp(14px,1.8vw,19px); margin-top:6px; line-height:1.5; }
+  .tabs { display:flex; gap:10px; justify-content:center; margin-top:18px; flex-wrap:wrap; }
+  .tab { border:1px solid var(--border); background:var(--card); color:rgba(255,255,255,.7); border-radius:999px; padding:12px 24px; font-size:clamp(14px,1.8vw,18px); font-weight:700; cursor:pointer; transition:.2s; }
+  .tab.active { background:rgba(34,211,238,.16); border-color:var(--cyan); color:#fff; box-shadow:0 0 20px rgba(34,211,238,.2); }
+  .screen { display:none; } .screen.active { display:block; animation:fadeIn .35s; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:none;} }
+  @keyframes shake { 0%,100%{transform:none} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+  .panel { background:var(--card); border:1px solid var(--border); border-radius:22px; max-width:940px; margin:18px auto 0; padding:clamp(18px,3vw,30px); }
+  .panel p { color:rgba(255,255,255,.75); line-height:1.65; font-size:clamp(14px,1.8vw,18px); }
+  .mixArea { display:grid; grid-template-columns:1fr auto 1fr; gap:12px; align-items:end; margin-top:18px; }
+  @media(max-width:720px){ .mixArea{ grid-template-columns:1fr; justify-items:center; } }
+  .cupBox { text-align:center; }
+  .cupBox h4 { font-size:14px; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.55); margin-bottom:10px; }
+  .cup { position:relative; width:min(150px,42vw); height:120px; margin:0 auto; border:4px solid rgba(255,255,255,.35); border-top:none; border-radius:0 0 18px 18px; overflow:hidden; }
+  .cup .w { position:absolute; left:0; right:0; bottom:0; transition:height .8s, background .8s; }
+  .cup.big { width:min(190px,50vw); height:150px; }
+  .ctl { margin-top:10px; }
+  .ctl .lb { font-size:13px; color:rgba(255,255,255,.55); margin-bottom:6px; }
+  .segs { display:flex; gap:6px; justify-content:center; flex-wrap:wrap; }
+  .seg { border:1px solid var(--border); background:var(--card); color:#fff; border-radius:10px; padding:8px 13px; font-weight:700; cursor:pointer; font-size:14px; }
+  .seg.sel { border-color:var(--cyan); background:rgba(34,211,238,.16); }
+  .plus { font-size:clamp(26px,4vw,40px); padding-bottom:50px; text-align:center; }
+  .runRow { text-align:center; margin-top:20px; }
+  .resultT { font-family:Menlo,monospace; font-size:clamp(26px,4vw,40px); font-weight:800; color:var(--amber); margin-top:8px; min-height:1.3em; }
+
+  .quizCard { border-top:1px solid var(--border); padding-top:18px; margin-top:20px; }
+  .qtext { text-align:center; font-size:clamp(16px,2.3vw,24px); font-weight:800; line-height:1.55; }
+  .opts { display:grid; grid-template-columns:1fr 1fr; gap:13px; margin-top:18px; }
+  @media(max-width:560px){ .opts{ grid-template-columns:1fr; } }
+  .opt { border:1px solid var(--border); background:var(--card); color:#fff; border-radius:15px; padding:16px 12px; font-size:clamp(14px,2vw,20px); font-weight:700; cursor:pointer; transition:transform .15s; line-height:1.4; }
+  .opt:active { transform:scale(.96); }
+  .opt.correct { border-color:var(--green); background:rgba(74,222,128,.16); }
+  .opt.wrong { border-color:var(--red); background:rgba(248,113,113,.16); animation:shake .4s; }
+  .fb { border-radius:16px; padding:14px 20px; margin-top:16px; font-size:clamp(14px,1.8vw,18px); line-height:1.6; display:none; border:1px solid; text-align:center; }
+  .fb.show { display:block; animation:fadeIn .3s; }
+  .fb.good { background:rgba(74,222,128,.1); border-color:rgba(74,222,128,.4); }
+  .fb.bad { background:rgba(248,113,113,.1); border-color:rgba(248,113,113,.4); }
+  .fb.info { background:rgba(34,211,238,.08); border-color:rgba(34,211,238,.35); }
+  .meta { text-align:center; margin-top:10px; color:rgba(255,255,255,.55); font-size:15px; }
+  .nextRow { text-align:center; margin-top:16px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand">IPA Kelas 7 · Bab 3</span>
+    <button class="btn small" onclick="kembali()">← Kembali</button>
+  </header>
+
+  <h1>Campur Air! <span class="hl">Asas Black</span> 🥣</h1>
+  <p class="sub">Air panas dicampur air dingin — bisakah kamu menebak suhu akhirnya?<br><b>Kalor yang dilepas air panas = kalor yang diterima air dingin.</b></p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setTab(0,this)">🥣 Lab Campuran</button>
+    <button class="tab" onclick="setTab(1,this)">🎯 Kuis Konsep</button>
+  </div>
+
+  <!-- TAB 0 -->
+  <section class="screen active" id="tab0">
+    <div class="panel">
+      <div class="mixArea">
+        <div class="cupBox">
+          <h4>♨️ Air Panas</h4>
+          <div class="cup"><div class="w" id="wP" style="height:60%; background:#dc2626"></div></div>
+          <div class="ctl"><div class="lb">Massa</div><div class="segs" id="mP"></div></div>
+          <div class="ctl"><div class="lb">Suhu</div><div class="segs" id="tP"></div></div>
+        </div>
+        <div class="plus">➕</div>
+        <div class="cupBox">
+          <h4>🧊 Air Dingin</h4>
+          <div class="cup"><div class="w" id="wD" style="height:60%; background:#2563eb"></div></div>
+          <div class="ctl"><div class="lb">Massa</div><div class="segs" id="mD"></div></div>
+          <div class="ctl"><div class="lb">Suhu</div><div class="segs" id="tD"></div></div>
+        </div>
+      </div>
+      <div class="runRow"><button class="btn primary" id="btnMix" onclick="prediksi()">🤔 Prediksi Dulu, Baru Campur!</button></div>
+
+      <div class="quizCard" id="predCard" style="display:none">
+        <div class="qtext" id="predQ"></div>
+        <div class="opts" id="predOpts"></div>
+        <div class="fb" id="predFb"></div>
+      </div>
+
+      <div id="mixResult" style="display:none; text-align:center; margin-top:18px">
+        <div class="cupBox" style="margin:0 auto">
+          <h4>🥣 Campuran</h4>
+          <div class="cup big"><div class="w" id="wM" style="height:0%; background:#7c3aed"></div></div>
+          <div class="resultT" id="tM"></div>
+        </div>
+        <div class="fb" id="mixFb"></div>
+        <div class="nextRow"><button class="btn primary" id="btnAgain" style="display:none" onclick="resetMix()">🔁 Coba Kombinasi Lain</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 1 -->
+  <section class="screen" id="tab1">
+    <div class="panel">
+      <div class="qtext" id="kQ"></div>
+      <div class="opts" id="kOpts"></div>
+      <div class="fb" id="kFb"></div>
+      <div class="meta" id="kMeta"></div>
+      <div class="nextRow"><button class="btn primary" id="kNext" style="display:none" onclick="nextK()">Lanjut ➜</button></div>
+    </div>
+  </section>
+</div>
+
+<script>
+let actx=null;
+function tone(f,d,t='sine',v=.18,w=0){ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); const o=actx.createOscillator(),g=actx.createGain(); o.type=t;o.frequency.value=f; g.gain.setValueAtTime(v,actx.currentTime+w); g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+w+d); o.connect(g);g.connect(actx.destination); o.start(actx.currentTime+w);o.stop(actx.currentTime+w+d);}catch(e){} }
+const sndGood=()=>{tone(660,.12);tone(880,.18,'sine',.18,.1)}, sndBad=()=>tone(220,.22,'sawtooth',.1);
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+const pickN=(arr,n)=>{ const c=[...arr]; const out=[]; while(out.length<n&&c.length){ out.push(c.splice(Math.floor(Math.random()*c.length),1)[0]); } return out; };
+const fmt = x => (Math.round(x*10)/10).toString().replace('.',',');
+
+function setTab(n, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('tab'+n).classList.add('active');
+}
+
+/* ---------- lab campuran ---------- */
+let mp=200, tp=80, md=200, td=20, mixed=false;
+function segRow(id, vals, get, set, unit) {
+  const box = document.getElementById(id);
+  box.innerHTML='';
+  vals.forEach(v => {
+    const b = document.createElement('button');
+    b.className = 'seg' + (get()===v?' sel':'');
+    b.textContent = v + unit;
+    b.onclick = () => { if (mixed) return; set(v); renderSegs(); };
+    box.appendChild(b);
+  });
+}
+function renderSegs() {
+  segRow('mP', [100,200,300], ()=>mp, v=>mp=v, ' g');
+  segRow('tP', [60,70,80,90], ()=>tp, v=>tp=v, '°C');
+  segRow('mD', [100,200,300], ()=>md, v=>md=v, ' g');
+  segRow('tD', [10,20,30], ()=>td, v=>td=v, '°C');
+  document.getElementById('wP').style.height = (30+mp/300*55)+'%';
+  document.getElementById('wD').style.height = (30+md/300*55)+'%';
+}
+renderSegs();
+
+function tFinal(){ return (mp*tp + md*td) / (mp+md); }
+
+function prediksi() {
+  document.getElementById('btnMix').style.display='none';
+  const card = document.getElementById('predCard');
+  card.style.display='block';
+  document.getElementById('predQ').innerHTML =
+    `${mp} g air ${tp}°C dicampur ${md} g air ${td}°C.<br>Suhu campuran = … ? <span style="color:rgba(255,255,255,.5)">(hitung dengan t = (m₁t₁ + m₂t₂) ÷ (m₁+m₂))</span>`;
+  document.getElementById('predFb').className='fb';
+  const ans = Math.round(tFinal()*10)/10;
+  const naive = Math.round((tp+td)/2*10)/10;
+  const wrongs = [...new Set([naive, ans+10, ans-10, tp, td].map(v=>Math.round(v*10)/10))].filter(v=>v!==ans);
+  const box = document.getElementById('predOpts');
+  box.innerHTML='';
+  shuffle([ans, ...pickN(wrongs,3)]).forEach(v => {
+    const b = document.createElement('button');
+    b.className='opt'; b.textContent = fmt(v)+' °C';
+    b.onclick = () => {
+      const fb = document.getElementById('predFb');
+      [...box.children].forEach(x=>x.disabled=true);
+      const rumus = `(${mp}×${tp} + ${md}×${td}) ÷ ${mp+md} = ${fmt(ans)}°C`;
+      if (v===ans) { b.classList.add('correct'); sndGood(); fb.className='fb show good'; fb.innerHTML=`✅ <b>Benar!</b> t = ${rumus}. Sekarang buktikan!`; }
+      else { b.classList.add('wrong'); sndBad(); [...box.children].find(x=>x.textContent===fmt(ans)+' °C').classList.add('correct'); fb.className='fb show bad'; fb.innerHTML=`❌ Hitungannya: t = ${rumus}.` + (v===naive&&mp!==md?' Rata-rata biasa hanya berlaku jika MASSA KEDUANYA SAMA!':''); }
+      setTimeout(campurkan, 1500);
+    };
+    box.appendChild(b);
+  });
+}
+
+function campurkan() {
+  mixed = true;
+  document.getElementById('mixResult').style.display='block';
+  const ans = tFinal();
+  const frac = (ans - 10) / 80;
+  const warm = `rgb(${Math.round(37+frac*180)}, ${Math.round(99-frac*40)}, ${Math.round(235-frac*150)})`;
+  document.getElementById('wP').style.height='0%';
+  document.getElementById('wD').style.height='0%';
+  setTimeout(() => {
+    const wm = document.getElementById('wM');
+    wm.style.height = (30 + (mp+md)/600*55) + '%';
+    wm.style.background = warm;
+    tone(500,.2,'sine',.14);
+  }, 400);
+  let shown = 0;
+  const iv = setInterval(() => {
+    shown += 2;
+    const cur = Math.min(ans, shown>ans?ans:shown);
+    document.getElementById('tM').textContent = fmt(Math.min(ans,shown)) + ' °C';
+    if (shown >= ans) {
+      clearInterval(iv);
+      document.getElementById('tM').textContent = fmt(ans) + ' °C';
+      const fb = document.getElementById('mixFb');
+      fb.className='fb show info';
+      const qLepas = mp/1000*4200*(tp-ans), qTerima = md/1000*4200*(ans-td);
+      fb.innerHTML = `⚖️ <b>Asas Black terbukti:</b> kalor yang DILEPAS air panas (${Math.round(qLepas).toLocaleString('id-ID')} J) = kalor yang DITERIMA air dingin (${Math.round(qTerima).toLocaleString('id-ID')} J).`;
+      document.getElementById('btnAgain').style.display='inline-flex';
+      sndGood();
+    }
+  }, 60);
+}
+
+function resetMix() {
+  mixed = false;
+  document.getElementById('predCard').style.display='none';
+  document.getElementById('mixResult').style.display='none';
+  document.getElementById('tM').textContent='';
+  document.getElementById('wM').style.height='0%';
+  document.getElementById('btnAgain').style.display='none';
+  document.getElementById('btnMix').style.display='inline-flex';
+  renderSegs();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ---------- kuis konsep ---------- */
+const KQ = shuffle([
+  { q:'Bunyi Asas Black adalah…', o:['Kalor yang dilepas benda panas = kalor yang diterima benda dingin','Benda panas selalu lebih berat','Suhu campuran selalu rata-rata kedua suhu','Kalor mengalir dari dingin ke panas'], a:0, x:'Energi kalor berpindah dari benda bersuhu tinggi ke rendah sampai suhunya sama (setimbang), tanpa ada yang hilang.' },
+  { q:'Saat air panas dicampur air dingin, kalor mengalir dari…', o:['Air panas ke air dingin','Air dingin ke air panas','Keduanya ke udara','Tidak ada perpindahan'], a:0, x:'Kalor selalu berpindah dari benda bersuhu TINGGI ke benda bersuhu RENDAH.' },
+  { q:'Campuran air panas dan dingin berhenti berubah suhunya ketika…', o:['Suhu keduanya sudah sama (setimbang termal)','Airnya habis','Kalor sudah hilang semua','Air mulai membeku'], a:0, x:'Perpindahan kalor berhenti saat tercapai kesetimbangan termal.' },
+  { q:'200 g air 80°C dicampur 200 g air 20°C. Karena massanya SAMA, suhu akhirnya…', o:['Tepat di tengah: 50°C','Lebih dekat ke 80°C','Lebih dekat ke 20°C','Tetap 80°C'], a:0, x:'Massa sama → suhu akhir = rata-rata = (80+20)/2 = 50°C.' },
+  { q:'300 g air 80°C dicampur 100 g air 20°C. Suhu akhirnya akan…', o:['Lebih dekat ke 80°C karena air panasnya lebih banyak','Lebih dekat ke 20°C','Tepat 50°C','Tepat 100°C'], a:0, x:'Massa yang lebih besar lebih "kuat" menarik suhu campuran: t = (300×80+100×20)/400 = 65°C.' },
+  { q:'Segelas teh panas dibiarkan di meja lama-lama menjadi dingin karena…', o:['Melepaskan kalor ke udara di sekitarnya','Kalornya berubah jadi es','Udara memberi dingin ke teh','Gelasnya menyerap semua panas'], a:0, x:'"Dingin" tidak berpindah — yang berpindah adalah KALOR, dari teh panas ke udara yang lebih dingin.' },
+]);
+let ki=0, kScore=0, kLock=false;
+function renderK() {
+  kLock=false;
+  const q = KQ[ki];
+  document.getElementById('kQ').textContent = q.q;
+  document.getElementById('kFb').className='fb';
+  document.getElementById('kNext').style.display='none';
+  document.getElementById('kMeta').textContent = `Soal ${ki+1} dari ${KQ.length} · Skor: ${kScore}`;
+  const box = document.getElementById('kOpts');
+  box.innerHTML='';
+  shuffle(q.o.map((t,i)=>({t,i}))).forEach(({t,i}) => {
+    const b = document.createElement('button');
+    b.className='opt'; b.textContent=t;
+    b.onclick = () => {
+      if (kLock) return; kLock=true;
+      const fb = document.getElementById('kFb');
+      [...box.children].forEach(c=>c.disabled=true);
+      if (i===q.a) { b.classList.add('correct'); kScore+=10; sndGood(); fb.className='fb show good'; fb.innerHTML='✅ <b>Benar!</b> '+q.x; }
+      else { b.classList.add('wrong'); sndBad(); [...box.children].find(c=>c.textContent===q.o[q.a]).classList.add('correct'); fb.className='fb show bad'; fb.innerHTML='❌ Jawabannya: <b>'+q.o[q.a]+'</b>. '+q.x; }
+      document.getElementById('kMeta').textContent = `Soal ${ki+1} dari ${KQ.length} · Skor: ${kScore}`;
+      document.getElementById('kNext').style.display='inline-flex';
+      document.getElementById('kNext').textContent = ki+1<KQ.length?'Lanjut ➜':'Ulangi 🔁';
+    };
+    box.appendChild(b);
+  });
+}
+function nextK() { ki++; if (ki>=KQ.length){ki=0;kScore=0;shuffle(KQ);} renderK(); }
+renderK();
+</script>
+<script>function kembali(){if(history.length>1){history.back();return;}window.close();if(location.protocol!=="file:"){setTimeout(function(){location.href="/simulasi-ipa";},200);}}</script></body>
+</html>

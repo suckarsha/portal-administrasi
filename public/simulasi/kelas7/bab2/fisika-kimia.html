@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fisika atau Kimia? | IPA Kelas 7</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root {
+    --bg:#0b1220; --card:rgba(255,255,255,.05); --border:rgba(255,255,255,.12);
+    --cyan:#22d3ee; --violet:#a78bfa; --green:#4ade80; --red:#f87171; --amber:#fbbf24;
+  }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:radial-gradient(1200px 700px at 70% -10%, rgba(34,211,238,.14), transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, rgba(167,139,250,.12), transparent 60%), var(--bg);
+    color:#fff; min-height:100vh; user-select:none; -webkit-user-select:none;
+  }
+  .wrap { max-width:1100px; margin:0 auto; padding:20px 24px 50px; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .brand { font-size:clamp(14px,1.6vw,18px); color:rgba(255,255,255,.55); letter-spacing:.14em; text-transform:uppercase; }
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; border:1px solid var(--border); background:var(--card); color:#fff; border-radius:16px; padding:14px 26px; font-size:clamp(15px,1.8vw,20px); font-weight:700; cursor:pointer; transition:transform .15s; }
+  .btn:active { transform:scale(.96); }
+  .btn.primary { background:linear-gradient(135deg, rgba(34,211,238,.25), rgba(167,139,250,.2)); border-color:rgba(34,211,238,.5); }
+  .btn.small { padding:10px 18px; font-size:15px; border-radius:12px; }
+  h1 { font-size:clamp(26px,4vw,48px); text-align:center; margin-top:14px; }
+  h1 .hl { background:linear-gradient(90deg,var(--cyan),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { text-align:center; color:rgba(255,255,255,.6); font-size:clamp(14px,1.8vw,19px); margin-top:8px; line-height:1.5; }
+  .screen { display:none; } .screen.active { display:block; animation:fadeIn .35s; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:none;} }
+  @keyframes shake { 0%,100%{transform:none} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+
+  .setup { max-width:700px; margin:32px auto 0; text-align:center; }
+  .setup .label { font-size:clamp(16px,2vw,22px); color:rgba(255,255,255,.7); margin-bottom:16px; }
+  .teamPick { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .teamPick button { width:clamp(84px,11vw,120px); height:clamp(84px,11vw,120px); border-radius:20px; border:1px solid var(--border); background:var(--card); color:#fff; cursor:pointer; font-weight:700; transition:.2s; }
+  .teamPick button .n { font-size:clamp(28px,3.6vw,40px); display:block; }
+  .teamPick button .t { font-size:13px; color:rgba(255,255,255,.55); }
+  .teamPick button.sel { border-color:var(--cyan); background:rgba(34,211,238,.15); box-shadow:0 0 22px rgba(34,211,238,.25); }
+  .howto { margin:26px auto 0; max-width:740px; text-align:left; background:var(--card); border:1px solid var(--border); border-radius:20px; padding:20px 24px; font-size:clamp(14px,1.7vw,17px); color:rgba(255,255,255,.75); line-height:1.65; }
+  .howto b { color:var(--cyan); }
+
+  .hud { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:8px; }
+  .hudBox { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:10px 20px; text-align:center; min-width:115px; }
+  .hudBox .v { font-size:clamp(19px,2.4vw,28px); font-weight:800; }
+  .hudBox .k { font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.5); }
+  .hudBox.turn { border-color:var(--amber); } .hudBox.turn .v { color:var(--amber); }
+
+  .qcard { max-width:840px; margin:22px auto 0; background:linear-gradient(160deg, rgba(255,255,255,.08), rgba(255,255,255,.03)); border:1px solid var(--border); border-radius:24px; padding:clamp(22px,3.6vw,40px); text-align:center; }
+  .qcard .emoji { font-size:clamp(44px,6.5vw,76px); }
+  .qcard .qtext { font-size:clamp(19px,2.8vw,31px); font-weight:800; margin-top:12px; line-height:1.45; }
+  .qcard .hint { margin-top:8px; color:rgba(255,255,255,.5); font-size:clamp(13px,1.6vw,16px); }
+  .bigOpts { display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:840px; margin:20px auto 0; }
+  @media(max-width:560px){ .bigOpts{ grid-template-columns:1fr; } }
+  .bigOpt { border:2px solid var(--border); border-radius:22px; padding:clamp(20px,3vw,30px) 14px; cursor:pointer; text-align:center; background:var(--card); color:#fff; transition:transform .15s; }
+  .bigOpt:active { transform:scale(.95); }
+  .bigOpt .bi { font-size:clamp(34px,4.6vw,52px); }
+  .bigOpt .bn { font-size:clamp(18px,2.5vw,26px); font-weight:800; margin-top:6px; }
+  .bigOpt .bd { font-size:clamp(12.5px,1.5vw,15px); color:rgba(255,255,255,.55); margin-top:4px; line-height:1.4; }
+  .bigOpt.correct { border-color:var(--green); background:rgba(74,222,128,.14); box-shadow:0 0 28px rgba(74,222,128,.25); }
+  .bigOpt.wrong { border-color:var(--red); background:rgba(248,113,113,.14); animation:shake .4s; }
+  .opts { display:grid; grid-template-columns:1fr 1fr; gap:13px; max-width:840px; margin:20px auto 0; }
+  @media(max-width:560px){ .opts{ grid-template-columns:1fr; } }
+  .opt { border:1px solid var(--border); background:var(--card); color:#fff; border-radius:15px; padding:16px 12px; font-size:clamp(15px,2vw,20px); font-weight:700; cursor:pointer; transition:transform .15s; line-height:1.4; }
+  .opt:active { transform:scale(.96); }
+  .opt.correct { border-color:var(--green); background:rgba(74,222,128,.16); }
+  .opt.wrong { border-color:var(--red); background:rgba(248,113,113,.16); animation:shake .4s; }
+  .fb { max-width:840px; border-radius:16px; padding:14px 20px; margin:16px auto 0; font-size:clamp(14px,1.8vw,18px); line-height:1.55; display:none; border:1px solid; text-align:center; }
+  .fb.show { display:block; animation:fadeIn .3s; }
+  .fb.good { background:rgba(74,222,128,.1); border-color:rgba(74,222,128,.4); }
+  .fb.bad { background:rgba(248,113,113,.1); border-color:rgba(248,113,113,.4); }
+  .nextRow { text-align:center; margin-top:18px; }
+  .finalBoard { max-width:640px; margin:28px auto 0; display:flex; flex-direction:column; gap:13px; }
+  .frow { display:flex; align-items:center; gap:16px; background:var(--card); border:1px solid var(--border); border-radius:18px; padding:16px 24px; font-size:clamp(17px,2.3vw,24px); font-weight:700; }
+  .frow.winner { border-color:var(--amber); background:rgba(251,191,36,.12); box-shadow:0 0 30px rgba(251,191,36,.2); }
+  .frow .medal { font-size:clamp(24px,3.2vw,34px); }
+  .frow .pts { margin-left:auto; color:var(--cyan); }
+  .bigEmoji { text-align:center; font-size:clamp(56px,8vw,100px); margin-top:24px; }
+  .roundBadge { text-align:center; margin-top:14px; }
+  .roundBadge span { background:rgba(167,139,250,.15); border:1px solid rgba(167,139,250,.5); color:#d8ccff; border-radius:999px; padding:8px 22px; font-weight:800; font-size:clamp(13px,1.7vw,17px); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand">IPA Kelas 7 · Bab 2</span>
+    <button class="btn small" onclick="kembali()">← Kembali</button>
+  </header>
+
+  <!-- START -->
+  <section class="screen active" id="scrStart">
+    <h1><span class="hl">Fisika</span> atau <span class="hl">Kimia</span>? ⚡</h1>
+    <p class="sub">Perubahan fisika: tidak menghasilkan zat baru. Perubahan kimia: menghasilkan zat baru!</p>
+    <div class="setup">
+      <p class="label">Main berapa kelompok?</p>
+      <div class="teamPick" id="teamPick"></div>
+      <div class="howto">
+        <b>Babak 1:</b> tentukan apakah peristiwa termasuk <b>perubahan fisika</b> atau <b>perubahan kimia</b> (+10 poin).<br>
+        <b>Babak 2:</b> kenali <b>ciri-ciri perubahan kimia</b> dari peristiwanya: muncul gas, endapan, perubahan warna, atau perubahan suhu (+10 poin).
+      </div>
+      <div style="margin-top:26px">
+        <button class="btn primary" style="font-size:clamp(17px,2.3vw,24px); padding:17px 42px" onclick="startGame()">🚀 Mulai Bermain</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- GAME -->
+  <section class="screen" id="scrGame">
+    <div class="hud" id="hud"></div>
+    <div class="roundBadge"><span id="roundLbl">BABAK 1 · Fisika atau Kimia?</span></div>
+    <div class="qcard">
+      <div class="emoji" id="qEmoji">🔥</div>
+      <div class="qtext" id="qText"></div>
+      <div class="hint" id="qNum"></div>
+    </div>
+    <div class="bigOpts" id="bigOpts"></div>
+    <div class="opts" id="ciriOpts" style="display:none"></div>
+    <div class="fb" id="feedback"></div>
+    <div class="nextRow"><button class="btn primary" id="btnNext" style="display:none" onclick="nextQ()">Lanjut ➜</button></div>
+  </section>
+
+  <!-- END -->
+  <section class="screen" id="scrEnd">
+    <div class="bigEmoji">🏆</div>
+    <h1>Permainan <span class="hl">Selesai!</span></h1>
+    <div class="finalBoard" id="finalBoard"></div>
+    <div style="text-align:center; margin-top:28px; display:flex; gap:14px; justify-content:center; flex-wrap:wrap">
+      <button class="btn primary" onclick="location.reload()">🔁 Main Lagi</button>
+      <button class="btn" onclick="kembali()">← Kembali ke Menu</button>
+    </div>
+  </section>
+</div>
+
+<script>
+let actx=null;
+function tone(f,d,t='sine',v=.18,w=0){ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); const o=actx.createOscillator(),g=actx.createGain(); o.type=t;o.frequency.value=f; g.gain.setValueAtTime(v,actx.currentTime+w); g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+w+d); o.connect(g);g.connect(actx.destination); o.start(actx.currentTime+w);o.stop(actx.currentTime+w+d);}catch(e){} }
+const sndGood=()=>{tone(660,.12);tone(880,.18,'sine',.18,.1)}, sndBad=()=>tone(220,.25,'sawtooth',.12);
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+/* BABAK 1: fisika vs kimia */
+const R1 = [
+  { e:'🧊', q:'Es batu mencair menjadi air', a:'fisika', x:'Hanya wujudnya berubah; zatnya tetap air (H₂O). Dibekukan lagi pun bisa kembali.' },
+  { e:'📄', q:'Kertas digunting menjadi potongan kecil', a:'fisika', x:'Bentuk dan ukurannya berubah, tetapi tetap kertas — tidak ada zat baru.' },
+  { e:'🔥', q:'Kertas dibakar menjadi abu', a:'kimia', x:'Terbentuk zat baru: abu, asap, dan gas. Abu tidak bisa kembali menjadi kertas.' },
+  { e:'🍚', q:'Beras dimasak menjadi nasi', a:'kimia', x:'Pati beras berubah struktur (terjadi reaksi dengan air dan panas) — nasi tidak bisa kembali jadi beras.' },
+  { e:'🧂', q:'Gula dilarutkan ke dalam air teh', a:'fisika', x:'Gula hanya "bersembunyi" di antara partikel air. Diuapkan airnya, gula kembali lagi.' },
+  { e:'🚲', q:'Rantai sepeda berkarat', a:'kimia', x:'Besi bereaksi dengan oksigen dan air membentuk zat baru: karat (warnanya pun berubah).' },
+  { e:'🪵', q:'Kayu dipotong dan diukir menjadi patung', a:'fisika', x:'Bentuknya berubah tetapi zatnya tetap kayu.' },
+  { e:'🥛', q:'Susu berubah masam karena basi', a:'kimia', x:'Bakteri mengubah zat dalam susu menjadi zat baru (asam) — muncul bau dan rasa baru.' },
+  { e:'🕯️', q:'Lilin meleleh terkena panas api', a:'fisika', x:'Lilin padat → cair, tetap lilin. (Tapi sumbu yang TERBAKAR adalah perubahan kimia!)' },
+  { e:'🍌', q:'Pisang membusuk berwarna cokelat kehitaman', a:'kimia', x:'Pembusukan menghasilkan zat baru — warna dan bau berubah, tidak bisa kembali segar.' },
+  { e:'💧', q:'Air menguap dari jemuran', a:'fisika', x:'Air cair → uap air, zatnya tetap H₂O.' },
+  { e:'🎆', q:'Petasan meledak', a:'kimia', x:'Bahan petasan bereaksi menghasilkan gas, cahaya, panas, dan bunyi — zat baru terbentuk.' },
+  { e:'🥖', q:'Adonan roti mengembang lalu matang saat dipanggang', a:'kimia', x:'Ragi menghasilkan gas (fermentasi) dan adonan berubah menjadi zat baru saat matang.' },
+  { e:'🧲', q:'Serbuk besi dipisahkan dari pasir dengan magnet', a:'fisika', x:'Hanya memisahkan campuran; besi dan pasir tidak berubah menjadi zat lain.' },
+  { e:'🍎', q:'Buah apel yang digigit berubah cokelat di udara', a:'kimia', x:'Zat dalam apel bereaksi dengan oksigen (oksidasi) — terbentuk zat baru berwarna cokelat.' },
+  { e:'🧊', q:'Kapur barus menyublim di lemari', a:'fisika', x:'Padat → gas tanpa menjadi zat lain — perubahan wujud termasuk perubahan fisika.' },
+];
+
+/* BABAK 2: ciri perubahan kimia */
+const CIRI = ['Muncul gas 💨','Terbentuk endapan ⬇️','Perubahan warna 🎨','Perubahan suhu 🌡️'];
+const R2 = [
+  { e:'🥤', q:'Soda kue dicampur cuka: muncul gelembung-gelembung yang membuat balon mengembang', a:0, x:'Gelembung menandakan terbentuknya GAS (karbon dioksida) — ciri perubahan kimia.' },
+  { e:'🧪', q:'Dua larutan bening dicampur, lalu muncul butiran padat yang mengendap di dasar tabung', a:1, x:'Padatan yang turun ke dasar disebut ENDAPAN — ciri terbentuknya zat baru.' },
+  { e:'🍎', q:'Irisan apel yang dibiarkan berubah dari putih menjadi cokelat', a:2, x:'PERUBAHAN WARNA menandakan zat baru terbentuk dari reaksi dengan oksigen.' },
+  { e:'🧯', q:'Karbit dicampur air: wadahnya jadi panas sendiri', a:3, x:'Reaksi yang MENGHASILKAN PANAS (eksoterm) — perubahan suhu tanpa dipanaskan menandakan reaksi kimia.' },
+  { e:'🚲', q:'Pagar besi yang semula abu-abu mengilap menjadi cokelat kusam', a:2, x:'Warna berubah karena terbentuk zat baru: karat besi.' },
+  { e:'🍞', q:'Adonan donat mengembang penuh rongga udara setelah diberi ragi', a:0, x:'Ragi menghasilkan GAS karbon dioksida — itulah yang membuat adonan mengembang.' },
+  { e:'❄️', q:'Kompres instan diremas langsung terasa dingin', a:3, x:'Reaksi yang MENYERAP panas (endoterm) membuat suhu turun — ciri reaksi kimia.' },
+  { e:'🫖', q:'Air kapur bening ditiup dengan sedotan lama-lama menjadi keruh dan muncul serbuk putih', a:1, x:'Gas CO₂ dari napas bereaksi membentuk ENDAPAN kapur (kalsium karbonat).' },
+];
+
+let teamCount=1, teams=[], turn=0, round=1, qi=0, order1=[], order2=[], locked=false;
+
+const pick = document.getElementById('teamPick');
+[1,2,3,4].forEach(n => {
+  const b = document.createElement('button');
+  b.innerHTML = `<span class="n">${n}</span><span class="t">kelompok</span>`;
+  if (n===1) b.classList.add('sel');
+  b.onclick = () => { teamCount=n; [...pick.children].forEach(c=>c.classList.remove('sel')); b.classList.add('sel'); };
+  pick.appendChild(b);
+});
+
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
+
+function startGame() {
+  teams = Array.from({length:teamCount}, (_,i)=>({ name: teamCount===1?'Skor':'Kelompok '+(i+1), score:0 }));
+  order1 = shuffle([...R1.keys()]);
+  if (teamCount>1) order1 = order1.slice(0, Math.floor(order1.length/teamCount)*teamCount);
+  else order1 = order1.slice(0, 12);
+  order2 = shuffle([...R2.keys()]);
+  if (teamCount>1) order2 = order2.slice(0, Math.floor(order2.length/teamCount)*teamCount);
+  round=1; qi=0; turn=0;
+  show('scrGame'); renderHUD(); renderQ();
+}
+
+function renderHUD() {
+  document.getElementById('hud').innerHTML = teams.map((t,i)=>`
+    <div class="hudBox ${i===turn && teamCount>1?'turn':''}">
+      <div class="v">${t.score}</div><div class="k">${t.name}${i===turn && teamCount>1?' · giliran':''}</div>
+    </div>`).join('');
+}
+
+function renderQ() {
+  locked = false;
+  const fb = document.getElementById('feedback');
+  fb.className='fb';
+  document.getElementById('btnNext').style.display='none';
+  if (round===1) {
+    const q = R1[order1[qi]];
+    document.getElementById('roundLbl').textContent = 'BABAK 1 · Fisika atau Kimia?';
+    document.getElementById('qEmoji').textContent = q.e;
+    document.getElementById('qText').textContent = q.q;
+    document.getElementById('qNum').textContent = `Soal ${qi+1} dari ${order1.length}` + (teamCount>1?` — giliran ${teams[turn].name}`:'');
+    document.getElementById('ciriOpts').style.display='none';
+    const box = document.getElementById('bigOpts');
+    box.style.display='grid';
+    box.innerHTML = `
+      <button class="bigOpt" data-a="fisika"><div class="bi">🧊</div><div class="bn">Perubahan Fisika</div><div class="bd">tidak menghasilkan zat baru, bisa kembali</div></button>
+      <button class="bigOpt" data-a="kimia"><div class="bi">⚗️</div><div class="bn">Perubahan Kimia</div><div class="bd">menghasilkan zat baru, sulit kembali</div></button>`;
+    [...box.children].forEach(b => b.onclick = () => answer1(b));
+  } else {
+    const q = R2[order2[qi]];
+    document.getElementById('roundLbl').textContent = 'BABAK 2 · Apa Ciri Perubahan Kimianya?';
+    document.getElementById('qEmoji').textContent = q.e;
+    document.getElementById('qText').textContent = q.q;
+    document.getElementById('qNum').textContent = `Soal ${qi+1} dari ${order2.length}` + (teamCount>1?` — giliran ${teams[turn].name}`:'');
+    document.getElementById('bigOpts').style.display='none';
+    const box = document.getElementById('ciriOpts');
+    box.style.display='grid';
+    box.innerHTML='';
+    CIRI.forEach((c,i) => {
+      const b = document.createElement('button');
+      b.className='opt'; b.textContent=c; b.dataset.i=i;
+      b.onclick = () => answer2(b);
+      box.appendChild(b);
+    });
+  }
+}
+
+function answer1(btn) {
+  if (locked) return; locked = true;
+  const q = R1[order1[qi]];
+  const fb = document.getElementById('feedback');
+  const box = document.getElementById('bigOpts');
+  [...box.children].forEach(b=>b.disabled=true);
+  if (btn.dataset.a === q.a) {
+    btn.classList.add('correct'); teams[turn].score+=10; sndGood();
+    fb.className='fb show good'; fb.innerHTML='✅ <b>Benar! +10 poin.</b> '+q.x;
+  } else {
+    btn.classList.add('wrong'); sndBad();
+    [...box.children].find(b=>b.dataset.a===q.a).classList.add('correct');
+    fb.className='fb show bad'; fb.innerHTML=`❌ Ini <b>perubahan ${q.a}</b>. ${q.x}`;
+  }
+  renderHUD();
+  const nb = document.getElementById('btnNext');
+  nb.style.display='inline-flex';
+  nb.textContent = qi+1<order1.length ? 'Lanjut ➜' : 'Ke Babak 2 🎨';
+}
+
+function answer2(btn) {
+  if (locked) return; locked = true;
+  const q = R2[order2[qi]];
+  const fb = document.getElementById('feedback');
+  const box = document.getElementById('ciriOpts');
+  [...box.children].forEach(b=>b.disabled=true);
+  if (+btn.dataset.i === q.a) {
+    btn.classList.add('correct'); teams[turn].score+=10; sndGood();
+    fb.className='fb show good'; fb.innerHTML='✅ <b>Benar! +10 poin.</b> '+q.x;
+  } else {
+    btn.classList.add('wrong'); sndBad();
+    [...box.children].find(b=>+b.dataset.i===q.a).classList.add('correct');
+    fb.className='fb show bad'; fb.innerHTML=`❌ Ciri yang paling tampak: <b>${CIRI[q.a]}</b>. ${q.x}`;
+  }
+  renderHUD();
+  const nb = document.getElementById('btnNext');
+  nb.style.display='inline-flex';
+  nb.textContent = qi+1<order2.length ? 'Lanjut ➜' : 'Lihat Hasil 🏁';
+}
+
+function nextQ() {
+  qi++;
+  const max = round===1 ? order1.length : order2.length;
+  if (qi >= max) {
+    if (round===1) { round=2; qi=0; turn=(turn+1)%teamCount; renderHUD(); renderQ(); return; }
+    return finish();
+  }
+  turn = (turn+1)%teamCount;
+  renderHUD(); renderQ();
+}
+
+function finish() {
+  show('scrEnd');
+  const sorted=[...teams].sort((a,b)=>b.score-a.score);
+  const medals=['🥇','🥈','🥉','🏅'];
+  document.getElementById('finalBoard').innerHTML = sorted.map((t,i)=>`
+    <div class="frow ${i===0?'winner':''}">
+      <span class="medal">${teamCount===1?'⭐':medals[i]}</span>
+      <span>${t.name}</span><span class="pts">${t.score} poin</span>
+    </div>`).join('');
+  tone(523,.15); tone(659,.15,'sine',.18,.15); tone(784,.3,'sine',.18,.3);
+}
+</script>
+<script>function kembali(){if(history.length>1){history.back();return;}window.close();if(location.protocol!=="file:"){setTimeout(function(){location.href="/simulasi-ipa";},200);}}</script></body>
+</html>

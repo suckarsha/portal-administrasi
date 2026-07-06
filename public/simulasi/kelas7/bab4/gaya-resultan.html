@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adu Gaya — Resultan &amp; Jenis Gaya | IPA Kelas 7</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root {
+    --bg:#0b1220; --card:rgba(255,255,255,.05); --border:rgba(255,255,255,.12);
+    --cyan:#22d3ee; --violet:#a78bfa; --green:#4ade80; --red:#f87171; --amber:#fbbf24;
+  }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:radial-gradient(1200px 700px at 70% -10%, rgba(34,211,238,.14), transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, rgba(167,139,250,.12), transparent 60%), var(--bg);
+    color:#fff; min-height:100vh; user-select:none; -webkit-user-select:none;
+  }
+  .wrap { max-width:1100px; margin:0 auto; padding:20px 24px 50px; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .brand { font-size:clamp(14px,1.6vw,18px); color:rgba(255,255,255,.55); letter-spacing:.14em; text-transform:uppercase; }
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; border:1px solid var(--border); background:var(--card); color:#fff; border-radius:16px; padding:14px 26px; font-size:clamp(15px,1.8vw,20px); font-weight:700; cursor:pointer; transition:transform .15s; }
+  .btn:active { transform:scale(.96); }
+  .btn.primary { background:linear-gradient(135deg, rgba(34,211,238,.25), rgba(167,139,250,.2)); border-color:rgba(34,211,238,.5); }
+  .btn.small { padding:10px 18px; font-size:15px; border-radius:12px; }
+  h1 { font-size:clamp(24px,3.6vw,42px); text-align:center; margin-top:12px; }
+  h1 .hl { background:linear-gradient(90deg,var(--cyan),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { text-align:center; color:rgba(255,255,255,.6); font-size:clamp(14px,1.8vw,19px); margin-top:6px; }
+  .tabs { display:flex; gap:10px; justify-content:center; margin-top:18px; flex-wrap:wrap; }
+  .tab { border:1px solid var(--border); background:var(--card); color:rgba(255,255,255,.7); border-radius:999px; padding:12px 22px; font-size:clamp(13px,1.7vw,17px); font-weight:700; cursor:pointer; transition:.2s; }
+  .tab.active { background:rgba(34,211,238,.16); border-color:var(--cyan); color:#fff; box-shadow:0 0 20px rgba(34,211,238,.2); }
+  .screen { display:none; } .screen.active { display:block; animation:fadeIn .35s; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:none;} }
+  @keyframes shake { 0%,100%{transform:none} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+  .panel { background:var(--card); border:1px solid var(--border); border-radius:22px; max-width:960px; margin:18px auto 0; padding:clamp(18px,3vw,30px); }
+  .panel p { color:rgba(255,255,255,.75); line-height:1.65; font-size:clamp(14px,1.8vw,18px); }
+  .arena { position:relative; height:150px; background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:16px; margin-top:16px; overflow:hidden; }
+  .arena .mid { position:absolute; left:50%; top:0; bottom:0; border-left:2px dashed rgba(255,255,255,.2); }
+  .kotak { position:absolute; left:50%; top:44px; width:74px; height:62px; transform:translateX(-50%); transition:left 1.6s cubic-bezier(.3,.7,.4,1); display:flex; align-items:center; justify-content:center; font-size:40px; background:#7c5a2e; border:3px solid #caa96a; border-radius:10px; }
+  .fLabel { position:absolute; top:10px; font-weight:800; font-family:Menlo,monospace; font-size:clamp(14px,1.8vw,18px); }
+  .fLabel.kiri { left:16px; color:var(--red); }
+  .fLabel.kanan { right:16px; color:var(--cyan); }
+  .arrowL, .arrowR { position:absolute; top:70px; height:10px; border-radius:6px; transition:width .3s; }
+  .arrowL { right:calc(50% + 44px); background:linear-gradient(90deg, transparent, var(--red)); }
+  .arrowR { left:calc(50% + 44px); background:linear-gradient(90deg, var(--cyan), transparent); }
+  .ctlGrid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px; }
+  @media(max-width:640px){ .ctlGrid{ grid-template-columns:1fr; } }
+  .ctlBox { background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:14px; padding:14px; text-align:center; }
+  .ctlBox h4 { font-size:14px; letter-spacing:.08em; text-transform:uppercase; }
+  .ctlBox.kiri h4 { color:var(--red); } .ctlBox.kanan h4 { color:var(--cyan); }
+  .segs { display:flex; gap:7px; justify-content:center; margin-top:10px; flex-wrap:wrap; }
+  .seg { border:1px solid var(--border); background:var(--card); color:#fff; border-radius:10px; padding:9px 15px; font-weight:700; cursor:pointer; font-size:14.5px; }
+  .seg.sel { border-color:var(--amber); background:rgba(251,191,36,.15); }
+  .resultRow { text-align:center; margin-top:16px; }
+  .resBadge { display:inline-block; background:rgba(167,139,250,.12); border:1px solid rgba(167,139,250,.45); border-radius:14px; padding:12px 26px; font-size:clamp(15px,2vw,21px); font-weight:800; font-family:Menlo,monospace; color:#d8ccff; }
+  .fb { border-radius:16px; padding:14px 20px; margin-top:16px; font-size:clamp(14px,1.8vw,18px); line-height:1.6; display:none; border:1px solid; text-align:center; }
+  .fb.show { display:block; animation:fadeIn .3s; }
+  .fb.good { background:rgba(74,222,128,.1); border-color:rgba(74,222,128,.4); }
+  .fb.bad { background:rgba(248,113,113,.1); border-color:rgba(248,113,113,.4); }
+  .fb.info { background:rgba(34,211,238,.08); border-color:rgba(34,211,238,.35); }
+
+  .quizCard { border-top:1px solid var(--border); padding-top:18px; margin-top:22px; }
+  .qtext { text-align:center; font-size:clamp(16px,2.3vw,24px); font-weight:800; line-height:1.55; }
+  .qcap { text-align:center; font-size:clamp(34px,5vw,54px); }
+  .opts { display:grid; grid-template-columns:1fr 1fr; gap:13px; margin-top:18px; }
+  @media(max-width:560px){ .opts{ grid-template-columns:1fr; } }
+  .opt { border:1px solid var(--border); background:var(--card); color:#fff; border-radius:15px; padding:16px 12px; font-size:clamp(14px,2vw,20px); font-weight:700; cursor:pointer; transition:transform .15s; line-height:1.4; }
+  .opt:active { transform:scale(.96); }
+  .opt.correct { border-color:var(--green); background:rgba(74,222,128,.16); }
+  .opt.wrong { border-color:var(--red); background:rgba(248,113,113,.16); animation:shake .4s; }
+  .meta { text-align:center; margin-top:10px; color:rgba(255,255,255,.55); font-size:15px; }
+  .nextRow { text-align:center; margin-top:16px; }
+
+  .chipPool { display:flex; flex-wrap:wrap; gap:11px; justify-content:center; margin-top:16px; min-height:52px; }
+  .chip { border:1px solid rgba(251,191,36,.5); background:rgba(251,191,36,.12); color:#fff; border-radius:999px; padding:12px 18px; font-size:clamp(13px,1.7vw,17px); font-weight:700; cursor:pointer; transition:.15s; }
+  .chip.sel { background:var(--amber); color:#0b1220; box-shadow:0 0 20px rgba(251,191,36,.5); transform:scale(1.06); }
+  .chip.ok { border-color:var(--green); background:rgba(74,222,128,.15); }
+  .chip.no { border-color:var(--red); background:rgba(248,113,113,.15); }
+  .zones { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:18px; }
+  @media(max-width:640px){ .zones{ grid-template-columns:1fr; } }
+  .zone { border:2px dashed var(--border); border-radius:18px; padding:14px; min-height:130px; cursor:pointer; transition:.2s; }
+  .zone.hot { border-color:var(--amber); background:rgba(251,191,36,.06); }
+  .zone h4 { text-align:center; font-size:clamp(15px,1.9vw,18px); }
+  .zone .zd { text-align:center; font-size:13px; color:rgba(255,255,255,.5); margin-top:4px; }
+  .zone .zchips { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; justify-content:center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand">IPA Kelas 7 · Bab 4</span>
+    <button class="btn small" onclick="kembali()">← Kembali</button>
+  </header>
+
+  <h1>Adu <span class="hl">Gaya!</span> 💪</h1>
+  <p class="sub">Gaya = tarikan atau dorongan. Kalau beberapa gaya bekerja bersama, siapa yang menang?</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setTab(0,this)">🪢 Resultan Gaya</button>
+    <button class="tab" onclick="setTab(1,this)">🖐️ Sentuh / Tak Sentuh</button>
+    <button class="tab" onclick="setTab(2,this)">🛷 Gesek &amp; Berat</button>
+  </div>
+
+  <!-- TAB 0: resultan -->
+  <section class="screen active" id="tab0">
+    <div class="panel">
+      <p style="text-align:center">Tim Merah menarik ke KIRI, Tim Biru menarik ke KANAN. Atur besar gayanya, lalu adu!</p>
+      <div class="arena">
+        <div class="mid"></div>
+        <span class="fLabel kiri" id="lblL">← 0 N</span>
+        <span class="fLabel kanan" id="lblR">0 N →</span>
+        <div class="arrowL" id="arrL" style="width:0"></div>
+        <div class="arrowR" id="arrR" style="width:0"></div>
+        <div class="kotak" id="kotak">📦</div>
+      </div>
+      <div class="ctlGrid">
+        <div class="ctlBox kiri"><h4>🔴 Gaya ke Kiri</h4><div class="segs" id="segL"></div></div>
+        <div class="ctlBox kanan"><h4>🔵 Gaya ke Kanan</h4><div class="segs" id="segR"></div></div>
+      </div>
+      <div class="resultRow"><button class="btn primary" onclick="tanding()">⚔️ Adu Gaya!</button></div>
+      <div class="resultRow" style="display:none" id="resRow"><span class="resBadge" id="resBadge"></span></div>
+      <div class="fb" id="rFb"></div>
+      <div class="quizCard">
+        <div class="qtext" id="rq"></div>
+        <div class="opts" id="rOpts"></div>
+        <div class="fb" id="rqFb"></div>
+        <div class="nextRow"><button class="btn primary" id="rNext" style="display:none" onclick="newRQ()">Soal Baru 🎲</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 1: sentuh/tak sentuh -->
+  <section class="screen" id="tab1">
+    <div class="panel">
+      <p style="text-align:center">Sentuh <b>kartu</b>, lalu kotak tujuannya. Gaya <b>sentuh</b> perlu kontak langsung; gaya <b>tak sentuh</b> bekerja dari jarak jauh.</p>
+      <div class="chipPool" id="chipPool"></div>
+      <div class="zones">
+        <div class="zone" onclick="dropTo('sentuh')">
+          <h4>🖐️ GAYA SENTUH</h4><div class="zd">harus bersentuhan langsung</div>
+          <div class="zchips" id="z-sentuh"></div>
+        </div>
+        <div class="zone" onclick="dropTo('tak')">
+          <h4>🧲 GAYA TAK SENTUH</h4><div class="zd">bekerja dari jarak jauh</div>
+          <div class="zchips" id="z-tak"></div>
+        </div>
+      </div>
+      <div class="fb" id="sFb"></div>
+      <div class="nextRow">
+        <button class="btn" onclick="resetS()">↺ Ulangi</button>
+        <button class="btn primary" id="sCheck" onclick="checkS()" disabled>Periksa Jawaban</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 2: gesek & berat -->
+  <section class="screen" id="tab2">
+    <div class="panel">
+      <div class="qcap" id="gE"></div>
+      <div class="qtext" id="gQ"></div>
+      <div class="opts" id="gOpts"></div>
+      <div class="fb" id="gFb"></div>
+      <div class="meta" id="gMeta"></div>
+      <div class="nextRow"><button class="btn primary" id="gNext" style="display:none" onclick="nextG()">Lanjut ➜</button></div>
+    </div>
+  </section>
+</div>
+
+<script>
+let actx=null;
+function tone(f,d,t='sine',v=.18,w=0){ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); const o=actx.createOscillator(),g=actx.createGain(); o.type=t;o.frequency.value=f; g.gain.setValueAtTime(v,actx.currentTime+w); g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+w+d); o.connect(g);g.connect(actx.destination); o.start(actx.currentTime+w);o.stop(actx.currentTime+w+d);}catch(e){} }
+const sndGood=()=>{tone(660,.12);tone(880,.18,'sine',.18,.1)}, sndBad=()=>tone(220,.22,'sawtooth',.1);
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pickN=(arr,n)=>{ const c=[...arr]; const out=[]; while(out.length<n&&c.length){ out.push(c.splice(Math.floor(Math.random()*c.length),1)[0]); } return out; };
+
+function setTab(n, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('tab'+n).classList.add('active');
+}
+
+/* ---------- TAB 0: resultan ---------- */
+let fL=40, fR=40;
+function renderSegRes() {
+  [['segL',()=>fL,v=>fL=v],['segR',()=>fR,v=>fR=v]].forEach(([id,get,set]) => {
+    const box = document.getElementById(id);
+    box.innerHTML='';
+    [0,20,40,60,80].forEach(v => {
+      const b = document.createElement('button');
+      b.className='seg'+(get()===v?' sel':'');
+      b.textContent=v+' N';
+      b.onclick = () => { set(v); renderSegRes(); previewArrows(); };
+      box.appendChild(b);
+    });
+  });
+}
+function previewArrows() {
+  document.getElementById('lblL').textContent = `← ${fL} N`;
+  document.getElementById('lblR').textContent = `${fR} N →`;
+  document.getElementById('arrL').style.width = fL*2.2 + 'px';
+  document.getElementById('arrR').style.width = fR*2.2 + 'px';
+  document.getElementById('kotak').style.left = '50%';
+  document.getElementById('resRow').style.display='none';
+  document.getElementById('rFb').className='fb';
+}
+function tanding() {
+  const R = fR - fL;
+  const kotak = document.getElementById('kotak');
+  kotak.style.left = `calc(50% + ${Math.max(-260, Math.min(260, R*3))}px)`;
+  const badge = document.getElementById('resBadge');
+  document.getElementById('resRow').style.display='block';
+  const fb = document.getElementById('rFb');
+  fb.className='fb show info';
+  if (R===0 && fL===0) { badge.textContent='R = 0 N'; fb.innerHTML='Tidak ada gaya sama sekali — kotak tetap <b>diam</b>.'; }
+  else if (R===0) { badge.textContent=`R = ${fR} − ${fL} = 0 N (seimbang)`; fb.innerHTML='⚖️ Kedua gaya <b>sama besar dan berlawanan arah</b> → resultan NOL → kotak <b>tidak bergerak</b>. Inilah gaya seimbang!'; }
+  else if (R>0) { badge.textContent=`R = ${fR} − ${fL} = ${R} N ke kanan`; fb.innerHTML=`🔵 Tim Biru menang! Resultan <b>${R} N ke kanan</b> — kotak bergerak ke arah gaya yang lebih besar.`; }
+  else { badge.textContent=`R = ${fL} − ${fR} = ${-R} N ke kiri`; fb.innerHTML=`🔴 Tim Merah menang! Resultan <b>${-R} N ke kiri</b> — kotak bergerak ke arah gaya yang lebih besar.`; }
+  tone(R===0?440:660,.15,'sine',.15);
+}
+renderSegRes(); previewArrows();
+
+let rAns=null, rLock=false;
+function newRQ() {
+  rLock=false;
+  const searah = Math.random()<.4;
+  const f1 = rnd(2,9)*10, f2 = rnd(2,9)*10;
+  let q, ans, x;
+  if (searah) {
+    ans = f1+f2;
+    q = `Dua orang mendorong meja ke arah KANAN bersama-sama dengan gaya ${f1} N dan ${f2} N. Resultan gayanya…`;
+    x = `Gaya SEARAH dijumlahkan: R = ${f1} + ${f2} = <b>${ans} N ke kanan</b>.`;
+  } else {
+    ans = Math.abs(f1-f2);
+    const arah = f1>f2?'kiri':'kanan';
+    q = `Kiki menarik tali ke KIRI dengan gaya ${f1} N, Rara menarik ke KANAN dengan gaya ${f2} N. Resultan gayanya…`;
+    x = f1===f2 ? `Gaya berlawanan sama besar: R = ${f1} − ${f2} = <b>0 N</b> (seimbang, benda diam).`
+      : `Gaya BERLAWANAN dikurangkan: R = ${Math.max(f1,f2)} − ${Math.min(f1,f2)} = <b>${ans} N ke ${arah}</b>.`;
+  }
+  rAns = ans;
+  document.getElementById('rq').textContent = q;
+  document.getElementById('rqFb').className='fb';
+  document.getElementById('rNext').style.display='none';
+  const wrongs = [...new Set([f1+f2, Math.abs(f1-f2), f1, f2, ans+10])].filter(v=>v!==ans);
+  const box = document.getElementById('rOpts');
+  box.innerHTML='';
+  shuffle([ans, ...pickN(wrongs,3)]).forEach(v => {
+    const b = document.createElement('button');
+    b.className='opt'; b.textContent = v+' N';
+    b.onclick = () => {
+      if (rLock) return; rLock=true;
+      const fb = document.getElementById('rqFb');
+      [...box.children].forEach(c=>c.disabled=true);
+      if (v===ans) { b.classList.add('correct'); sndGood(); fb.className='fb show good'; fb.innerHTML='✅ <b>Benar!</b> '+x; }
+      else { b.classList.add('wrong'); sndBad(); [...box.children].find(c=>c.textContent===ans+' N').classList.add('correct'); fb.className='fb show bad'; fb.innerHTML='❌ '+x; }
+      document.getElementById('rNext').style.display='inline-flex';
+    };
+    box.appendChild(b);
+  });
+}
+newRQ();
+
+/* ---------- TAB 1: sentuh / tak sentuh ---------- */
+const GAYA = [
+  { id:'otot', t:'💪 Mendorong gerobak (gaya otot)', a:'sentuh' },
+  { id:'gesek', t:'🛹 Gaya gesek roda dengan jalan', a:'sentuh' },
+  { id:'pegas', t:'🏹 Gaya pegas busur panah', a:'sentuh' },
+  { id:'magnet', t:'🧲 Magnet menarik paku', a:'tak' },
+  { id:'gravitasi', t:'🍎 Bumi menarik buah jatuh', a:'tak' },
+  { id:'listrik', t:'⚡ Penggaris digosok menarik kertas', a:'tak' },
+  { id:'tendang', t:'⚽ Menendang bola', a:'sentuh' },
+  { id:'mesin', t:'🚜 Traktor menarik bajak (gaya mesin)', a:'sentuh' },
+];
+let placement={}, selChip=null;
+function renderS() {
+  const pool = document.getElementById('chipPool');
+  pool.innerHTML='';
+  ['sentuh','tak'].forEach(z=>document.getElementById('z-'+z).innerHTML='');
+  GAYA.forEach(m => {
+    const c = document.createElement('button');
+    c.className='chip'; c.textContent=m.t; c.dataset.id=m.id;
+    c.onclick = (e) => { e.stopPropagation(); selectChip(c); };
+    (placement[m.id] ? document.getElementById('z-'+placement[m.id]) : pool).appendChild(c);
+  });
+  document.getElementById('sCheck').disabled = Object.keys(placement).length !== GAYA.length;
+}
+function selectChip(c) {
+  document.querySelectorAll('.chip').forEach(x=>x.classList.remove('sel'));
+  document.querySelectorAll('.zone').forEach(z=>z.classList.remove('hot'));
+  if (selChip===c.dataset.id) { selChip=null; return; }
+  selChip = c.dataset.id;
+  c.classList.add('sel');
+  document.querySelectorAll('.zone').forEach(z=>z.classList.add('hot'));
+  tone(520,.07,'sine',.1);
+}
+function dropTo(zone) {
+  if (!selChip) return;
+  placement[selChip] = zone;
+  selChip = null;
+  document.querySelectorAll('.zone').forEach(z=>z.classList.remove('hot'));
+  tone(640,.08,'sine',.12);
+  renderS();
+}
+function resetS() { placement={}; selChip=null; document.getElementById('sFb').className='fb'; renderS(); }
+function checkS() {
+  let wrong=0;
+  document.querySelectorAll('.chip').forEach(c => {
+    const m = GAYA.find(x=>x.id===c.dataset.id);
+    c.classList.remove('ok','no');
+    if (placement[m.id]===m.a) c.classList.add('ok'); else { c.classList.add('no'); wrong++; }
+  });
+  const fb = document.getElementById('sFb');
+  if (wrong===0) {
+    sndGood(); fb.className='fb show good';
+    fb.innerHTML='✅ <b>Sempurna!</b> Gaya otot, gesek, pegas, dan mesin butuh SENTUHAN. Gaya magnet, gravitasi, dan listrik statis bekerja TANPA menyentuh — dari jarak jauh!';
+    tone(523,.15); tone(659,.15,'sine',.18,.15); tone(784,.3,'sine',.18,.3);
+  } else {
+    sndBad(); fb.className='fb show bad';
+    fb.innerHTML=`❌ Masih ada <b>${wrong} kartu</b> salah tempat (merah). Tanya dirimu: apakah gayanya butuh kontak langsung?`;
+  }
+}
+renderS();
+
+/* ---------- TAB 2: gesek & berat ---------- */
+const GQ = shuffle([
+  { e:'🧊', q:'Kotak lebih mudah didorong di lantai licin daripada di lantai kasar karena…',
+    o:['Gaya gesek di lantai licin lebih kecil','Gravitasi di lantai licin lebih kecil','Kotaknya jadi ringan','Lantai licin mendorong kotak'], a:0, x:'Makin kasar permukaan, makin besar gaya gesek yang MELAWAN arah gerak.' },
+  { e:'👟', q:'Sol sepatu dibuat beralur/bergerigi dengan tujuan…',
+    o:['MEMPERBESAR gaya gesek agar tidak terpeleset','Memperkecil gaya gesek','Agar terlihat keren','Mengurangi berat badan'], a:0, x:'Ini contoh gesekan yang MENGUNTUNGKAN — tanpa gesekan kita tergelincir!' },
+  { e:'⚙️', q:'Mesin motor diberi oli dengan tujuan…',
+    o:['MEMPERKECIL gaya gesek antar-komponen agar tidak cepat aus','Memperbesar gesekan','Menambah berat mesin','Membersihkan mesin saja'], a:0, x:'Ini contoh gesekan yang MERUGIKAN yang harus dikurangi: gesekan mengikis logam dan memboroskan energi.' },
+  { e:'⚖️', q:'Massa Dita 40 kg. Jika percepatan gravitasi 10 m/s², BERAT Dita adalah…',
+    o:['400 N','40 N','4 N','4.000 N'], a:0, x:'w = m × g = 40 × 10 = 400 N. Berat adalah GAYA (newton), massa dalam kg!' },
+  { e:'🌙', q:'Astronaut yang sama beratnya terasa lebih RINGAN di Bulan karena…',
+    o:['Percepatan gravitasi Bulan lebih kecil daripada Bumi','Massanya berkurang di Bulan','Tidak ada udara di Bulan','Bulan lebih kecil dari matahari'], a:0, x:'MASSA tidak berubah di mana pun; yang berubah adalah BERAT karena g Bulan ≈ 1/6 g Bumi.' },
+  { e:'🪂', q:'Parasut memperlambat penerjun karena memperbesar…',
+    o:['Gaya gesek udara','Gaya gravitasi','Berat penerjun','Massa penerjun'], a:0, x:'Kain parasut yang lebar menangkap banyak udara → gesekan udara besar → jatuhnya melambat.' },
+  { e:'🚴', q:'Pembalap sepeda menunduk saat melaju kencang untuk…',
+    o:['Memperkecil gesekan (hambatan) udara','Menambah berat badan','Memperbesar gravitasi','Melihat jalan lebih jelas'], a:0, x:'Posisi tubuh yang ramping mengurangi hambatan udara — contoh mengurangi gesekan yang merugikan.' },
+  { e:'📦', q:'Massa 2 kg beras jika ditimbang di Bumi (g=10 m/s²) beratnya … dan di Bulan massanya menjadi …',
+    o:['20 N; tetap 2 kg','20 N; menjadi 0,3 kg','2 N; tetap 2 kg','200 N; menjadi 2 N'], a:0, x:'w = 2×10 = 20 N. Massa TIDAK berubah di mana pun: tetap 2 kg.' },
+]);
+let gi=0, gScore=0, gLock=false;
+function renderG() {
+  gLock=false;
+  const q = GQ[gi];
+  document.getElementById('gE').textContent = q.e;
+  document.getElementById('gQ').textContent = q.q;
+  document.getElementById('gFb').className='fb';
+  document.getElementById('gNext').style.display='none';
+  document.getElementById('gMeta').textContent = `Soal ${gi+1} dari ${GQ.length} · Skor: ${gScore}`;
+  const box = document.getElementById('gOpts');
+  box.innerHTML='';
+  shuffle(q.o.map((t,i)=>({t,i}))).forEach(({t,i}) => {
+    const b = document.createElement('button');
+    b.className='opt'; b.textContent=t;
+    b.onclick = () => {
+      if (gLock) return; gLock=true;
+      const fb = document.getElementById('gFb');
+      [...box.children].forEach(c=>c.disabled=true);
+      if (i===q.a) { b.classList.add('correct'); gScore+=10; sndGood(); fb.className='fb show good'; fb.innerHTML='✅ <b>Benar!</b> '+q.x; }
+      else { b.classList.add('wrong'); sndBad(); [...box.children].find(c=>c.textContent===q.o[q.a]).classList.add('correct'); fb.className='fb show bad'; fb.innerHTML='❌ Jawabannya: <b>'+q.o[q.a]+'</b>. '+q.x; }
+      document.getElementById('gMeta').textContent = `Soal ${gi+1} dari ${GQ.length} · Skor: ${gScore}`;
+      document.getElementById('gNext').style.display='inline-flex';
+      document.getElementById('gNext').textContent = gi+1<GQ.length?'Lanjut ➜':'Ulangi 🔁';
+    };
+    box.appendChild(b);
+  });
+}
+function nextG() { gi++; if (gi>=GQ.length){gi=0;gScore=0;shuffle(GQ);} renderG(); }
+renderG();
+</script>
+<script>function kembali(){if(history.length>1){history.back();return;}window.close();if(location.protocol!=="file:"){setTimeout(function(){location.href="/simulasi-ipa";},200);}}</script></body>
+</html>

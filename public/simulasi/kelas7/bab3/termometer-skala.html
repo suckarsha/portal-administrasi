@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ahli Termometer — Suhu &amp; Skala | IPA Kelas 7</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root {
+    --bg:#0b1220; --card:rgba(255,255,255,.05); --border:rgba(255,255,255,.12);
+    --cyan:#22d3ee; --violet:#a78bfa; --green:#4ade80; --red:#f87171; --amber:#fbbf24;
+  }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:radial-gradient(1200px 700px at 70% -10%, rgba(34,211,238,.14), transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, rgba(167,139,250,.12), transparent 60%), var(--bg);
+    color:#fff; min-height:100vh; user-select:none; -webkit-user-select:none;
+  }
+  .wrap { max-width:1100px; margin:0 auto; padding:20px 24px 50px; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .brand { font-size:clamp(14px,1.6vw,18px); color:rgba(255,255,255,.55); letter-spacing:.14em; text-transform:uppercase; }
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; border:1px solid var(--border); background:var(--card); color:#fff; border-radius:16px; padding:14px 26px; font-size:clamp(15px,1.8vw,20px); font-weight:700; cursor:pointer; transition:transform .15s; }
+  .btn:active { transform:scale(.96); }
+  .btn.primary { background:linear-gradient(135deg, rgba(34,211,238,.25), rgba(167,139,250,.2)); border-color:rgba(34,211,238,.5); }
+  .btn.small { padding:10px 18px; font-size:15px; border-radius:12px; }
+  h1 { font-size:clamp(24px,3.6vw,42px); text-align:center; margin-top:12px; }
+  h1 .hl { background:linear-gradient(90deg,var(--cyan),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { text-align:center; color:rgba(255,255,255,.6); font-size:clamp(14px,1.8vw,19px); margin-top:6px; }
+  .tabs { display:flex; gap:10px; justify-content:center; margin-top:18px; flex-wrap:wrap; }
+  .tab { border:1px solid var(--border); background:var(--card); color:rgba(255,255,255,.7); border-radius:999px; padding:12px 24px; font-size:clamp(14px,1.8vw,18px); font-weight:700; cursor:pointer; transition:.2s; }
+  .tab.active { background:rgba(34,211,238,.16); border-color:var(--cyan); color:#fff; box-shadow:0 0 20px rgba(34,211,238,.2); }
+  .screen { display:none; } .screen.active { display:block; animation:fadeIn .35s; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:none;} }
+  @keyframes shake { 0%,100%{transform:none} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+
+  .panel { background:var(--card); border:1px solid var(--border); border-radius:22px; max-width:920px; margin:18px auto 0; padding:clamp(18px,3vw,30px); }
+  .panel p { color:rgba(255,255,255,.75); line-height:1.65; font-size:clamp(14px,1.8vw,18px); }
+  .bowls { display:flex; gap:16px; justify-content:center; margin-top:20px; flex-wrap:wrap; }
+  .bowl { text-align:center; }
+  .bowl .b { width:clamp(90px,14vw,140px); height:clamp(64px,9vw,90px); border-radius:0 0 60px 60px; border:4px solid rgba(255,255,255,.3); border-top:none; position:relative; overflow:hidden; margin:0 auto; }
+  .bowl .w { position:absolute; inset:6px 4px 4px; border-radius:0 0 54px 54px; }
+  .bowl .lbl { margin-top:10px; font-weight:800; font-size:clamp(14px,1.7vw,17px); }
+  .hand { font-size:clamp(30px,5vw,46px); transition:transform .6s; display:inline-block; }
+  .storyBtns { display:flex; gap:12px; justify-content:center; margin-top:20px; flex-wrap:wrap; }
+  .fb { border-radius:16px; padding:14px 20px; margin-top:16px; font-size:clamp(14px,1.8vw,18px); line-height:1.6; display:none; border:1px solid; text-align:center; }
+  .fb.show { display:block; animation:fadeIn .3s; }
+  .fb.good { background:rgba(74,222,128,.1); border-color:rgba(74,222,128,.4); }
+  .fb.bad { background:rgba(248,113,113,.1); border-color:rgba(248,113,113,.4); }
+  .fb.info { background:rgba(34,211,238,.08); border-color:rgba(34,211,238,.35); }
+
+  .thGrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:14px; margin-top:18px; }
+  .thCard { background:rgba(255,255,255,.03); border:1px solid var(--border); border-radius:18px; padding:16px; text-align:center; cursor:pointer; transition:.2s; }
+  .thCard:hover { border-color:rgba(34,211,238,.4); }
+  .thCard .te { font-size:clamp(32px,5vw,46px); }
+  .thCard .tn { font-weight:800; margin-top:8px; font-size:clamp(15px,1.8vw,18px); }
+  .thCard .td { color:rgba(255,255,255,.55); font-size:13.5px; margin-top:6px; line-height:1.5; }
+  .quizCard { margin-top:18px; }
+  .qtext { text-align:center; font-size:clamp(16px,2.3vw,24px); font-weight:800; line-height:1.5; }
+  .opts { display:grid; grid-template-columns:1fr 1fr; gap:13px; margin-top:18px; }
+  @media(max-width:560px){ .opts{ grid-template-columns:1fr; } }
+  .opt { border:1px solid var(--border); background:var(--card); color:#fff; border-radius:15px; padding:16px 12px; font-size:clamp(14px,2vw,20px); font-weight:700; cursor:pointer; transition:transform .15s; line-height:1.4; }
+  .opt:active { transform:scale(.96); }
+  .opt.correct { border-color:var(--green); background:rgba(74,222,128,.16); }
+  .opt.wrong { border-color:var(--red); background:rgba(248,113,113,.16); animation:shake .4s; }
+  .meta { text-align:center; margin-top:10px; color:rgba(255,255,255,.55); font-size:15px; }
+  .nextRow { text-align:center; margin-top:16px; }
+
+  .scaleGrid { display:grid; grid-template-columns:minmax(0,1fr) 300px; gap:18px; margin-top:0; }
+  @media(max-width:860px){ .scaleGrid{ grid-template-columns:1fr; } }
+  .thermoRow { display:flex; gap:clamp(8px,2vw,26px); justify-content:center; }
+  .vth { text-align:center; }
+  .vth .tube { position:relative; width:34px; height:280px; margin:0 auto; background:rgba(255,255,255,.08); border:2px solid rgba(255,255,255,.25); border-radius:20px; overflow:hidden; }
+  .vth .fill { position:absolute; left:6px; right:6px; bottom:6px; border-radius:12px; transition:height .2s; }
+  .vth .sn { font-weight:800; margin-top:8px; font-size:clamp(13px,1.6vw,16px); }
+  .vth .sv { font-family:Menlo,monospace; color:var(--cyan); font-weight:700; font-size:clamp(15px,1.9vw,20px); margin-top:2px; }
+  .sliderRow { margin-top:18px; }
+  input[type=range] { width:100%; accent-color:var(--amber); height:36px; }
+  .marks { display:flex; flex-direction:column; gap:8px; margin-top:14px; }
+  .mark { background:rgba(255,255,255,.04); border:1px solid var(--border); border-radius:12px; padding:10px 14px; font-size:14px; color:rgba(255,255,255,.75); cursor:pointer; }
+  .mark:hover { border-color:rgba(34,211,238,.4); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand">IPA Kelas 7 · Bab 3</span>
+    <button class="btn small" onclick="kembali()">← Kembali</button>
+  </header>
+
+  <h1>Ahli <span class="hl">Termometer</span> 🌡️</h1>
+  <p class="sub">Seberapa tepat tanganmu mengukur suhu? Ayo buktikan, lalu kuasai skala termometer!</p>
+
+  <div class="tabs">
+    <button class="tab active" onclick="setTab(0,this)">✋ Uji Indra</button>
+    <button class="tab" onclick="setTab(1,this)">🌡️ Jenis Termometer</button>
+    <button class="tab" onclick="setTab(2,this)">🔢 Skala &amp; Konversi</button>
+  </div>
+
+  <!-- TAB 0: uji indra -->
+  <section class="screen active" id="tab0">
+    <div class="panel">
+      <p style="text-align:center"><b>Percobaan tiga ember.</b> Ikuti langkahnya dan rasakan sendiri mengapa ilmuwan tidak mengukur suhu dengan tangan!</p>
+      <div class="bowls">
+        <div class="bowl"><div class="b"><div class="w" style="background:linear-gradient(180deg,#7dd3fc,#0369a1)"></div></div><div class="lbl">🧊 Air Es</div><div class="hand" id="handL" style="visibility:hidden">🫲</div></div>
+        <div class="bowl"><div class="b"><div class="w" style="background:linear-gradient(180deg,#67e8f9,#155e75)"></div></div><div class="lbl">💧 Air Biasa</div><div class="hand" id="handM" style="visibility:hidden">🫲🫱</div></div>
+        <div class="bowl"><div class="b"><div class="w" style="background:linear-gradient(180deg,#fca5a5,#b91c1c)"></div></div><div class="lbl">♨️ Air Hangat</div><div class="hand" id="handR" style="visibility:hidden">🫱</div></div>
+      </div>
+      <div class="storyBtns" id="storyBtns">
+        <button class="btn primary" onclick="story(1)">1️⃣ Celupkan kedua tangan (30 detik)</button>
+      </div>
+      <div class="fb info show" id="storyFb">Tangan kiri ke <b>air es</b>, tangan kanan ke <b>air hangat</b>. Sentuh tombolnya!</div>
+    </div>
+  </section>
+
+  <!-- TAB 1: jenis termometer -->
+  <section class="screen" id="tab1">
+    <div class="panel">
+      <p style="text-align:center; margin-bottom:4px">Sentuh kartu untuk mengenal jenis-jenis termometer, lalu jawab kuis di bawahnya!</p>
+      <div class="thGrid" id="thGrid"></div>
+      <div class="quizCard">
+        <div class="qtext" id="thQ"></div>
+        <div class="opts" id="thOpts"></div>
+        <div class="fb" id="thFb"></div>
+        <div class="meta" id="thMeta"></div>
+        <div class="nextRow"><button class="btn primary" id="thNext" style="display:none" onclick="nextTh()">Lanjut ➜</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 2: skala -->
+  <section class="screen" id="tab2">
+    <div class="panel">
+      <div class="scaleGrid">
+        <div>
+          <div class="thermoRow" id="thermoRow"></div>
+          <div class="sliderRow">
+            <input type="range" id="cslider" min="-20" max="120" value="25" oninput="setC(+this.value)">
+            <p style="text-align:center; color:rgba(255,255,255,.6); font-size:14px; margin-top:6px">Geser untuk mengubah suhu dan lihat keempat skala berubah bersama!</p>
+          </div>
+        </div>
+        <div>
+          <div class="marks">
+            <div class="mark" onclick="setC(0)">🧊 <b>0°C</b> — titik beku air (32°F · 0°R · 273 K)</div>
+            <div class="mark" onclick="setC(100)">♨️ <b>100°C</b> — titik didih air (212°F · 80°R · 373 K)</div>
+            <div class="mark" onclick="setC(37)">🧍 <b>37°C</b> — suhu tubuh normal</div>
+            <div class="mark" onclick="setC(25)">🏝️ <b>25°C</b> — suhu ruangan</div>
+          </div>
+          <div class="fb info show" style="margin-top:14px; text-align:left">
+            📐 Rumus dari °C: <b>F = (9/5)·C + 32</b> · <b>R = (4/5)·C</b> · <b>K = C + 273</b>
+          </div>
+        </div>
+      </div>
+      <div class="quizCard" style="border-top:1px solid var(--border); padding-top:18px; margin-top:22px">
+        <div class="qtext" id="kQ"></div>
+        <div class="opts" id="kOpts"></div>
+        <div class="fb" id="kFb"></div>
+        <div class="meta" id="kMeta"></div>
+        <div class="nextRow"><button class="btn primary" id="kNext" style="display:none" onclick="newKonv()">Soal Baru 🎲</button></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<script>
+let actx=null;
+function tone(f,d,t='sine',v=.18,w=0){ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); const o=actx.createOscillator(),g=actx.createGain(); o.type=t;o.frequency.value=f; g.gain.setValueAtTime(v,actx.currentTime+w); g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+w+d); o.connect(g);g.connect(actx.destination); o.start(actx.currentTime+w);o.stop(actx.currentTime+w+d);}catch(e){} }
+const sndGood=()=>{tone(660,.12);tone(880,.18,'sine',.18,.1)}, sndBad=()=>tone(220,.22,'sawtooth',.1);
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pickN=(arr,n)=>{ const c=[...arr]; const out=[]; while(out.length<n&&c.length){ out.push(c.splice(Math.floor(Math.random()*c.length),1)[0]); } return out; };
+
+function setTab(n, el) {
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('tab'+n).classList.add('active');
+}
+
+/* ---------- TAB 0: cerita uji indra ---------- */
+function story(step) {
+  const fb = document.getElementById('storyFb');
+  const btns = document.getElementById('storyBtns');
+  if (step===1) {
+    document.getElementById('handL').style.visibility='visible';
+    document.getElementById('handR').style.visibility='visible';
+    fb.className='fb info show';
+    fb.innerHTML='🥶 Tangan kiri mulai <b>kedinginan</b>… 🥵 tangan kanan <b>kepanasan</b>… Setelah 30 detik, pindahkan KEDUA tangan ke ember tengah!';
+    btns.innerHTML = '<button class="btn primary" onclick="story(2)">2️⃣ Pindahkan kedua tangan ke air biasa</button>';
+    tone(500,.1,'sine',.12);
+  } else if (step===2) {
+    document.getElementById('handL').style.visibility='hidden';
+    document.getElementById('handR').style.visibility='hidden';
+    document.getElementById('handM').style.visibility='visible';
+    fb.className='fb info show';
+    fb.innerHTML='🤯 Aneh! Air yang SAMA terasa <b>hangat</b> di tangan kiri, tetapi <b>dingin</b> di tangan kanan! Menurutmu mengapa?';
+    btns.innerHTML = `
+      <button class="btn" onclick="story(3)">Karena airnya belum tercampur rata</button>
+      <button class="btn" onclick="story(4)">Karena indra peraba hanya membandingkan, bukan mengukur</button>`;
+  } else if (step===3) {
+    sndBad();
+    fb.className='fb bad show';
+    fb.innerHTML='❌ Bukan — airnya sama dan sudah rata. Petunjuk: kedua tanganmu baru saja "terbiasa" dengan suhu yang berbeda…';
+  } else if (step===4) {
+    sndGood();
+    fb.className='fb good show';
+    fb.innerHTML='✅ <b>Tepat!</b> Indra peraba hanya membandingkan dengan keadaan tangan sebelumnya, jadi hasilnya <b>tidak tetap dan tidak bisa dipercaya</b> untuk mengukur suhu. Karena itu ilmuwan memakai <b>termometer</b> — alat dengan skala angka yang pasti. Lanjut ke tab "Jenis Termometer"!';
+    document.getElementById('storyBtns').innerHTML='<button class="btn" onclick="location.reload()">↺ Ulangi Percobaan</button>';
+  }
+}
+
+/* ---------- TAB 1: jenis termometer ---------- */
+const THERMOS = [
+  { e:'🤒', n:'Termometer Klinis', d:'Skala 35–42°C, untuk mengukur suhu tubuh. Ada bagian sempit agar cairan tidak cepat turun.' },
+  { e:'🧪', n:'Termometer Laboratorium', d:'Skala luas (mis. -10 s.d. 110°C), berisi raksa/alkohol, untuk percobaan di lab.' },
+  { e:'🏠', n:'Termometer Ruangan', d:'Skala sekitar -50 s.d. 50°C, dipasang di dinding untuk suhu udara.' },
+  { e:'📟', n:'Termometer Digital', d:'Memakai sensor elektronik, hasilnya langsung berupa angka. Cepat dan mudah dibaca.' },
+  { e:'🔫', n:'Termometer Inframerah', d:'Mengukur tanpa menyentuh benda — cukup diarahkan. Cocok untuk benda panas atau banyak orang.' },
+  { e:'🌾', n:'Termometer Maksimum-Minimum', d:'Mencatat suhu tertinggi dan terendah dalam sehari, dipakai di pengamatan cuaca.' },
+];
+const THQ = shuffle([
+  { q:'Andi demam. Termometer yang paling tepat untuk memeriksa suhunya adalah…', a:'Termometer Klinis', x:'Termometer klinis dirancang khusus rentang suhu tubuh (35–42°C).' },
+  { q:'Untuk mengukur suhu larutan yang dipanaskan hingga hampir mendidih di lab, gunakan…', a:'Termometer Laboratorium', x:'Rentang skalanya luas, bisa sampai di atas 100°C.' },
+  { q:'Petugas ingin memeriksa suhu banyak pengunjung dengan cepat tanpa menyentuh. Pilihannya…', a:'Termometer Inframerah', x:'Termometer inframerah mengukur dari jarak tertentu tanpa kontak.' },
+  { q:'Pengamat cuaca ingin tahu suhu terpanas dan terdingin hari ini. Ia memakai…', a:'Termometer Maksimum-Minimum', x:'Termometer Six (maks-min) mencatat suhu tertinggi & terendah.' },
+  { q:'Alat pengukur suhu yang menampilkan hasil langsung berupa angka pada layar adalah…', a:'Termometer Digital', x:'Sensor elektroniknya mengubah suhu menjadi angka di layar.' },
+  { q:'Untuk memantau suhu udara di dalam kelas, paling cocok dipasang…', a:'Termometer Ruangan', x:'Termometer ruangan dirancang untuk rentang suhu udara sehari-hari.' },
+]);
+let thi = 0, thScore = 0, thLock = false;
+
+const tg = document.getElementById('thGrid');
+THERMOS.forEach(t => {
+  const d = document.createElement('div');
+  d.className='thCard';
+  d.innerHTML = `<div class="te">${t.e}</div><div class="tn">${t.n}</div><div class="td">${t.d}</div>`;
+  d.onclick = () => tone(520,.06,'sine',.1);
+  tg.appendChild(d);
+});
+
+function renderTh() {
+  thLock = false;
+  const q = THQ[thi];
+  document.getElementById('thQ').textContent = q.q;
+  document.getElementById('thFb').className='fb';
+  document.getElementById('thNext').style.display='none';
+  document.getElementById('thMeta').textContent = `Soal ${thi+1} dari ${THQ.length} · Skor: ${thScore}`;
+  const box = document.getElementById('thOpts');
+  box.innerHTML='';
+  const opts = shuffle([q.a, ...pickN(THERMOS.map(t=>t.n).filter(n=>n!==q.a),3)]);
+  opts.forEach(n => {
+    const b = document.createElement('button');
+    b.className='opt'; b.textContent=n;
+    b.onclick = () => {
+      if (thLock) return; thLock=true;
+      const fb = document.getElementById('thFb');
+      [...box.children].forEach(c=>c.disabled=true);
+      if (n===q.a) { b.classList.add('correct'); thScore+=10; sndGood(); fb.className='fb show good'; fb.innerHTML='✅ <b>Benar!</b> '+q.x; }
+      else { b.classList.add('wrong'); sndBad(); [...box.children].find(c=>c.textContent===q.a).classList.add('correct'); fb.className='fb show bad'; fb.innerHTML='❌ Yang tepat: <b>'+q.a+'</b>. '+q.x; }
+      document.getElementById('thMeta').textContent = `Soal ${thi+1} dari ${THQ.length} · Skor: ${thScore}`;
+      document.getElementById('thNext').style.display='inline-flex';
+      document.getElementById('thNext').textContent = thi+1<THQ.length?'Lanjut ➜':'Ulangi 🔁';
+    };
+    box.appendChild(b);
+  });
+}
+function nextTh() {
+  thi++;
+  if (thi>=THQ.length) { thi=0; thScore=0; shuffle(THQ); }
+  renderTh();
+}
+renderTh();
+
+/* ---------- TAB 2: skala ---------- */
+const SCALES = [
+  { id:'C', n:'Celsius',    unit:'°C', min:-20, max:120, conv:c=>c,        col:'#22d3ee' },
+  { id:'R', n:'Reamur',     unit:'°R', min:-16, max:96,  conv:c=>c*4/5,    col:'#4ade80' },
+  { id:'F', n:'Fahrenheit', unit:'°F', min:-4,  max:248, conv:c=>c*9/5+32, col:'#fbbf24' },
+  { id:'K', n:'Kelvin',     unit:'K',  min:253, max:393, conv:c=>c+273,    col:'#a78bfa' },
+];
+const row = document.getElementById('thermoRow');
+SCALES.forEach(s => {
+  const d = document.createElement('div');
+  d.className='vth';
+  d.innerHTML = `<div class="tube"><div class="fill" id="fill${s.id}" style="background:linear-gradient(180deg,${s.col},${s.col}88)"></div></div>
+    <div class="sn" style="color:${s.col}">${s.n}</div><div class="sv" id="val${s.id}"></div>`;
+  row.appendChild(d);
+});
+function setC(c) {
+  document.getElementById('cslider').value = c;
+  SCALES.forEach(s => {
+    const v = s.conv(c);
+    const frac = Math.max(0, Math.min(1, (v - s.min) / (s.max - s.min)));
+    document.getElementById('fill'+s.id).style.height = (6 + frac*(280-16)) + 'px';
+    document.getElementById('val'+s.id).textContent = (Math.round(v*10)/10).toString().replace('.',',') + ' ' + s.unit;
+  });
+}
+setC(25);
+
+/* kuis konversi */
+let kAns = null, kLock = false;
+function newKonv() {
+  kLock = false;
+  const c = rnd(1,20)*5;
+  const jenis = ['F','R','K'][rnd(0,2)];
+  let ans, rumus;
+  if (jenis==='F') { ans = c*9/5+32; rumus = `(9/5 × ${c}) + 32`; }
+  else if (jenis==='R') { ans = c*4/5; rumus = `4/5 × ${c}`; }
+  else { ans = c+273; rumus = `${c} + 273`; }
+  ans = Math.round(ans*10)/10;
+  kAns = ans;
+  const unit = jenis==='K'?' K':' °'+jenis;
+  document.getElementById('kQ').innerHTML = `Suhu <span style="color:var(--cyan)">${c}°C</span> = … ${unit.trim()}?`;
+  document.getElementById('kFb').className='fb';
+  document.getElementById('kNext').style.display='none';
+  const wrongs = [...new Set([ans+10, Math.max(1,ans-10), jenis==='F'?c*9/5:ans+32, jenis==='K'?c+100:c+273])].filter(v=>v!==ans);
+  const opts = shuffle([ans, ...pickN(wrongs,3)]);
+  const box = document.getElementById('kOpts');
+  box.innerHTML='';
+  opts.forEach(v => {
+    const b = document.createElement('button');
+    b.className='opt'; b.textContent = v.toString().replace('.',',') + unit;
+    b.onclick = () => {
+      if (kLock) return; kLock=true;
+      const fb = document.getElementById('kFb');
+      [...box.children].forEach(x=>x.disabled=true);
+      if (v===ans) { b.classList.add('correct'); sndGood(); fb.className='fb show good'; fb.innerHTML=`✅ <b>Benar!</b> ${rumus} = <b>${ans.toString().replace('.',',')}${unit}</b>. Lihat juga di termometer: geser slider ke ${c}!`; setC(c); }
+      else { b.classList.add('wrong'); sndBad(); [...box.children].find(x=>x.textContent===ans.toString().replace('.',',')+unit).classList.add('correct'); fb.className='fb show bad'; fb.innerHTML=`❌ Hitungannya: ${rumus} = <b>${ans.toString().replace('.',',')}${unit}</b>.`; }
+      document.getElementById('kNext').style.display='inline-flex';
+    };
+    box.appendChild(b);
+  });
+}
+newKonv();
+</script>
+<script>function kembali(){if(history.length>1){history.back();return;}window.close();if(location.protocol!=="file:"){setTimeout(function(){location.href="/simulasi-ipa";},200);}}</script></body>
+</html>

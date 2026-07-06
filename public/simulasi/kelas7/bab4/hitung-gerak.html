@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kalkulator Gerak — v, s, t | IPA Kelas 7</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root {
+    --bg:#0b1220; --card:rgba(255,255,255,.05); --border:rgba(255,255,255,.12);
+    --cyan:#22d3ee; --violet:#a78bfa; --green:#4ade80; --red:#f87171; --amber:#fbbf24;
+  }
+  body {
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:radial-gradient(1200px 700px at 70% -10%, rgba(34,211,238,.14), transparent 60%),
+               radial-gradient(900px 600px at 10% 110%, rgba(167,139,250,.12), transparent 60%), var(--bg);
+    color:#fff; min-height:100vh; user-select:none; -webkit-user-select:none;
+  }
+  .wrap { max-width:1000px; margin:0 auto; padding:20px 24px 50px; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+  .brand { font-size:clamp(14px,1.6vw,18px); color:rgba(255,255,255,.55); letter-spacing:.14em; text-transform:uppercase; }
+  .btn { display:inline-flex; align-items:center; justify-content:center; gap:10px; border:1px solid var(--border); background:var(--card); color:#fff; border-radius:16px; padding:14px 26px; font-size:clamp(15px,1.8vw,20px); font-weight:700; cursor:pointer; transition:transform .15s; }
+  .btn:active { transform:scale(.96); }
+  .btn.primary { background:linear-gradient(135deg, rgba(34,211,238,.25), rgba(167,139,250,.2)); border-color:rgba(34,211,238,.5); }
+  .btn.small { padding:10px 18px; font-size:15px; border-radius:12px; }
+  h1 { font-size:clamp(24px,3.6vw,42px); text-align:center; margin-top:12px; }
+  h1 .hl { background:linear-gradient(90deg,var(--cyan),var(--violet)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .sub { text-align:center; color:rgba(255,255,255,.6); font-size:clamp(14px,1.8vw,19px); margin-top:6px; }
+
+  .hud { display:flex; gap:12px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+  .hudBox { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:8px 22px; text-align:center; min-width:110px; }
+  .hudBox .v { font-size:clamp(19px,2.4vw,27px); font-weight:800; color:var(--cyan); }
+  .hudBox .k { font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.5); }
+  .tabs { display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+  .tab { border:1px solid var(--border); background:var(--card); color:rgba(255,255,255,.7); border-radius:999px; padding:11px 22px; font-size:clamp(13px,1.7vw,17px); font-weight:700; cursor:pointer; transition:.2s; }
+  .tab.active { background:rgba(34,211,238,.16); border-color:var(--cyan); color:#fff; box-shadow:0 0 20px rgba(34,211,238,.2); }
+
+  .rumusBar { display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap; }
+  .rumus { background:rgba(167,139,250,.12); border:1px solid rgba(167,139,250,.4); border-radius:12px; padding:10px 18px; font-family:Menlo,monospace; font-size:clamp(13px,1.8vw,18px); font-weight:700; color:#d8ccff; }
+  .stage { background:var(--card); border:1px solid var(--border); border-radius:24px; max-width:860px; margin:18px auto 0; padding:clamp(18px,3vw,32px); }
+  .qcap { text-align:center; font-size:clamp(38px,6vw,64px); }
+  .qtext { text-align:center; font-size:clamp(16px,2.4vw,25px); font-weight:800; line-height:1.6; margin-top:8px; }
+  .qtext .num { color:var(--amber); }
+  .opts { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:22px; }
+  @media(max-width:560px){ .opts{ grid-template-columns:1fr; } }
+  .opt { border:1px solid var(--border); background:var(--card); color:#fff; border-radius:16px; padding:18px 12px; font-size:clamp(16px,2.2vw,23px); font-weight:800; cursor:pointer; transition:transform .15s; }
+  .opt:active { transform:scale(.96); }
+  .opt.correct { border-color:var(--green); background:rgba(74,222,128,.16); }
+  .opt.wrong { border-color:var(--red); background:rgba(248,113,113,.16); animation:shake .4s; }
+  @keyframes shake { 0%,100%{transform:none} 25%{transform:translateX(-6px)} 75%{transform:translateX(6px)} }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:none;} }
+  .fb { border-radius:16px; padding:14px 20px; margin-top:16px; font-size:clamp(14px,1.9vw,18px); line-height:1.6; display:none; border:1px solid; text-align:center; }
+  .fb.show { display:block; animation:fadeIn .3s; }
+  .fb.good { background:rgba(74,222,128,.1); border-color:rgba(74,222,128,.4); }
+  .fb.bad { background:rgba(248,113,113,.1); border-color:rgba(248,113,113,.4); }
+  .nextRow { text-align:center; margin-top:18px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand">IPA Kelas 7 · Bab 4</span>
+    <button class="btn small" onclick="kembali()">← Kembali</button>
+  </header>
+
+  <h1>Kalkulator <span class="hl">Gerak</span> 🧮</h1>
+  <p class="sub">Temukan besaran yang hilang! Soal selalu diacak — berlatihlah sampai lancar.</p>
+
+  <div class="hud">
+    <div class="hudBox"><div class="v" id="hScore">0</div><div class="k">Skor</div></div>
+    <div class="hudBox"><div class="v" id="hStreak">0</div><div class="k">Beruntun</div></div>
+    <div class="hudBox"><div class="v" id="hCount">0</div><div class="k">Soal</div></div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div class="rumusBar">
+    <div class="rumus">v = s ÷ t</div>
+    <div class="rumus">s = v × t</div>
+    <div class="rumus">t = s ÷ v</div>
+    <div class="rumus">a = Δv ÷ t</div>
+  </div>
+
+  <div class="stage">
+    <div class="qcap" id="qE"></div>
+    <div class="qtext" id="qQ"></div>
+    <div class="opts" id="qOpts"></div>
+    <div class="fb" id="qFb"></div>
+    <div class="nextRow"><button class="btn primary" id="qNext" style="display:none" onclick="newQ()">Soal Baru 🎲</button></div>
+  </div>
+</div>
+
+<script>
+let actx=null;
+function tone(f,d,t='sine',v=.18,w=0){ try{ actx=actx||new (window.AudioContext||window.webkitAudioContext)(); const o=actx.createOscillator(),g=actx.createGain(); o.type=t;o.frequency.value=f; g.gain.setValueAtTime(v,actx.currentTime+w); g.gain.exponentialRampToValueAtTime(.001,actx.currentTime+w+d); o.connect(g);g.connect(actx.destination); o.start(actx.currentTime+w);o.stop(actx.currentTime+w+d);}catch(e){} }
+const sndGood=()=>{tone(660,.12);tone(880,.18,'sine',.18,.1)}, sndBad=()=>tone(220,.22,'sawtooth',.1);
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+const rnd=(a,b)=>Math.floor(Math.random()*(b-a+1))+a;
+const pick=arr=>arr[rnd(0,arr.length-1)];
+const pickN=(arr,n)=>{ const c=[...arr]; const out=[]; while(out.length<n&&c.length){ out.push(c.splice(Math.floor(Math.random()*c.length),1)[0]); } return out; };
+
+const AKTOR = [
+  ['🏃','Seorang pelari'], ['🚗','Sebuah mobil'], ['🚴','Seorang pesepeda'],
+  ['🚆','Sebuah kereta'], ['🛵','Sebuah motor'], ['🐆','Seekor cheetah'],
+];
+
+/* generator per jenis */
+function genV() { // v = s/t
+  const t = pick([4,5,8,10,20]);
+  const v = pick([3,4,5,6,8,10,15]);
+  const s = v*t;
+  const [e,who] = pick(AKTOR);
+  return { e, q:`${who} menempuh jarak <span class="num">${s} m</span> dalam waktu <span class="num">${t} s</span>.<br>Kecepatannya = … ?`,
+    ans:v, unit:' m/s', x:`v = s ÷ t = ${s} ÷ ${t} = <b>${v} m/s</b>`,
+    wrongs:[s*t, s-t, v+2, v*2] };
+}
+function genS() { // s = v.t
+  const v = pick([3,4,5,6,8,10]);
+  const t = pick([5,6,8,10,12]);
+  const s = v*t;
+  const [e,who] = pick(AKTOR);
+  return { e, q:`${who} bergerak dengan kecepatan tetap <span class="num">${v} m/s</span> selama <span class="num">${t} s</span>.<br>Jarak yang ditempuh = … ?`,
+    ans:s, unit:' m', x:`s = v × t = ${v} × ${t} = <b>${s} m</b>`,
+    wrongs:[v+t, s*2, s/2, s+10] };
+}
+function genT() { // t = s/v
+  const v = pick([4,5,8,10,20,25]);
+  const t = pick([3,4,5,6,8]);
+  const s = v*t;
+  const [e,who] = pick(AKTOR);
+  return { e, q:`${who} harus menempuh jarak <span class="num">${s} m</span> dengan kecepatan tetap <span class="num">${v} m/s</span>.<br>Waktu yang dibutuhkan = … ?`,
+    ans:t, unit:' s', x:`t = s ÷ v = ${s} ÷ ${v} = <b>${t} s</b>`,
+    wrongs:[s*v, t*2, t+2, Math.max(1,t-2)] };
+}
+function genA() { // a = (vt-v0)/t
+  const v0 = pick([0,2,4,5,10]);
+  const a = pick([1,2,3,4,5]);
+  const t = pick([2,4,5,6]);
+  const vt = v0 + a*t;
+  const [e,who] = pick(AKTOR);
+  return { e, q:`${who} kecepatannya berubah dari <span class="num">${v0} m/s</span> menjadi <span class="num">${vt} m/s</span> dalam <span class="num">${t} s</span>.<br>Percepatannya = … ?`,
+    ans:a, unit:' m/s²', x:`a = Δv ÷ t = (${vt} − ${v0}) ÷ ${t} = <b>${a} m/s²</b>`,
+    wrongs:[vt+v0, vt-v0, a*2, a+1] };
+}
+function genKmJam() { // konversi km/jam ↔ m/s
+  if (Math.random()<.5) {
+    const ms = pick([5,10,15,20,25]);
+    const kmj = ms*3.6;
+    return { e:'🚙', q:`Kecepatan <span class="num">${kmj} km/jam</span> sama dengan … m/s?`,
+      ans:ms, unit:' m/s', x:`${kmj} km/jam = ${kmj} × 1000 m ÷ 3600 s = <b>${ms} m/s</b> (cara cepat: bagi 3,6)`,
+      wrongs:[ms*2, kmj, ms+5, Math.max(1,ms-5)] };
+  } else {
+    const ms = pick([5,10,20,30]);
+    const kmj = ms*3.6;
+    return { e:'🏍️', q:`Kecepatan <span class="num">${ms} m/s</span> sama dengan … km/jam?`,
+      ans:kmj, unit:' km/jam', x:`${ms} m/s = ${ms} × 3,6 = <b>${kmj} km/jam</b>`,
+      wrongs:[ms/3.6, kmj*2, kmj+10, ms] };
+  }
+}
+
+const JENIS = [
+  { id:'v', nama:'🎯 Cari v', gen:genV },
+  { id:'s', nama:'🎯 Cari s', gen:genS },
+  { id:'t', nama:'🎯 Cari t', gen:genT },
+  { id:'a', nama:'🎯 Cari a', gen:genA },
+  { id:'konv', nama:'🔁 km/jam ↔ m/s', gen:genKmJam },
+  { id:'campur', nama:'🎲 Campuran', gen:()=>pick([genV,genS,genT,genA,genKmJam])() },
+];
+let jenis = JENIS[5], score=0, streak=0, count=0, lock=false, cur=null;
+
+const tabsEl = document.getElementById('tabs');
+JENIS.forEach(j => {
+  const b = document.createElement('button');
+  b.className='tab'+(j.id==='campur'?' active':'');
+  b.textContent=j.nama;
+  b.onclick = () => { jenis=j; [...tabsEl.children].forEach(c=>c.classList.remove('active')); b.classList.add('active'); newQ(); };
+  tabsEl.appendChild(b);
+});
+
+const fmtN = v => (Math.round(v*10)/10).toString().replace('.',',');
+function newQ() {
+  lock=false;
+  cur = jenis.gen();
+  document.getElementById('qE').textContent = cur.e;
+  document.getElementById('qQ').innerHTML = cur.q;
+  document.getElementById('qFb').className='fb';
+  document.getElementById('qNext').style.display='none';
+  let wrongs = [...new Set(cur.wrongs.map(v=>Math.round(v*10)/10))].filter(v=>v!==cur.ans&&v>0);
+  // pengecoh cadangan jika kebetulan ada yang kembar
+  for (const pad of [cur.ans+3, cur.ans+7, cur.ans*3, cur.ans+12]) {
+    if (wrongs.length>=3) break;
+    const p = Math.round(pad*10)/10;
+    if (p!==cur.ans && p>0 && !wrongs.includes(p)) wrongs.push(p);
+  }
+  const opts = shuffle([cur.ans, ...pickN(wrongs,3)]);
+  const box = document.getElementById('qOpts');
+  box.innerHTML='';
+  opts.forEach(v => {
+    const b = document.createElement('button');
+    b.className='opt'; b.textContent = fmtN(v)+cur.unit;
+    b.onclick = () => {
+      if (lock) return; lock=true; count++;
+      const fb = document.getElementById('qFb');
+      [...box.children].forEach(x=>x.disabled=true);
+      if (v===cur.ans) { b.classList.add('correct'); streak++; score += 10+Math.min(streak-1,5)*2; sndGood(); fb.className='fb show good'; fb.innerHTML='✅ <b>Benar!</b> '+cur.x+(streak>=3?` 🔥 ${streak} beruntun!`:''); }
+      else { b.classList.add('wrong'); streak=0; sndBad(); [...box.children].find(x=>x.textContent===fmtN(cur.ans)+cur.unit).classList.add('correct'); fb.className='fb show bad'; fb.innerHTML='❌ '+cur.x; }
+      document.getElementById('hScore').textContent=score;
+      document.getElementById('hStreak').textContent=streak;
+      document.getElementById('hCount').textContent=count;
+      document.getElementById('qNext').style.display='inline-flex';
+    };
+    box.appendChild(b);
+  });
+}
+newQ();
+</script>
+<script>function kembali(){if(history.length>1){history.back();return;}window.close();if(location.protocol!=="file:"){setTimeout(function(){location.href="/simulasi-ipa";},200);}}</script></body>
+</html>
