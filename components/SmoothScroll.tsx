@@ -13,6 +13,9 @@ export default function SmoothScroll() {
   useEffect(() => {
     // Hormati preferensi "kurangi gerakan"
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    // Di perangkat sentuh (HP/PID), scroll bawaan browser jauh lebih mulus —
+    // Lenis justru membuat patah-patah, jadi lewati.
+    if (window.matchMedia('(pointer: coarse)').matches) return;
 
     const lenis = new Lenis({
       duration: 1.1,

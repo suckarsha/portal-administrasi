@@ -70,3 +70,20 @@ body {
   -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
   mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, #000 30%, transparent 75%);
 }
+
+/* ===== Mode ringan untuk perangkat sentuh (HP & papan interaktif/PID) =====
+   Filter blur besar dan backdrop-blur sangat berat bagi GPU perangkat sentuh:
+   menyebabkan patah-patah, layar berkedip, dan artefak. Latar dekoratif blur
+   disembunyikan; kaca buram modal diganti latar solid yang tetap terbaca. */
+@media (pointer: coarse) {
+  .blur-3xl,
+  .blur-2xl {
+    display: none !important;
+  }
+  .backdrop-blur-md,
+  .backdrop-blur-xl,
+  .backdrop-blur-2xl {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+}

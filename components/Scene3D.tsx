@@ -205,8 +205,38 @@ function SceneContent({ low, reduced }: { low: boolean; reduced: boolean }) {
   );
 }
 
+/* Latar statis pengganti WebGL untuk HP/PID: gradien murah tanpa filter,
+   plus "bintang" dari radial-gradient kecil yang diulang — nol beban GPU. */
+function StaticBackdrop() {
+  return (
+    <div
+      aria-hidden
+      className="absolute inset-0"
+      style={{
+        background:
+          'radial-gradient(60% 45% at 50% 42%, rgba(59,130,246,0.20), transparent 70%),' +
+          'radial-gradient(45% 35% at 30% 60%, rgba(168,85,247,0.14), transparent 70%),' +
+          'radial-gradient(45% 35% at 70% 30%, rgba(34,211,238,0.12), transparent 70%), #05060f',
+      }}
+    >
+      <div
+        className="absolute inset-0 opacity-60"
+        style={{
+          backgroundImage:
+            'radial-gradient(1.5px 1.5px at 25px 35px, rgba(224,242,254,0.9), transparent 55%),' +
+            'radial-gradient(1px 1px at 120px 90px, rgba(224,242,254,0.7), transparent 55%),' +
+            'radial-gradient(1.5px 1.5px at 200px 40px, rgba(192,132,252,0.8), transparent 55%),' +
+            'radial-gradient(1px 1px at 70px 150px, rgba(125,211,252,0.7), transparent 55%),' +
+            'radial-gradient(1px 1px at 170px 180px, rgba(224,242,254,0.6), transparent 55%)',
+          backgroundSize: '240px 220px',
+        }}
+      />
+    </div>
+  );
+}
+
 export default function Scene3D() {
-  const { low, reduced } = useDeviceQuality();
+  const { low, reduced, lite } = useDeviceQuality();
   const wrapRef = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(true);
 
@@ -222,6 +252,8 @@ export default function Scene3D() {
     io.observe(el);
     return () => io.disconnect();
   }, []);
+
+  if (lite) return <StaticBackdrop />;
 
   return (
     <div ref={wrapRef} className="absolute inset-0">

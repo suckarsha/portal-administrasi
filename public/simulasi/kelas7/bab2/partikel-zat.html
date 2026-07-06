@@ -147,6 +147,22 @@ function setTab(n, el) {
   document.getElementById('tab'+n).classList.add('active');
 }
 
+/* sprite partikel digambar SEKALI lalu dipakai ulang — jauh lebih ringan
+   daripada membuat radial-gradient baru tiap partikel tiap frame */
+function makeDot(c1, c2, r) {
+  const c = document.createElement('canvas');
+  c.width = c.height = r*2;
+  const g = c.getContext('2d');
+  const gr = g.createRadialGradient(r-3, r-3, 2, r, r, r);
+  gr.addColorStop(0, c1); gr.addColorStop(1, c2);
+  g.fillStyle = gr;
+  g.beginPath(); g.arc(r, r, r, 0, 7); g.fill();
+  return c;
+}
+const DOT_BIRU = makeDot('#7dd3fc', '#0e7490', 11);
+const DOT_PARFUM = makeDot('#c4b5fd', '#6d28d9', 10);
+const DOT_UDARA = makeDot('#38bdf8', '#0e7490', 10);
+
 /* ================= TAB 0: PARTIKEL WUJUD ================= */
 const cv = document.getElementById('cv'), cx = cv.getContext('2d');
 let state = 'padat', temp = .4;
@@ -198,6 +214,8 @@ function drawContainer(ctx, w, h) {
 }
 
 function tickWujud() {
+  // hemat tenaga: jangan menggambar saat tab ini tidak terlihat
+  if (!document.getElementById('tab0').classList.contains('active')) { requestAnimationFrame(tickWujud); return; }
   cx.clearRect(0,0,cv.width,cv.height);
   drawContainer(cx, cv.width, cv.height);
   const sp = .4 + temp*1.8;
@@ -221,10 +239,7 @@ function tickWujud() {
       if (p.x<26){p.x=26;p.vx*=-1;} if (p.x>cv.width-26){p.x=cv.width-26;p.vx*=-1;}
       if (p.y<top+8){p.y=top+8;p.vy*=-1;} if (p.y>cv.height-24){p.y=cv.height-24;p.vy*=-1;}
     }
-    const grad = cx.createRadialGradient(p.x-3,p.y-3,2,p.x,p.y,11);
-    grad.addColorStop(0,'#7dd3fc'); grad.addColorStop(1,'#0e7490');
-    cx.fillStyle = grad;
-    cx.beginPath(); cx.arc(p.x,p.y,11,0,7); cx.fill();
+    cx.drawImage(DOT_BIRU, p.x-11, p.y-11);
   });
   requestAnimationFrame(tickWujud);
 }
@@ -244,7 +259,7 @@ function resetDiff() {
       y: 30+Math.random()*(cvd.height-60),
       vx:(Math.random()-.5)*(diffMode==='gas'?4.6:1.3),
       vy:(Math.random()-.5)*(diffMode==='gas'?4.6:1.3),
-      c: left ? '#c4b5fd' : '#38bdf8', c2: left ? '#6d28d9' : '#0e7490',
+      sp: left ? DOT_PARFUM : DOT_UDARA,
     });
   }
   document.getElementById('diffDesc').innerHTML = diffMode==='gas'
@@ -264,6 +279,7 @@ function bukaSekat() {
 }
 
 function tickDiff() {
+  if (!document.getElementById('tab1').classList.contains('active')) { requestAnimationFrame(tickDiff); return; }
   cd.clearRect(0,0,cvd.width,cvd.height);
   drawContainer(cd, cvd.width, cvd.height);
   const mid = cvd.width/2;
@@ -282,10 +298,7 @@ function tickDiff() {
       if (p.x > mid-14 && p.x < mid && p.vx>0) p.vx*=-1;
       if (p.x < mid+14 && p.x > mid && p.vx<0) p.vx*=-1;
     }
-    const grad = cd.createRadialGradient(p.x-3,p.y-3,2,p.x,p.y,10);
-    grad.addColorStop(0,p.c); grad.addColorStop(1,p.c2);
-    cd.fillStyle = grad;
-    cd.beginPath(); cd.arc(p.x,p.y,10,0,7); cd.fill();
+    cd.drawImage(p.sp, p.x-10, p.y-10);
   });
   requestAnimationFrame(tickDiff);
 }
