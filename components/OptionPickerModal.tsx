@@ -29,7 +29,7 @@ export default function OptionPickerModal({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25 }}
           onClick={onClose}
-          className="fixed inset-0 z-[95] flex items-center justify-center bg-ink/70 p-4 backdrop-blur-md"
+          className="fixed inset-0 z-[95] flex items-center justify-center bg-ink/80 p-4"
         >
           <motion.div
             initial={{ opacity: 0, y: 14 }}
@@ -37,7 +37,7 @@ export default function OptionPickerModal({
             exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-md rounded-3xl border border-white/10 bg-[#0a0c1a]/90 p-6 backdrop-blur-2xl sm:p-7"
+            className="relative w-full max-w-md rounded-3xl border border-white/10 bg-[#0a0c1a] p-6 sm:p-7"
           >
             <button
               onClick={onClose}

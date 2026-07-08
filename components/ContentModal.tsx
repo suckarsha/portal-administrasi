@@ -29,7 +29,7 @@ export default function ContentModal({
           exit={{ opacity: 0 }}
           transition={{ duration: 0.25 }}
           onClick={onClose}
-          className="fixed inset-0 z-[95] flex items-center justify-center bg-ink/70 p-4 backdrop-blur-md"
+          className="fixed inset-0 z-[95] flex items-center justify-center bg-ink/80 p-4"
         >
           <motion.div
             initial={{ opacity: 0, y: 14 }}
@@ -37,10 +37,10 @@ export default function ContentModal({
             exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="relative flex max-h-[88vh] w-full max-w-3xl flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#0a0c1a]/95 backdrop-blur-2xl"
+            className="relative flex max-h-[88vh] w-full max-w-3xl flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#0a0c1a]"
           >
             {/* Header lengket */}
-            <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-white/10 bg-[#0a0c1a]/80 px-6 py-5 backdrop-blur-xl sm:px-8">
+            <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-white/10 bg-[#0a0c1a] px-6 py-5 sm:px-8">
               <div>
                 <span className="text-[11px] font-semibold uppercase tracking-[0.25em] text-cyan-300/80">
                   Capaian Pembelajaran

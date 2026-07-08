@@ -57,7 +57,7 @@ export default function ProfileModal({ open, onClose }: { open: boolean; onClose
           exit={{ opacity: 0 }}
           transition={{ duration: 0.3 }}
           onClick={onClose}
-          className="fixed inset-0 z-[90] flex items-center justify-center bg-ink/70 p-4 backdrop-blur-md"
+          className="fixed inset-0 z-[90] flex items-center justify-center bg-ink/80 p-4"
         >
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -65,7 +65,7 @@ export default function ProfileModal({ open, onClose }: { open: boolean; onClose
             exit={{ opacity: 0, y: 8 }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="relative max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-white/10 bg-[#0a0c1a]/90 p-6 backdrop-blur-2xl sm:p-8"
+            className="relative max-h-[88vh] w-full max-w-2xl overflow-y-auto rounded-3xl border border-white/10 bg-[#0a0c1a] p-6 sm:p-8"
           >
             {/* tombol tutup */}
             <button
