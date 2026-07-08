@@ -11,9 +11,10 @@ export default function Home() {
     <main className="relative min-h-screen bg-ink">
       <Preloader />
 
-      {/* Latar dekoratif untuk bagian bawah lipatan */}
-      <div className="pointer-events-none absolute inset-0 bg-aurora" />
-      <div className="pointer-events-none absolute inset-0 bg-grid" />
+      {/* Latar dekoratif: fixed (seukuran layar) — bukan setinggi dokumen,
+          agar GPU HP/PID tidak merasterisasi tekstur raksasa (sumber artefak) */}
+      <div className="pointer-events-none fixed inset-0 bg-aurora" />
+      <div className="pointer-events-none fixed inset-0 bg-grid" />
 
       <div className="relative">
         <Navbar />

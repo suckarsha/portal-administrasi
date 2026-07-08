@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, useMotionValue, useSpring } from 'framer-motion';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { AdminItem } from '@/lib/data';
 import { Icon, ArrowIcon } from './Icons';
 import OptionPickerModal from './OptionPickerModal';
@@ -11,6 +11,13 @@ export default function AdminCard({ item, index }: { item: AdminItem; index: num
   const ref = useRef<HTMLElement | null>(null);
   const [glow, setGlow] = useState({ x: 50, y: 50 });
   const [open, setOpen] = useState(false);
+  const [tiltOn, setTiltOn] = useState(false);
+
+  // Tilt 3D hanya untuk perangkat berkursor — di layar sentuh (HP/PID)
+  // tidak ada hover, dan perspective per-kartu membebani GPU lemah
+  useEffect(() => {
+    setTiltOn(window.matchMedia('(pointer: fine)').matches);
+  }, []);
 
   // Kemiringan 3D mengikuti kursor (dihaluskan dengan spring)
   const rotX = useMotionValue(0);
@@ -42,8 +49,8 @@ export default function AdminCard({ item, index }: { item: AdminItem; index: num
     'group relative flex flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-left transition-colors duration-300 hover:border-white/20';
 
   const motionProps = {
-    onMouseMove: handleMove,
-    onMouseLeave: handleLeave,
+    onMouseMove: tiltOn ? handleMove : undefined,
+    onMouseLeave: tiltOn ? handleLeave : undefined,
     layout: true as const,
     initial: { opacity: 0, y: 28 },
     whileInView: { opacity: 1, y: 0 },
@@ -51,7 +58,7 @@ export default function AdminCard({ item, index }: { item: AdminItem; index: num
     viewport: { once: true, margin: '-60px' },
     transition: { duration: 0.5, delay: (index % 4) * 0.06, ease: [0.22, 1, 0.36, 1] as const },
     whileHover: { y: -6 },
-    style: { rotateX: sRotX, rotateY: sRotY, transformPerspective: 900 },
+    style: tiltOn ? { rotateX: sRotX, rotateY: sRotY, transformPerspective: 900 } : undefined,
     className,
   };
 
